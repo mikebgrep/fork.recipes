@@ -8,10 +8,19 @@ logs
 .DS_Store
 
 
-# Migrations
-db.sqlite3
-./migrations/*
-
-# Python
-__init__.py
+# created by virtualenv automatically
+.venv/*
+.idea/*
+.env
+media/*
+forkapi/sql/db.sqlite3
+forkapi/authentication/migrations/*
+forkapi/recipe/migrations/*
 __pycache__
+forkapi/static/*
+forkapi/media/*
+fullchain.pem
+privkey.pem
+.tox
+db.sqlite3
+recipes/migrations/
