@@ -1,0 +1,81 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Saved Recipes - Culinary Delights{% endblock %}
+
+{% block header %}Saved Recipes{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for recipe in page_obj %}
+    <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02]">
+        <div class="relative h-48 overflow-hidden">
+            <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div class="absolute bottom-4 left-4">
+                <span class="px-3 py-1 bg-white/90 rounded-full text-sm font-medium text-gray-800">
+                    {{ recipe.difficulty }}
+                </span>
+            </div>
+        </div>
+        <div class="p-5">
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">{{ recipe.title }}</h3>
+            <div class="flex items-center gap-4 text-gray-600 mb-3">
+                <div class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span class="text-sm">{{ recipe.time }}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span class="text-sm">{{ recipe.servings }} servings</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                </svg>
+                <span class="text-sm">By {{ recipe.chef }}</span>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+        </svg>
+        <p class="text-gray-500 text-lg mb-4">No saved recipes yet</p>
+        <a href="{% url 'recipes:recipe_list' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+            Discover Recipes
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination Controls -->
+<div class="mt-6 flex justify-center items-center space-x-2">
+    {% if page_obj.has_previous %}
+        <a href="?page=1" class="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Previous</a>
+    {% endif %}
+
+    <span class="px-3 py-1 rounded bg-mint-500 text-white">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Last</a>
+    {% endif %}
+</div>
+{% endblock %}

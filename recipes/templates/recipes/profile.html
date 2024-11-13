@@ -1,0 +1,114 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Profile - Culinary Delights{% endblock %}
+
+{% block header %}Profile Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white shadow rounded-lg">
+        <!-- Profile Header -->
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <div class="flex items-center space-x-5">
+                <div class="relative">
+                    <img class="h-16 w-16 rounded-full" src="{{ user.avatar }}" alt="">
+                    <label for="avatar-upload" class="absolute bottom-0 right-0 bg-mint-500 rounded-full p-1 cursor-pointer hover:bg-mint-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                        </svg>
+                    </label>
+                    <input id="avatar-upload" type="file" accept="image/*" class="hidden">
+                </div>
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900">{{ user.username }}</h3>
+                    <p class="text-sm text-gray-500">Member since January 2024</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Form -->
+        <form class="px-4 py-5 sm:p-6 space-y-6">
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Username -->
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <input type="text" name="username" id="username" value="{{ user.username }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email" id="email" value="{{ user.email }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
+                </div>
+
+                <!-- Change Password -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-medium text-gray-900">Password</h4>
+                        <button type="button" onclick="document.getElementById('password-section').classList.toggle('hidden')"
+                                class="text-sm text-mint-600 hover:text-mint-500">Change password</button>
+                    </div>
+                    
+                    <div id="password-section" class="hidden space-y-4">
+                        <div>
+                            <label for="current-password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                            <input type="password" name="current-password" id="current-password"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
+                        </div>
+                        
+                        <div>
+                            <label for="new-password" class="block text-sm font-medium text-gray-700">New Password</label>
+                            <input type="password" name="new-password" id="new-password"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
+                        </div>
+                        
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                            <input type="password" name="confirm-password" id="confirm-password"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Preferences -->
+                <div>
+                    <h4 class="text-sm font-medium text-gray-900 mb-4">Notification Preferences</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="email-notifications" name="email-notifications" type="checkbox" checked
+                                       class="h-4 w-4 text-mint-600 focus:ring-mint-500 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="email-notifications" class="font-medium text-gray-700">Email Notifications</label>
+                                <p class="text-gray-500">Receive email updates about your favorite recipes and chefs.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="newsletter" name="newsletter" type="checkbox" checked
+                                       class="h-4 w-4 text-mint-600 focus:ring-mint-500 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="newsletter" class="font-medium text-gray-700">Weekly Newsletter</label>
+                                <p class="text-gray-500">Get weekly recipe inspiration and cooking tips.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="flex justify-end">
+                <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
