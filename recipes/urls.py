@@ -12,6 +12,7 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('toggle-favorite/<int:recipe_id>/', views.toggle_favorite, name='toggle_favorite'),
     path('new-recipe/', views.new_recipe, name='new_recipe'),
+    path('recipe/<int:recipe_id>/edit/', views.edit_recipe, name='edit_recipe'),
     path('settings/', views.settings_view, name='settings'),
     path('settings/change-password/', views.change_password, name='change_password'),
     path('settings/update-service-url/', views.update_service_url, name='update_service_url'),

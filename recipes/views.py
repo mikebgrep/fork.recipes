@@ -3,7 +3,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 
 from backend import settings
@@ -48,8 +48,44 @@ def recipe_detail(request, recipe_id):
     })
 
 
+def edit_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.method == 'POST':
+        # Update recipe with form data
+        recipe.title = request.POST.get('title')
+        recipe.category = request.POST.get('category')
+        recipe.difficulty = request.POST.get('difficulty')
+        recipe.time = request.POST.get('time')
+        recipe.servings = int(request.POST.get('servings'))
+        recipe.description = request.POST.get('description')
+        recipe.ingredients = request.POST.getlist('ingredients[]')
+        recipe.instructions = request.POST.getlist('instructions[]')
 
+        # Handle image
+        if request.POST.get('clear_image') == 'true':
+            recipe.image = None
+        elif 'image' in request.FILES:
+            recipe.image_upload = request.FILES['image']
 
+        # Handle video
+        if request.POST.get('clear_video') == 'true':
+            recipe.video = None
+        elif 'video' in request.FILES:
+            recipe.video_upload = request.FILES['video']
+
+        # TODO:// after save to API get the recipe object
+
+        recipe.save()
+        return redirect('recipes:recipe_detail', recipe_id=recipe.id)
+
+    categories = [choice[0] for choice in Recipe.CATEGORY_CHOICES]
+    difficulties = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
+
+    return render(request, 'recipes/edit_recipe.html', {
+        'recipe': recipe,
+        'categories': categories,
+        'difficulties': difficulties,
+    })
 def saved_recipes(request):
     recipes = Recipe.objects.all()  # Fetch all saved recipes
     paginator = Paginator(recipes, 6)  # Show 4 recipes per page

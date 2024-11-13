@@ -32,7 +32,9 @@
     <div class="min-h-screen flex flex-col">
         <div class="flex flex-1">
             <!-- Sidebar -->
-            <div id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 transition-transform duration-300 ease-in-out bg-white shadow-lg hidden md:block" >
+            <div id="sidebar-container" class="relative">
+            <!-- Sidebar -->
+            <div id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 transition-transform duration-300 ease-in-out bg-white shadow-lg md:block hidden">
                 <div class="flex flex-col h-full">
                     <div class="flex items-center justify-between h-16 flex-shrink-0 px-4 bg-mint-500">
                         <div class="flex items-center gap-3">
@@ -67,14 +69,23 @@
                         </a>
                         <a href="{% url 'recipes:settings' %}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.path == '/settings/' %}bg-mint-100 text-mint-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-3 h-6 w-6">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
                             Settings
                         </a>
                     </nav>
                 </div>
             </div>
+
+            <!-- Hamburger Icon for Mobile -->
+            <button id="hamburger" class="md:hidden fixed top-2 left-2 z-50 p-2 bg-mint-500 text-white rounded-md ">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18" />
+                </svg>
+            </button>
+
+        </div>
 
             <!-- Main content -->
             <div class="flex-1 flex flex-col md:ml-64 transition-all duration-300 ease-in-out" id="main-content">
@@ -83,11 +94,11 @@
                     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                         <div class="md:flex md:items-center md:justify-between">
                             <div class="flex-1 min-w-0">
-                                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate text-center">
                                     {% block header %}Discover Recipes{% endblock %}
                                 </h2>
                             </div>
-                            <div class="flex justify-between items-center w-full mt-4 sm:mt-0">
+                            <div class="flex justify-between items-center w-full mt-10 sm:mt-0 ">
                                 <!-- New Recipe Button -->
                                 <a href="{% url 'recipes:new_recipe' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
                                     New Recipe
@@ -159,7 +170,13 @@
             }
         });
 
+    const hamburger = document.getElementById("hamburger");
+    const sidebar = document.getElementById("sidebar");
 
+    hamburger.addEventListener("click", () => {
+        sidebar.classList.toggle("hidden");
+        sidebar.classList.toggle("block");
+    });
     </script>
 </body>
 </html>

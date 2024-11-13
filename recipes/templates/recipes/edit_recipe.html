@@ -1,0 +1,211 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Edit {{ recipe.title }} - Culinary Delights{% endblock %}
+
+{% block header %}Edit Recipe{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl overflow-hidden max-w-4xl mx-auto">
+    <form method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+        {% csrf_token %}
+
+        <div class="space-y-4">
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-700">Recipe Title</label>
+                <input type="text" id="title" name="title" value="{{ recipe.title }}" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select id="category" name="category" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+                        {% for category in categories %}
+                        <option value="{{ category }}" {% if category == recipe.category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="difficulty" class="block text-sm font-medium text-gray-700">Difficulty</label>
+                    <select id="difficulty" name="difficulty" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+                        {% for difficulty in difficulties %}
+                        <option value="{{ difficulty }}" {% if difficulty == recipe.difficulty %}selected{% endif %}>
+                            {{ difficulty }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="time" class="block text-sm font-medium text-gray-700">Cooking Time</label>
+                    <input type="text" id="time" name="time" value="{{ recipe.time }}" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+                </div>
+
+                <div>
+                    <label for="servings" class="block text-sm font-medium text-gray-700">Servings</label>
+                    <input type="number" id="servings" name="servings" value="{{ recipe.servings }}" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+                </div>
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea id="description" name="description" rows="3"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">{{ recipe.description }}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Current Image</label>
+                    {% if recipe.image %}
+                    <div class="mt-2 relative group">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="h-32 w-full object-cover rounded-lg">
+                        <button type="button" onclick="clearMedia('image')" class="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% endif %}
+                    <label for="image" class="block text-sm font-medium text-gray-700 mt-4">Update Image</label>
+                    <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-mint-50 file:text-mint-700 hover:file:bg-mint-100">
+                    <input type="hidden" name="clear_image" id="clear_image" value="false">
+                    <p class="mt-1 text-sm text-gray-500">Accepted formats: JPG, PNG, WebP</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Current Video</label>
+                    {% if recipe.video %}
+                    <div class="mt-2 relative group">
+                        <video class="h-32 w-full object-cover rounded-lg" controls>
+                            <source src="{{ recipe.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <button type="button" onclick="clearMedia('video')" class="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% endif %}
+                    <label for="video" class="block text-sm font-medium text-gray-700 mt-4">Update Video</label>
+                    <input type="file" id="video" name="video" accept="video/mp4,video/webm,video/quicktime"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-mint-50 file:text-mint-700 hover:file:bg-mint-100">
+                    <input type="hidden" name="clear_video" id="clear_video" value="false">
+                    <p class="mt-1 text-sm text-gray-500">Accepted formats: MP4, WebM, MOV</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Ingredients</label>
+                <div id="ingredients-container" class="space-y-2">
+                    {% for ingredient in recipe.ingredients %}
+                    <div class="flex gap-2">
+                        <input type="text" name="ingredients[]" value="{{ ingredient }}" required
+                            class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+                        <button type="button" onclick="removeField(this)" class="text-red-500 hover:text-red-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" onclick="addIngredient()" class="mt-2 text-mint-600 hover:text-mint-700 text-sm font-medium">
+                    + Add Ingredient
+                </button>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Instructions</label>
+                <div id="instructions-container" class="space-y-2">
+                    {% for instruction in recipe.instructions %}
+                    <div class="flex gap-2">
+                        <input type="text" name="instructions[]" value="{{ instruction }}" required
+                            class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+                        <button type="button" onclick="removeField(this)" class="text-red-500 hover:text-red-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" onclick="addInstruction()" class="mt-2 text-mint-600 hover:text-mint-700 text-sm font-medium">
+                    + Add Instruction
+                </button>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-4">
+            <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                Cancel
+            </a>
+            <button type="submit" class="px-4 py-2 bg-mint-600 text-white rounded-md hover:bg-mint-700">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function addIngredient() {
+        const container = document.getElementById('ingredients-container');
+        const div = document.createElement('div');
+        div.className = 'flex gap-2';
+        div.innerHTML = `
+            <input type="text" name="ingredients[]" required
+                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+            <button type="button" onclick="removeField(this)" class="text-red-500 hover:text-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        `;
+        container.appendChild(div);
+    }
+
+    function addInstruction() {
+        const container = document.getElementById('instructions-container');
+        const div = document.createElement('div');
+        div.className = 'flex gap-2';
+        div.innerHTML = `
+            <input type="text" name="instructions[]" required
+                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+            <button type="button" onclick="removeField(this)" class="text-red-500 hover:text-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        `;
+        container.appendChild(div);
+    }
+
+    function removeField(button) {
+        button.parentElement.remove();
+    }
+
+    function clearMedia(type) {
+        const element = document.getElementById(type);
+        const clearInput = document.getElementById(`clear_${type}`);
+        const container = element.closest('div');
+        const preview = container.querySelector(type === 'image' ? 'img' : 'video');
+
+        if (preview) {
+            preview.parentElement.remove();
+        }
+
+        element.value = '';
+        clearInput.value = 'true';
+    }
+</script>
+{% endblock %}
