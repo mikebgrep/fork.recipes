@@ -24,3 +24,4 @@ privkey.pem
 .tox
 db.sqlite3
 recipes/migrations/
+static

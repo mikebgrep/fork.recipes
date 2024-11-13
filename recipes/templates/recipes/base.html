@@ -98,6 +98,7 @@
                                     {% block header %}Discover Recipes{% endblock %}
                                 </h2>
                             </div>
+                            {% if user.is_authenticated %}
                             <div class="flex justify-between items-center w-full mt-10 sm:mt-0 ">
                                 <!-- New Recipe Button -->
                                 <a href="{% url 'recipes:new_recipe' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
@@ -112,10 +113,11 @@
                                     <div id="profile-menu" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                                         <a href="{% url 'recipes:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
                                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-                                        <a href="{% url 'recipes:login' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
+                                        <a href="{% url 'recipes:logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </header>

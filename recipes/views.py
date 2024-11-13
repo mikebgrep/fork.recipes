@@ -1,21 +1,40 @@
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 
 from backend import settings
 from .models import Recipe
+from ws import api_request
 
 
 def login_view(request):
+    if request.POST:
+        username = request.POST.get("email")
+        password = request.POST.get("password")
+
+        user = api_request.get_user_token(username, password)
+
+        if user:
+            request.session['auth_token'] = user.token
+            login(request, user)
+            return render(request, "recipes/recipe_list.html")
+
     return render(request, 'recipes/login.html')
+
 
 def forgot_password(request):
     return render(request, 'recipes/forgot_password.html')
 
+
+def log_out_view(request):
+    logout(request)
+    return redirect('recipes:login')
+
+@login_required
 def recipe_list(request):
     category = request.GET.get('category', '')
     search = request.GET.get('search', '')
@@ -41,6 +60,8 @@ def recipe_list(request):
         'search_query': search,
     })
 
+
+@login_required
 def recipe_detail(request, recipe_id):
     recipe = Recipe.objects.get(pk=recipe_id)
     return render(request, 'recipes/recipe_detail.html', {
@@ -48,6 +69,7 @@ def recipe_detail(request, recipe_id):
     })
 
 
+@login_required
 def edit_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if request.method == 'POST':
@@ -86,6 +108,9 @@ def edit_recipe(request, recipe_id):
         'categories': categories,
         'difficulties': difficulties,
     })
+
+
+@login_required
 def saved_recipes(request):
     recipes = Recipe.objects.all()  # Fetch all saved recipes
     paginator = Paginator(recipes, 6)  # Show 4 recipes per page
@@ -97,12 +122,15 @@ def saved_recipes(request):
     return render(request, 'recipes/saved_recipes.html', {
         'page_obj': page_obj
     })
+
+
+@login_required
 def profile_view(request):
     if request.method == 'POST' and request.FILES.get('avatar'):
         # Handle avatar upload
         # In a real app, you would save the file and update the user's avatar
         pass
-    
+
     # In a real app, this would get the current user's data
     user_data = {
         'username': 'johndoe',
@@ -111,10 +139,13 @@ def profile_view(request):
     }
     return render(request, 'recipes/profile.html', {'user': user_data})
 
+
 def toggle_favorite(request, recipe_id):
     # In a real app, this would toggle the favorite status for the current user
     return JsonResponse({'status': 'success'})
 
+
+@login_required
 def new_recipe(request):
     if request.method == 'POST':
         # Handle form submission
@@ -148,20 +179,22 @@ def new_recipe(request):
 
     categories = [choice[0] for choice in Recipe.CATEGORY_CHOICES]
     difficulties = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
-    
+
     return render(request, 'recipes/new_recipe.html', {
         'categories': categories,
         'difficulties': difficulties,
     })
-    
-# @login_required
+
+
+@login_required
 def settings_view(request):
     context = {
         'service_url': settings.SERVICE_BASE_URL
     }
     return render(request, 'recipes/settings.html', context)
 
-# @login_required
+
+@login_required
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -174,7 +207,8 @@ def change_password(request):
             messages.error(request, 'Please correct the error below.')
     return redirect('settings')
 
-# @login_required
+
+@login_required
 def update_service_url(request):
     if request.method == 'POST':
         url = request.POST.get('service_url')
@@ -186,7 +220,8 @@ def update_service_url(request):
             messages.error(request, 'Please provide a valid URL.')
     return redirect('settings')
 
-# @login_required
+
+@login_required
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
