@@ -30,7 +30,9 @@
                            placeholder="Password">
                 </div>
             </div>
-
+            {% if message %}
+                <p class="text-[#DC3545]">{{ message }}</p>
+            {% endif %}
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <input id="remember-me" name="remember-me" type="checkbox"
@@ -39,7 +41,7 @@
                 </div>
 
                 <div class="text-sm">
-                    <a href="#" class="font-medium text-mint-600 hover:text-mint-500">Forgot your password?</a>
+                    <a href="{% url 'recipes:forgot_password' %}" class="font-medium text-mint-600 hover:text-mint-500">Forgot your password?</a>
                 </div>
             </div>
 

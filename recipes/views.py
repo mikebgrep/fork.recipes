@@ -12,6 +12,10 @@ from ws import api_request
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return render(request, "recipes/recipe_list.html")
+
+    context = {}
     if request.POST:
         username = request.POST.get("email")
         password = request.POST.get("password")
@@ -22,11 +26,18 @@ def login_view(request):
             request.session['auth_token'] = user.token
             login(request, user)
             return render(request, "recipes/recipe_list.html")
+        else:
+            context = {
+                "message": "Wrong email or password!"
+            }
 
-    return render(request, 'recipes/login.html')
+    return render(request, 'recipes/login.html', context=context)
 
 
 def forgot_password(request):
+    if request.user.is_authenticated:
+        return render(request, "recipes/recipe_list.html")
+
     return render(request, 'recipes/forgot_password.html')
 
 
@@ -34,38 +45,50 @@ def log_out_view(request):
     logout(request)
     return redirect('recipes:login')
 
+
 @login_required
 def recipe_list(request):
-    category = request.GET.get('category', '')
+    current_page_number = request.GET.get('page', 1)
+
+    categories = api_request.get_categories()
+
+    category_pk = request.GET.get('category', '')
     search = request.GET.get('search', '')
 
-    recipes = Recipe.objects.all()
+    # TODO:// Refactoring must be done
+    total_recipes = None
+    if category_pk and len(category_pk) > 0:
+        total_recipes = api_request.get_recipes_by_category(category_pk)
+    else:
+        if search:
+            count, next_page, prev_page, recipes = api_request.get_recipes_home(search_query=search,page_number=current_page_number)
+        else:
+           count, next_page, prev_page, recipes = api_request.get_recipes_home(page_number=current_page_number)
 
-    if category and category != 'all':
-        recipes = recipes.filter(category=category)
+        total_recipes = [None] * count
 
-    if search:
-        recipes = recipes.filter(title__icontains=search)
+        # Get start and end index
+        start_index = (int(current_page_number) - 1) * 15
+        end_index = start_index + 15
 
-    paginator = Paginator(recipes, 6)  # Show 6 recipes per page
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
+        total_recipes[start_index:end_index] = recipes
 
-    categories = [choice[0] for choice in Recipe.CATEGORY_CHOICES]
+
+    paginator = Paginator(total_recipes, 15)
+    page_obj = paginator.get_page(current_page_number)
 
     return render(request, 'recipes/recipe_list.html', {
         'page_obj': page_obj,
         'categories': categories,
-        'selected_category': category,
+        'selected_category': category_pk,
         'search_query': search,
     })
 
 
 @login_required
-def recipe_detail(request, recipe_id):
-    recipe = Recipe.objects.get(pk=recipe_id)
+def recipe_detail(request, recipe_pk):
     return render(request, 'recipes/recipe_detail.html', {
-        'recipe': recipe
+        'recipe': recipe_pk
     })
 
 
@@ -162,22 +185,11 @@ def new_recipe(request):
         video = request.FILES.get('video')
 
         # Create new recipe
-        recipe = Recipe.objects.create(
-            title=title,
-            category=category,
-            difficulty=difficulty,
-            time=time,
-            servings=servings,
-            description=description,
-            ingredients=ingredients,
-            instructions=instructions,
-            chef='Current User',  # In a real app, this would be the logged-in user
-            image=image.url if image else ''
-        )
+        recipe = Recipe.objects.get(title="Asd")
 
         return redirect('recipes:recipe_detail', recipe_id=recipe.id)
 
-    categories = [choice[0] for choice in Recipe.CATEGORY_CHOICES]
+    categories = []
     difficulties = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
 
     return render(request, 'recipes/new_recipe.html', {
