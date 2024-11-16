@@ -7,7 +7,7 @@
 {% block content %}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for recipe in page_obj %}
-    <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02]">
+    <a href="{% url 'recipes:recipe_detail' recipe.pk %}" class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02]">
         <div class="relative h-48 overflow-hidden">
             <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -18,14 +18,14 @@
             </div>
         </div>
         <div class="p-5">
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">{{ recipe.title }}</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">{{ recipe.name }}</h3>
             <div class="flex items-center gap-4 text-gray-600 mb-3">
                 <div class="flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span class="text-sm">{{ recipe.time }}</span>
+                    <span class="text-sm">{{ recipe.total_time }} hrs</span>
                 </div>
                 <div class="flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -37,17 +37,21 @@
                     <span class="text-sm">{{ recipe.servings }} servings</span>
                 </div>
             </div>
-            <div class="flex items-center gap-2 text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                    <line x1="6" y1="1" x2="6" y2="4"></line>
-                    <line x1="10" y1="1" x2="10" y2="4"></line>
-                    <line x1="14" y1="1" x2="14" y2="4"></line>
-                </svg>
-                <span class="text-sm">By {{ recipe.chef }}</span>
-            </div>
+
+<!-- TODO:// Uncomment if chef is added to the BE -->
+
+<!--            <div class="flex items-center gap-2 text-gray-600">-->
+<!--                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">-->
+<!--                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>-->
+<!--                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>-->
+<!--                    <line x1="6" y1="1" x2="6" y2="4"></line>-->
+<!--                    <line x1="10" y1="1" x2="10" y2="4"></line>-->
+<!--                    <line x1="14" y1="1" x2="14" y2="4"></line>-->
+<!--                </svg>-->
+<!--                <span class="text-sm">By {{ recipe.chef }}</span>-->
+<!--            </div>-->
         </div>
+
     </a>
     {% empty %}
     <div class="col-span-full flex flex-col items-center justify-center py-12 text-center">

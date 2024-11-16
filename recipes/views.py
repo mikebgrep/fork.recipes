@@ -1,3 +1,6 @@
+import os
+from traceback import print_tb
+
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -25,7 +28,7 @@ def login_view(request):
         if user:
             request.session['auth_token'] = user.token
             login(request, user)
-            return render(request, "recipes/recipe_list.html")
+            return redirect("/")
         else:
             context = {
                 "message": "Wrong email or password!"
@@ -36,7 +39,7 @@ def login_view(request):
 
 def forgot_password(request):
     if request.user.is_authenticated:
-        return render(request, "recipes/recipe_list.html")
+        return redirect("/")
 
     return render(request, 'recipes/forgot_password.html')
 
@@ -49,7 +52,6 @@ def log_out_view(request):
 @login_required
 def recipe_list(request):
     current_page_number = request.GET.get('page', 1)
-
     categories = api_request.get_categories()
 
     category_pk = request.GET.get('category', '')
@@ -61,9 +63,10 @@ def recipe_list(request):
         total_recipes = api_request.get_recipes_by_category(category_pk)
     else:
         if search:
-            count, next_page, prev_page, recipes = api_request.get_recipes_home(search_query=search,page_number=current_page_number)
+            count, next_page, prev_page, recipes = api_request.get_recipe_home_preview(search_query=search,
+                                                                                       page_number=current_page_number)
         else:
-           count, next_page, prev_page, recipes = api_request.get_recipes_home(page_number=current_page_number)
+            count, next_page, prev_page, recipes = api_request.get_recipe_home_preview(page_number=current_page_number)
 
         total_recipes = [None] * count
 
@@ -72,7 +75,6 @@ def recipe_list(request):
         end_index = start_index + 15
 
         total_recipes[start_index:end_index] = recipes
-
 
     paginator = Paginator(total_recipes, 15)
     page_obj = paginator.get_page(current_page_number)
@@ -87,60 +89,113 @@ def recipe_list(request):
 
 @login_required
 def recipe_detail(request, recipe_pk):
+    recipe = api_request.get_recipe_by_pk(recipe_pk)
+    categories = api_request.get_categories()
+    category = [x for x in categories if recipe.category == x.pk][0]
     return render(request, 'recipes/recipe_detail.html', {
-        'recipe': recipe_pk
+        'recipe': recipe,
+        'category': category
     })
 
 
 @login_required
-def edit_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    if request.method == 'POST':
-        # Update recipe with form data
-        recipe.title = request.POST.get('title')
-        recipe.category = request.POST.get('category')
-        recipe.difficulty = request.POST.get('difficulty')
-        recipe.time = request.POST.get('time')
-        recipe.servings = int(request.POST.get('servings'))
-        recipe.description = request.POST.get('description')
-        recipe.ingredients = request.POST.getlist('ingredients[]')
-        recipe.instructions = request.POST.getlist('instructions[]')
-
-        # Handle image
-        if request.POST.get('clear_image') == 'true':
-            recipe.image = None
-        elif 'image' in request.FILES:
-            recipe.image_upload = request.FILES['image']
-
-        # Handle video
-        if request.POST.get('clear_video') == 'true':
-            recipe.video = None
-        elif 'video' in request.FILES:
-            recipe.video_upload = request.FILES['video']
-
-        # TODO:// after save to API get the recipe object
-
-        recipe.save()
-        return redirect('recipes:recipe_detail', recipe_id=recipe.id)
-
-    categories = [choice[0] for choice in Recipe.CATEGORY_CHOICES]
+def edit_recipe(request, recipe_pk):
+    recipe = api_request.get_recipe_by_pk(recipe_pk)
+    categories = api_request.get_categories()
     difficulties = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
-
-    return render(request, 'recipes/edit_recipe.html', {
+    context = {
         'recipe': recipe,
         'categories': categories,
         'difficulties': difficulties,
-    })
+    }
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        category_pk = request.POST.get('category')
+        new_category = request.POST.get('new_category')
+        difficulty = request.POST.get('difficulty')
+        prep_time = request.POST.get('prep_time')
+        cook_time = request.POST.get('cook_time')
+        servings = request.POST.get('servings')
+        description = request.POST.get('description')
+        chef = request.POST.get('chef')
+
+        ingredient_names = request.POST.getlist('ingredient_name[]')
+        ingredient_quantities = request.POST.getlist('ingredient_quantity[]')
+        ingredient_metrics = request.POST.getlist('ingredient_metric[]')
+        instructions = request.POST.getlist('instructions[]')
+
+        image = request.FILES.get('image')
+        video = request.FILES.get('video')
+
+        token = request.session.get("auth_token")
+
+        category = None
+        if new_category:
+            new_category_data = {
+                "name": new_category
+            }
+            category = api_request.post_category(token, new_category_data)
+
+        recipe_main_info_data = {
+            "name": name,
+            "category": category.pk if category else int(category_pk),
+            "difficulty": difficulty,
+            "prep_time": int(prep_time),
+            "cook_time": int(cook_time),
+            "servings": int(servings),
+            "description": description,
+            "chef": chef
+        }
+
+        ingredients_data = list()
+        instructions_data = list()
+        recipe_files = []
+
+        for name, quantity, metric in zip(ingredient_names, ingredient_quantities, ingredient_metrics):
+            ingredients_data.append({"name": name, "quantity": quantity, "metric": metric})
+
+        for instruction in instructions:
+            instructions_data.append({"text": instruction})
+
+        # Handle image
+        if 'image' in request.FILES:
+            recipe_files = [
+                ("image", image)
+            ]
+
+        # Handle video
+        if request.POST.get('clear_video') == 'true':
+            recipe_main_info_data['clear_video'] = True
+        elif 'video' in request.FILES:
+            recipe_files.append(("video", video))
+        token = request.session.get("auth_token")
+
+        response_recipe = api_request.update_recipe_main_info(recipe.pk, multipart_form_data=recipe_main_info_data, files=recipe_files, token=token)
+
+        if response_recipe is not None:
+            api_request.post_ingredients_for_recipe(response_recipe.pk, token=token, data=ingredients_data)
+            api_request.post_instructions_for_recipe(response_recipe.pk, token=token, data=instructions_data)
+
+            return redirect('recipes:recipe_detail', recipe_pk=response_recipe.pk)
+
+        context['message'] = "Something went wrong.Try again later"
+
+    return render(request, 'recipes/edit_recipe.html', context)
 
 
 @login_required
 def saved_recipes(request):
-    recipes = Recipe.objects.all()  # Fetch all saved recipes
-    paginator = Paginator(recipes, 6)  # Show 4 recipes per page
+    current_page_number = request.GET.get('page', 1)
+    count, next_page, prev_page, recipes = api_request.get_favorite_recipes(current_page_number)
+    total_recipes = [None] * count
 
-    # Get the current page number from the request (default to 1)
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
+    start_index = (int(current_page_number) - 1) * 15
+    end_index = start_index + 15
+    total_recipes[start_index:end_index] = recipes
+
+    paginator = Paginator(total_recipes, 15)
+    page_obj = paginator.get_page(current_page_number)
 
     return render(request, 'recipes/saved_recipes.html', {
         'page_obj': page_obj
@@ -163,39 +218,85 @@ def profile_view(request):
     return render(request, 'recipes/profile.html', {'user': user_data})
 
 
-def toggle_favorite(request, recipe_id):
-    # In a real app, this would toggle the favorite status for the current user
-    return JsonResponse({'status': 'success'})
+def toggle_favorite(request, recipe_pk):
+    status_code = api_request.patch_favorite_recipe(recipe_pk, request.session.get("auth_token"))
+    return JsonResponse({'status': 'success' if status_code == 201 else "failure"})
 
 
 @login_required
 def new_recipe(request):
+    categories = api_request.get_categories()
+    difficulties = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
+
+    context = {
+        'categories': categories,
+        'difficulties': difficulties,
+    }
+
     if request.method == 'POST':
-        # Handle form submission
-        # In a real app, you would save the recipe to the database
-        title = request.POST.get('title')
-        category = request.POST.get('category')
+        name = request.POST.get('name')
+        category_pk = request.POST.get('category')
+        new_category = request.POST.get('new_category')
         difficulty = request.POST.get('difficulty')
-        time = request.POST.get('time')
+        prep_time = request.POST.get('prep_time')
+        cook_time = request.POST.get('cook_time')
         servings = request.POST.get('servings')
         description = request.POST.get('description')
-        ingredients = request.POST.getlist('ingredients[]')
+        chef = request.POST.get('chef')
+        ingredient_names = request.POST.getlist('ingredient_name[]')
+        ingredient_quantities = request.POST.getlist('ingredient_quantity[]')
+        ingredient_metrics = request.POST.getlist('ingredient_metric[]')
         instructions = request.POST.getlist('instructions[]')
         image = request.FILES.get('image')
         video = request.FILES.get('video')
 
-        # Create new recipe
-        recipe = Recipe.objects.get(title="Asd")
+        token = request.session.get("auth_token")
 
-        return redirect('recipes:recipe_detail', recipe_id=recipe.id)
+        category = None
+        if new_category:
+            new_category_data = {
+                "name": new_category
+            }
+            category = api_request.post_category(token, new_category_data)
 
-    categories = []
-    difficulties = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
+        recipe_main_info_data = {
+            "name": name,
+            "category": category.pk if category else int(category_pk),
+            "difficulty": difficulty,
+            "prep_time": int(prep_time),
+            "cook_time": int(cook_time),
+            "servings": int(servings),
+            "description": description,
+            "chef": chef
+        }
 
-    return render(request, 'recipes/new_recipe.html', {
-        'categories': categories,
-        'difficulties': difficulties,
-    })
+        recipe_files = [
+            ("image", image)
+        ]
+
+        if video:
+            recipe_files.append(("video", video))
+
+        ingredients_data = list()
+        instructions_data = list()
+
+        for name, quantity, metric in zip(ingredient_names, ingredient_quantities, ingredient_metrics):
+            ingredients_data.append({"name": name, "quantity": quantity, "metric": metric})
+
+        for instruction in instructions:
+            instructions_data.append({"text": instruction})
+
+        recipe = api_request.post_new_recipe_main_info(multipart_form_data=recipe_main_info_data, token=token,
+                                                       files=recipe_files)
+
+        if recipe is not None:
+            api_request.post_ingredients_for_recipe(recipe.pk, token=token, data=ingredients_data)
+            api_request.post_instructions_for_recipe(recipe.pk, token=token, data=instructions_data)
+
+            return redirect('recipes:recipe_detail', recipe_pk=recipe.pk)
+        context['message'] = "Something went wrong.Try again later"
+
+    return render(request, 'recipes/new_recipe.html', context)
 
 
 @login_required

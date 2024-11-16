@@ -1,40 +1,48 @@
 {% extends 'recipes/base.html' %}
 
-{% block title %}New Recipe - Culinary Delights{% endblock %}
+{% block title %}Create Recipe - Culinary Delights{% endblock %}
 
-{% block header %}Create a New Recipe{% endblock %}
+{% block header %}Create New Recipe{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto py-10">
-    <form method="POST" enctype="multipart/form-data"
-          class="bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-300">
+<div class="max-w-5xl mx-auto py-8">
+    <form method="POST" enctype="multipart/form-data" class="bg-white shadow-xl rounded-lg overflow-hidden">
         {% csrf_token %}
         <div class="p-8 space-y-8">
+            <!-- Title Section -->
+            {% if message %}
+            <p class="text-[#DC3545]">{{ message }}</p>
+            {% endif %}
+            <div>
+                <label for="title" class="block text-lg font-medium text-gray-800">Recipe Name</label>
+                <input type="text" name="name" id="title" required
+                       class="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm"
+                       placeholder="Enter the recipe name">
+            </div>
 
-            <!-- Recipe Title and Basic Info -->
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <div class="col-span-2">
-                    <label for="title" class="text-lg font-semibold text-gray-800">Recipe Title</label>
-                    <input type="text" name="title" id="title" required
-                           class="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-                </div>
-
+            <!-- Recipe Details -->
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                    <label for="category" class="text-lg font-semibold text-gray-800">Category</label>
+                    <label for="category" class="block text-lg font-medium text-gray-800">Category</label>
                     <select name="category" id="category" required
-                            class="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-                        <option value="">Select a category</option>
+                            class="bg-white mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                        <option value="" disabled selected>Select a category</option>
                         {% for category in categories %}
-                        <option value="{{ category }}">{{ category }}</option>
+                        <option value="{{ category.pk }}">{{ category.name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" id="category-input" name="new_category" placeholder="Type to add a new category"
+                           class="bg-white mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm"
+                    >
+                    <div>
+                    </div>
                 </div>
 
                 <div>
-                    <label for="difficulty" class="text-lg font-semibold text-gray-800">Difficulty</label>
+                    <label for="difficulty" class="block text-lg font-medium text-gray-800">Difficulty</label>
                     <select name="difficulty" id="difficulty" required
-                            class="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-                        <option value="">Select difficulty</option>
+                            class="mt-2 w-full bg-white rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                        <option value="" disabled selected>Select difficulty</option>
                         {% for difficulty in difficulties %}
                         <option value="{{ difficulty }}">{{ difficulty }}</option>
                         {% endfor %}
@@ -42,244 +50,226 @@
                 </div>
 
                 <div>
-                    <label for="time" class="text-lg font-semibold text-gray-800">Cooking Time</label>
-                    <input type="text" name="time" id="time" required placeholder="e.g., 45 minutes"
-                           class="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
+                    <label for="prep-time" class="block text-lg font-medium text-gray-800">Prep Time</label>
+                    <input type="number" name="prep_time" id="prep-time" required placeholder="e.g., 45 minutes"
+                           class="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                </div>
+                <div>
+                    <label for="cook-time" class="block text-lg font-medium text-gray-800">Cooking Time</label>
+                    <input type="number" name="cook_time" id="cook-time" required placeholder="e.g., 45 minutes"
+                           class="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
                 </div>
 
                 <div>
-                    <label for="servings" class="text-lg font-semibold text-gray-800">Servings</label>
-                    <input type="number" name="servings" id="servings" required min="1"
-                           class="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
+                    <label for="servings" class="block text-lg font-medium text-gray-800">Servings</label>
+                    <input type="number" name="servings" id="servings" required min="1" placeholder="e.g., 4"
+                           class="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                </div>
+                <div>
+                    <label for="chef" class="block text-lg font-medium text-gray-800">Recipe Chef (optional)</label>
+                    <input type="text" name="chef" id="chef"
+                           class="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm"
+                           placeholder="Enter the recipe chef">
                 </div>
             </div>
 
             <!-- Description -->
             <div>
-                <label for="description" class="text-lg font-semibold text-gray-800">Description</label>
+                <label for="description" class="block text-lg font-medium text-gray-800">Description</label>
                 <textarea name="description" id="description" rows="4" required
-                          class="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200"></textarea>
+                          class="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm"
+                          placeholder="Describe the recipe..."></textarea>
             </div>
 
-            <!-- Media Uploads -->
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <!-- Recipe Image Upload -->
+            <!-- Media Upload -->
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                    <label class="text-lg font-semibold text-gray-800">Recipe Image</label>
-                    <div class="mt-4 flex justify-center p-6 border-2 border-dashed rounded-lg text-gray-500 border border-gray-300">
-                        <div class="space-y-2 text-center">
-                            <svg class="mx-auto h-12 w-12 text-green-400" stroke="currentColor" fill="none"
-                                 viewBox="0 0 48 48">
-                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <label for="image" class="block text-lg font-medium text-gray-800">Recipe Image</label>
+                    <div
+                            class="mt-2 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-4">
+                        <input type="file" id="image" name="image" accept="image/*" required
+                               class="sr-only"/>
+                        <label for="image"
+                               class="cursor-pointer text-mint-600 hover:text-mint-500 text-sm font-medium flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 16l3.293-3.293a1 1 0 011.414 0L12 17l2.293-2.293a1 1 0 011.414 0L21 16M5 13V7a2 2 0 012-2h10a2 2 0 012 2v6m-9 4v2m0 0h4m-4 0H8"/>
                             </svg>
-                            <label for="image" class="cursor-pointer font-medium text-green-600 hover:text-green-500">
-                                <span>Upload an image</span>
-                                <input id="image" name="image" type="file" accept="image/*" class="sr-only" required>
-                            </label>
-                            <p class="text-xs text-gray-400">PNG, JPG up to 10MB</p>
-                        </div>
+                            Upload an image
+                        </label>
                     </div>
                 </div>
 
-                <!-- Recipe Video Upload -->
                 <div>
-                    <label class="text-lg font-semibold text-gray-800">Recipe Video (optional)</label>
-                    <div class="mt-4 flex justify-center p-6 border-2 border-dashed rounded-lg text-gray-500 border border-gray-300">
-                        <div class="space-y-2 text-center">
-                            <svg class="mx-auto h-12 w-12 text-green-400" fill="none" viewBox="0 0 24 24"
+                    <label for="video" class="block text-lg font-medium text-gray-800">Recipe Video (optional)</label>
+                    <div
+                            class="mt-2 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-4">
+                        <input type="file" id="video" name="video" accept="video/*" class="sr-only"/>
+                        <label for="video"
+                               class="cursor-pointer text-mint-600 hover:text-mint-500 text-sm font-medium flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                             </svg>
-                            <label for="video" class="cursor-pointer font-medium text-green-600 hover:text-green-500">
-                                <span>Upload a video</span>
-                                <input id="video" name="video" type="file" accept="video/*" class="sr-only">
-                            </label>
-                            <p class="text-xs text-gray-400">MP4, MOV up to 100MB</p>
-                        </div>
+                            Upload a video
+                        </label>
                     </div>
                 </div>
             </div>
 
-            <!-- Ingredients -->
+            <!-- Ingredients Section -->
             <div>
-                <label class="text-lg font-semibold text-gray-800">Ingredients</label>
-                <div id="ingredients-container" class="mt-4 space-y-4">
-                    <div class="flex items-center space-x-4">
-                        <!-- Ingredient Name -->
-                        <input type="text" name="ingredient_name[]" required placeholder="e.g., Flour"
-                               class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-
-                        <!-- Quantity -->
-                        <input type="text" name="ingredient_quantity[]" required placeholder="e.g., 2"
-                               class="w-1/4 px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-
-                        <!-- Metric -->
-                        <input type="text" name="ingredient_metric[]" required placeholder="e.g., cups"
-                               class="w-1/4 px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-
-                        <!-- Remove Button -->
-                        <button type="button" onclick="this.parentElement.remove()"
-                                class="ml-3 text-red-500 hover:text-red-700">
+                <div class="flex items-center justify-between">
+                    <label class="block text-lg font-medium text-gray-800">Ingredients</label>
+                    <button type="button" onclick="addIngredient()"
+                            class="bg-mint-100 text-mint-700 px-3 py-1 rounded-md hover:bg-mint-200 text-sm font-medium">
+                        + Add Ingredient
+                    </button>
+                </div>
+                <div id="ingredients-container" class="space-y-3 mt-4 ">
+                    <div class="flex flex-wrap gap-2 items-center border-double border-4">
+                        <input type="text" name="ingredient_name[]" required placeholder="Ingredient name (e.g., Flour)"
+                               class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                        <input type="text" name="ingredient_quantity[]" required placeholder="Quantity (e.g., 2)"
+                               class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                        <input type="text" name="ingredient_metric[]" required placeholder="Metric (e.g., cups)"
+                               class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                        <button type="button" class="text-red-500 px-4 py-2 hover:text-red-700 ml-2"
+                                onclick="this.parentElement.remove()">
                             &times;
                         </button>
                     </div>
                 </div>
-                <button type="button" onclick="addIngredient()"
-                        class="mt-4 px-4 py-2 text-green-600 border border-green-500 rounded-lg hover:bg-green-100 focus:outline-none">
-                    + Add Ingredient
-                </button>
             </div>
 
-            <!-- Instructions -->
+
+            <!-- Instructions Section -->
             <div>
-                <label class="text-lg font-semibold text-gray-800">Instructions</label>
-                <div id="instructions-container" class="mt-4 space-y-4">
-                    <div class="flex items-center">
-                        <span class="mr-3 font-semibold text-gray-700">1.</span>
-                        <input type="text" name="instructions[]" required placeholder="e.g., Mix ingredients"
-                               class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-                        <button type="button" onclick="this.parentElement.remove(); updateInstructionNumbers()"
-                                class="ml-3 text-red-500 hover:text-red-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                 fill="currentColor">
-                                <path fill-rule="evenodd"
-                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                      clip-rule="evenodd"/>
-                            </svg>
+                <div class="flex items-center justify-between">
+                    <label class="block text-lg font-medium text-gray-800">Instructions</label>
+                    <button type="button" onclick="addInstruction()"
+                            class="bg-mint-100 text-mint-700 px-3 py-1 rounded-md hover:bg-mint-200 text-sm font-medium">
+                        + Add Step
+                    </button>
+                </div>
+                <div id="instructions-container" class="space-y-3 mt-4">
+                    <div class="flex items-center gap-2">
+                        <span
+                                class="bg-mint-100 text-mint-700 w-8 h-8 rounded-full flex items-center justify-center font-medium">1</span>
+                        <input type="text" name="instructions[]" required placeholder="e.g., Preheat oven to 350°F"
+                               class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+                        <button type="button" class="text-red-500 hover:text-red-700"
+                                onclick="this.parentElement.remove()">
+                            &times;
                         </button>
                     </div>
                 </div>
-                <button type="button" onclick="addInstruction()"
-                        class="mt-4 px-4 py-2 text-green-600 border border-green-500 rounded-lg hover:bg-green-100 focus:outline-none">
-                    + Add Step
-                </button>
             </div>
         </div>
 
-        <div class="p-8 bg-gray-50">
+        <!-- Submit Section -->
+        <div class="bg-gray-50 px-8 py-4 flex justify-end gap-4">
+            <a href=""
+               class="bg-gray-200 text-gray-700 px-5 py-2 rounded-md hover:bg-gray-300 font-medium">Cancel</a>
             <button type="submit"
-                    class="w-full py-3 px-4 bg-mint-600 text-white font-semibold rounded-lg hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                Save Recipe
+                    class="bg-mint-600 text-white px-5 py-2 rounded-md hover:bg-mint-700 font-medium">Create Recipe
             </button>
         </div>
     </form>
 </div>
 
-
 <script>
     function addIngredient() {
-         const ingredientContainer = document.getElementById('ingredients-container');
-         const ingredientDiv = document.createElement('div');
-         ingredientDiv.classList.add('flex', 'items-center', 'space-x-4', 'mt-4');
+        const container = document.getElementById('ingredients-container');
+        const newIngredient = document.createElement('div');
+        newIngredient.className = 'flex flex-wrap gap-2 items-center border-double border-4';
+        newIngredient.innerHTML = `
+            <input type="text" name="ingredient_name[]" required placeholder="Ingredient name (e.g., Flour)"
+                class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+            <input type="text" name="ingredient_quantity[]" required placeholder="Quantity (e.g., 2)"
+                class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+            <input type="text" name="ingredient_metric[]" required placeholder="Metric (e.g., cups)"
+                class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+            <button type="button" class="text-red-500 px-4 py-2 hover:text-red-700 ml-2"
+                onclick="this.parentElement.remove()">
+                &times;
+            </button>
+        `;
+        container.appendChild(newIngredient);
+    }
 
-         // Ingredient Name Input
-         const nameInput = document.createElement('input');
-         nameInput.type = 'text';
-         nameInput.name = 'ingredient_name[]';
-         nameInput.required = true;
-         nameInput.placeholder = 'e.g., Flour';
-         nameInput.classList.add('flex-1', 'px-4', 'py-2', 'rounded-lg', 'border', 'border-gray-300', 'focus:border-green-500', 'focus:ring-2', 'focus:ring-green-200');
+    function addInstruction() {
+        const container = document.getElementById('instructions-container');
+        const stepCount = container.children.length + 1;
+        const newStep = document.createElement('div');
+        newStep.className = 'flex items-center gap-2';
+        newStep.innerHTML = `
+            <span class="bg-mint-100 text-mint-700 w-8 h-8 rounded-full flex items-center justify-center font-medium">${stepCount}</span>
+            <input type="text" name="instructions[]" required placeholder="e.g., Preheat oven to 350°F"
+                class="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
+            <button type="button" class="text-red-500 hover:text-red-700" onclick="this.parentElement.remove()">&times;</button>
+        `;
+        container.appendChild(newStep);
+    }
 
-         // Ingredient Quantity Input
-         const quantityInput = document.createElement('input');
-         quantityInput.type = 'text';
-         quantityInput.name = 'ingredient_quantity[]';
-         quantityInput.required = true;
-         quantityInput.placeholder = 'e.g., 2';
-         quantityInput.classList.add('w-1/4', 'px-4', 'py-2', 'rounded-lg', 'border', 'border-gray-300', 'focus:border-green-500', 'focus:ring-2', 'focus:ring-green-200');
+     // Preview uploaded image
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.createElement('img');
+                preview.src = e.target.result;
+                preview.className = 'mt-2 rounded-lg max-h-32 mx-auto';
+                const container = document.querySelector('label[for="image"]').parentElement;
+                const existingPreview = container.querySelector('img');
+                if (existingPreview) {
+                    existingPreview.remove();
+                }
+                container.appendChild(preview);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 
-         // Ingredient Metric Input
-         const metricInput = document.createElement('input');
-         metricInput.type = 'text';
-         metricInput.name = 'ingredient_metric[]';
-         metricInput.required = true;
-         metricInput.placeholder = 'e.g., cups';
-         metricInput.classList.add('w-1/4', 'px-4', 'py-2', 'rounded-lg', 'border', 'border-gray-300', 'focus:border-green-500', 'focus:ring-2', 'focus:ring-green-200');
+    // Preview uploaded video
+    document.getElementById('video').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const preview = document.createElement('video');
+            preview.src = URL.createObjectURL(file);
+            preview.className = 'mt-2 rounded-lg max-h-32 mx-auto';
+            preview.controls = true;
+            const container = document.querySelector('label[for="video"]').parentElement;
+            const existingPreview = container.querySelector('video');
+            if (existingPreview) {
+                existingPreview.remove();
+            }
+            container.appendChild(preview);
+        }
+    });
 
-         // Remove Button
-         const removeButton = document.createElement('button');
-         removeButton.type = 'button';
-         removeButton.innerHTML = '&times;';
-         removeButton.onclick = function() {
-             ingredientDiv.remove();
-         };
-         removeButton.classList.add('ml-3', 'text-red-500', 'hover:text-red-700');
+    // Get references to the select and input elements
+    const categorySelect = document.getElementById("category");
+    const categoryInput = document.getElementById("category-input");
 
-         // Append the inputs and button to the new ingredient div
-         ingredientDiv.appendChild(nameInput);
-         ingredientDiv.appendChild(quantityInput);
-         ingredientDiv.appendChild(metricInput);
-         ingredientDiv.appendChild(removeButton);
+    // Function to toggle the 'required' attribute based on the input field value
+    function toggleCategoryRequired() {
+        if (categoryInput.value.trim() !== "") {
+            // If the input has text, remove the 'required' attribute from the select
+            categorySelect.removeAttribute("required");
+        } else {
+            // If the input is empty, make the select 'required'
+            categorySelect.setAttribute("required", "true");
+        }
+    }
 
-         // Add the new ingredient div to the container
-         ingredientContainer.appendChild(ingredientDiv);
-     }
+    // Event listener to check the input value whenever it changes
+    categoryInput.addEventListener("input", toggleCategoryRequired);
 
-        function addInstruction() {
-         const container = document.getElementById('instructions-container');
-         const div = document.createElement('div');
-         div.className = 'flex items-center';
-         div.innerHTML = `
-             <span class="mr-3 font-semibold text-gray-700"></span> <!-- Step number placeholder -->
-             <input type="text" name="instructions[]" required placeholder="e.g., Mix ingredients"
-                    class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200">
-             <button type="button" onclick="this.parentElement.remove(); updateInstructionNumbers()" class="ml-3 text-red-500 hover:text-red-700">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                 </svg>
-             </button>
-         `;
-         container.appendChild(div);
-         updateInstructionNumbers(); // Update numbers after adding a new instruction
-     }
-
-     function updateInstructionNumbers() {
-         const container = document.getElementById('instructions-container');
-         Array.from(container.children).forEach((div, index) => {
-             const numberSpan = div.querySelector('span');
-             numberSpan.textContent = `${index + 1}.`; // Add step number
-         });
-     }
-
-         // Preview uploaded image
-     document.getElementById('image').addEventListener('change', function(e) {
-         const file = e.target.files[0];
-         if (file) {
-             const reader = new FileReader();
-             reader.onload = function(e) {
-                 const preview = document.createElement('img');
-                 preview.src = e.target.result;
-                 preview.className = 'mt-2 rounded-lg max-h-32 mx-auto';
-                 const container = document.querySelector('label[for="image"]').parentElement;
-                 const existingPreview = container.querySelector('img');
-                 if (existingPreview) {
-                     existingPreview.remove();
-                 }
-                 container.appendChild(preview);
-             }
-             reader.readAsDataURL(file);
-         }
-     });
-
-     // Preview uploaded video
-     document.getElementById('video').addEventListener('change', function(e) {
-         const file = e.target.files[0];
-         if (file) {
-             const preview = document.createElement('video');
-             preview.src = URL.createObjectURL(file);
-             preview.className = 'mt-2 rounded-lg max-h-32 mx-auto';
-             preview.controls = true;
-             const container = document.querySelector('label[for="video"]').parentElement;
-             const existingPreview = container.querySelector('video');
-             if (existingPreview) {
-                 existingPreview.remove();
-             }
-             container.appendChild(preview);
-         }
-     });
-
-
+    // Initial check in case the user submits the form with the input pre-filled
+    toggleCategoryRequired();
 </script>
 {% endblock %}
