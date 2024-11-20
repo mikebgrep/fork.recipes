@@ -14,23 +14,28 @@
             <form method="POST" action="{% url 'recipes:change_password' %}" class="p-6 space-y-4">
                 {% csrf_token %}
                 <div>
-                    <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                    <label for="current_password" class="block text-sm font-medium text-gray-700">Current
+                        Password</label>
                     <input type="password" name="current_password" id="current_password" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
                     <input type="password" name="new_password" id="new_password" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
                 <div>
-                    <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                    <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm New
+                        Password</label>
                     <input type="password" name="confirm_password" id="confirm_password" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
+                {% if error %}
+                <p class="text-[#DC3545]">{{ error }}</p>
+                {% endif %}
                 <div class="pt-4">
                     <button type="submit"
-                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
                         Update Password
                     </button>
                 </div>
@@ -47,16 +52,56 @@
                 <div>
                     <label for="service_url" class="block text-sm font-medium text-gray-700">Service Base URL</label>
                     <input type="url" name="service_url" id="service_url" value="{{ service_url }}" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
                 <div class="mt-4">
                     <button type="submit"
-                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
                         Save URL
                     </button>
                 </div>
             </form>
         </div>
+
+        <!-- SMTP Section -->
+        <div class="bg-white shadow-sm rounded-lg">
+            <div class="px-6 py-5 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">SMTP Configuration</h3>
+            </div>
+            <form method="POST" action="{% url 'recipes:update_smtp_settings' %}" class="p-6">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="smtp_host" class="block text-sm font-medium text-gray-700">SMTP Host</label>
+                        <input type="text" name="smtp_host" id="smtp_host" value="{{ smtp_host }}" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="smtp_port" class="block text-sm font-medium text-gray-700">SMTP Port</label>
+                        <input type="number" name="smtp_port" id="smtp_port" value="{{ smtp_port }}" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="smtp_username" class="block text-sm font-medium text-gray-700">SMTP Username</label>
+                        <input type="text" name="smtp_username" id="smtp_username" value="{{ smtp_username }}" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="smtp_password" class="block text-sm font-medium text-gray-700">SMTP Password</label>
+                        <input type="password" name="smtp_password" id="smtp_password" value="{{ smtp_password }}"
+                               required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                        Save Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+
 
         <!-- Delete Account Section -->
         <div class="bg-white shadow-sm rounded-lg">
@@ -64,9 +109,10 @@
                 <h3 class="text-lg font-medium text-red-600">Delete Account</h3>
             </div>
             <div class="p-6">
-                <p class="text-sm text-gray-500 mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+                <p class="text-sm text-gray-500 mb-4">Once you delete your account, there is no going back. Please be
+                    certain.</p>
                 <button type="button" onclick="document.getElementById('delete-modal').classList.remove('hidden')"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                     Delete Account
                 </button>
             </div>
@@ -77,15 +123,16 @@
     <div id="delete-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg max-w-sm mx-auto">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Confirm Account Deletion</h3>
-            <p class="text-sm text-gray-500 mb-4">Are you sure you want to delete your account? This action cannot be undone.</p>
+            <p class="text-sm text-gray-500 mb-4">Are you sure you want to delete your account? This action cannot be
+                undone.</p>
             <form method="POST" action="{% url 'recipes:delete_account' %}" class="space-x-4">
                 {% csrf_token %}
                 <button type="submit"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                     Yes, Delete Account
                 </button>
                 <button type="button" onclick="document.getElementById('delete-modal').classList.add('hidden')"
-                    class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Cancel
                 </button>
             </form>

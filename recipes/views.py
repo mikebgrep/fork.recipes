@@ -1,17 +1,15 @@
-import os
-from traceback import print_tb
-
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash, authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from requests import session
 
 from backend import settings
-from .models import Recipe
 from ws import api_request
+from .models import Recipe, User
+from .utils import email_util
 
 
 def login_view(request):
@@ -20,13 +18,18 @@ def login_view(request):
 
     context = {}
     if request.POST:
-        username = request.POST.get("email")
+        email = request.POST.get("email")
         password = request.POST.get("password")
 
-        user = api_request.get_user_token(username, password)
+        # Set the session cookie to 30 days
+        if request.POST.get("remember-me"):
+            settings.SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+
+        user = api_request.get_user_token(email, password)
 
         if user:
             request.session['auth_token'] = user.token
+            request.session['email'] = user.email
             login(request, user)
             return redirect("/")
         else:
@@ -41,7 +44,44 @@ def forgot_password(request):
     if request.user.is_authenticated:
         return redirect("/")
 
+    if request.POST:
+        email = request.POST.get("email")
+        host = request.get_host()
+        data = {
+            "email": email
+        }
+        result = api_request.request_forgot_password_token(data=data)
+        if result:
+            email_util.send_reset_password_link(host, email, result.token)
+            return render(request, 'recipes/forgot_password_send.html')
+
+        messages.error(request, "Somethings when wrong. Please try again later or contact administrator!")
     return render(request, 'recipes/forgot_password.html')
+
+
+def change_password_after_reset(request):
+    if request.GET:
+        request_token = request.GET.get("token")
+        request.session['request_token'] = request_token
+
+    if request.POST:
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if new_password == confirm_password:
+            data = {
+                "password": new_password,
+                "confirm_password": confirm_password
+            }
+            result = api_request.request_change_user_password_on_reset(request.session.get('request_token'), data=data)
+            if result:
+                messages.success(request, "Password was successfully reset.")
+                return redirect('recipes:login')
+        else:
+            messages.error(request, "Both password does not match!")
+
+        messages.error(request, "Something when wrong.Contact administrator.")
+    return render(request, 'recipes/reset_password.html')
 
 
 def log_out_view(request):
@@ -171,7 +211,8 @@ def edit_recipe(request, recipe_pk):
             recipe_files.append(("video", video))
         token = request.session.get("auth_token")
 
-        response_recipe = api_request.update_recipe_main_info(recipe.pk, multipart_form_data=recipe_main_info_data, files=recipe_files, token=token)
+        response_recipe = api_request.update_recipe_main_info(recipe.pk, multipart_form_data=recipe_main_info_data,
+                                                              files=recipe_files, token=token)
 
         if response_recipe is not None:
             api_request.post_ingredients_for_recipe(response_recipe.pk, token=token, data=ingredients_data)
@@ -302,23 +343,42 @@ def new_recipe(request):
 @login_required
 def settings_view(request):
     context = {
-        'service_url': settings.SERVICE_BASE_URL
+        'service_url': settings.SERVICE_BASE_URL,
+        "smtp_host": settings.EMAIL_HOST_TEMP,
+        "smtp_port": settings.EMAIL_PORT_TEMP,
+        "smtp_username": settings.EMAIL_HOST_USER_TEMP,
+        "smtp_password": settings.EMAIL_HOST_PASSWORD_TEMP
     }
     return render(request, 'recipes/settings.html', context)
 
 
 @login_required
 def change_password(request):
+    context = {}
     if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('settings')
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+        if new_password == confirm_password:
+            data = {
+                "old_password": current_password,
+                "new_password": new_password
+            }
+            token = request.session.get("auth_token")
+
+            result = api_request.change_logged_user_password(data=data, token=token)
+            if result is True:
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('recipes:settings')
+            else:
+                context = {
+                    "error": "There problem with your new password.Please choice minimum 8 char long password and not to common."}
         else:
-            messages.error(request, 'Please correct the error below.')
-    return redirect('settings')
+            context = {
+                "error": "Your new password does not match confirm password!"}
+
+        messages.error(request, 'Please correct the error below.')
+    return render(request, 'recipes/settings.html', context=context)
 
 
 @login_required
@@ -326,19 +386,46 @@ def update_service_url(request):
     if request.method == 'POST':
         url = request.POST.get('service_url')
         if url:
-            # Update the service URL in your settings or database
             settings.SERVICE_BASE_URL = url
             messages.success(request, 'Service URL updated successfully!')
         else:
             messages.error(request, 'Please provide a valid URL.')
-    return redirect('settings')
+    return redirect('recipes:settings')
+
+
+@login_required
+def update_smtp_settings(request):
+    if request.method == 'POST':
+        smtp_host = request.POST.get('smtp_host')
+        smtp_port = request.POST.get('smtp_port')
+        smtp_username = request.POST.get('smtp_username')
+        smtp_password = request.POST.get('smtp_password')
+
+        settings.EMAIL_HOST_TEMP = smtp_host
+        settings.EMAIL_HOST_USER_TEMP = smtp_username
+        settings.EMAIL_HOST_PASSWORD_TEMP = smtp_password
+        settings.EMAIL_PORT_TEMP = smtp_port
+
+        messages.success(request, 'Your smtp settings was successfully updated!')
+
+        user_email = request.session.get('email')
+        email_util.send_test_email_to_user_after_change_smtp(user_email)
+
+    return redirect('recipes:settings')
 
 
 @login_required
 def delete_account(request):
     if request.method == 'POST':
-        user = request.user
-        user.delete()
-        messages.success(request, 'Your account has been successfully deleted.')
-        return redirect('login')
-    return redirect('settings')
+        token = request.session.get('auth_token')
+        email = request.session.get('email')
+
+        result = api_request.delete_user_account(token)
+        if result:
+            messages.success(request, 'Your account has been successfully deleted.')
+            User.objects.get(email=email).delete()
+            return redirect('recipes:login')
+
+        messages.error(request, "Something went wrong.Please try again later!")
+
+    return redirect('recipes:settings')

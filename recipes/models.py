@@ -6,7 +6,7 @@ from django.core.validators import MinValueValidator, FileExtensionValidator
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(max_length=150, unique=True)
     token = models.CharField(max_length=40)
 
     def __str__(self):

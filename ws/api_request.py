@@ -13,7 +13,8 @@ load_dotenv()
 
 def api_request_read_only(method: str, url: str, data=None):
     headers = {
-        'X-Auth-Header': os.getenv('X_AUTH_HEADER')
+        'X-Auth-Header': os.getenv('X_AUTH_HEADER'),
+        'Content-Type': "application/json"
     }
 
     response = requests.request(method=method, url=f"{settings.SERVICE_BASE_URL}/{url}", headers=headers, data=data)
@@ -32,16 +33,16 @@ def api_request_write(method: str, url: str, token: str, data=None, files=None):
     return response
 
 
-def get_user_token(username, password):
+def get_user_token(email, password):
     login_data = {
-        "username": username,
+        "email": email,
         "password": password
     }
 
-    response = api_request_read_only(method=HTTPMethod.POST, url="api/auth/token", data=login_data)
+    response = api_request_read_only(method=HTTPMethod.POST, url="api/auth/token", data=json.dumps(login_data))
 
     if response.status_code == 200:
-        user, created = User.objects.get_or_create(username=username)
+        user, created = User.objects.get_or_create(email=email)
         user.token = json.loads(response.content)['token']
         user.save()
 
@@ -146,4 +147,35 @@ def update_recipe_main_info(recipe_pk: int, multipart_form_data: dict, files: li
     if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
+    return None
+
+
+def change_logged_user_password(data:dict, token:str):
+    response = api_request_write(method=HTTPMethod.PUT, url="api/auth/user", token=token, data=json.dumps(data))
+    if response.status_code == 204:
+        return True
+    return False
+
+
+def delete_user_account(token:str):
+    response = api_request_write(method=HTTPMethod.DELETE, url="api/auth/delete-account", token=token)
+    if response.status_code == 204:
+        return True
+    else:
+        return False
+
+
+def request_forgot_password_token(data:dict):
+    response = api_request_read_only(method=HTTPMethod.POST, url="api/auth/password_reset", data=json.dumps(data))
+    print(response.content)
+    if response.status_code == 201:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+    else:
+        return None
+
+def request_change_user_password_on_reset(password_token:str, data:dict):
+    response = api_request_read_only(method=HTTPMethod.POST, url=f"api/auth/password_reset/reset?token={password_token}", data=json.dumps(data))
+    if response.status_code == 204:
+        return True
     return None

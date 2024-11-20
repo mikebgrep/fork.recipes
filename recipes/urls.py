@@ -9,6 +9,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.log_out_view, name='logout'),
     path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('forgot-password/reset', views.change_password_after_reset, name='change_password_after_reset'),
+
     path('saved-recipes/', views.saved_recipes, name='saved_recipes'),
     path('profile/', views.profile_view, name='profile'),
     path('toggle-favorite/<int:recipe_pk>/', views.toggle_favorite, name='toggle_favorite'),
@@ -18,4 +20,6 @@ urlpatterns = [
     path('settings/change-password/', views.change_password, name='change_password'),
     path('settings/update-service-url/', views.update_service_url, name='update_service_url'),
     path('settings/delete-account/', views.delete_account, name='delete_account'),
+    path('settings/update_smtp_settings/', views.update_smtp_settings, name='update_smtp_settings'),
+
 ]

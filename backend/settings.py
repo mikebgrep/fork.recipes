@@ -73,21 +73,13 @@ DATABASES = {
     }
 }
 
-# # Password validation
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
-# ]
+# Email Backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_TEMP = ""
+EMAIL_HOST_USER_TEMP = ""
+EMAIL_HOST_PASSWORD_TEMP = ""
+EMAIL_PORT_TEMP = 0
+EMAIL_USE_TLS = True
 
 
 AUTH_USER_MODEL = 'recipes.User'
