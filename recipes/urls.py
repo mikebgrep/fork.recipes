@@ -20,6 +20,5 @@ urlpatterns = [
     path('settings/change-password/', views.change_password, name='change_password'),
     path('settings/update-service-url/', views.update_service_url, name='update_service_url'),
     path('settings/delete-account/', views.delete_account, name='delete_account'),
-    path('settings/update_smtp_settings/', views.update_smtp_settings, name='update_smtp_settings'),
 
 ]

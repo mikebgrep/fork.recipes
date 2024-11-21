@@ -1,10 +1,6 @@
-# myapp/middleware/remote_auth_middleware.py
-
-from django.conf import settings
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.utils.deprecation import MiddlewareMixin
-import requests
 
 User = get_user_model()
 

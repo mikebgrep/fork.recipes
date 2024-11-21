@@ -4,13 +4,15 @@ Django settings for backend project.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key-here'
-SERVICE_BASE_URL = "http://localhost:8000"
+SECRET_KEY = os.getenv('DJANGO_SECRET')
+SERVICE_BASE_URL = os.getenv('SERVICE_BASE_URL')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -75,11 +77,11 @@ DATABASES = {
 
 # Email Backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_TEMP = ""
-EMAIL_HOST_USER_TEMP = ""
-EMAIL_HOST_PASSWORD_TEMP = ""
-EMAIL_PORT_TEMP = 0
-EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 
 
 AUTH_USER_MODEL = 'recipes.User'
