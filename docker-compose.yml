@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: nginx-yaml
+    volumes:
+      - uwsgi_data:/tmp/uwsgi/
+      - web_static:/fork_recipes/static/:ro
+      - cert:/fork_recipes/nginx/ssl/:ro
+    ports:
+      - "8080:8080"
+#      - "443:443"
+    networks:
+      - fork_recipes_network
+    depends_on:
+      - web
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recipe-yaml
+    env_file:
+      - .env
+    restart: always
+    command: >
+      sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
+    volumes:
+      - data:/fork_recipes/sql/
+      - cert:/fork_recipes/nginx/ssl/
+      - uwsgi_data:/tmp/uwsgi/
+      - web_static:/fork_recipes/static/
+    networks:
+      - fork_recipes_network
+
+volumes:
+  data:
+  cert:
+  uwsgi_data:
+  web_static:
+  web_media:
+
+networks:
+   fork_recipes_network:
+        driver: bridge

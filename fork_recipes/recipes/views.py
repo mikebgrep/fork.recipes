@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from backend import settings
+from fork_recipes.backend import settings
 from .ws import api_request
 from . import models
 from .utils import email_util
@@ -23,7 +23,7 @@ def login_view(request):
 
         # Set the session cookie to 30 days
         if request.POST.get("remember-me"):
-            time_delta_now = datetime.datetime.now()
+            time_delta_now = datetime.datetime.now(datetime.timezone.utc)
             time_delta_now_plus_30_days = time_delta_now + datetime.timedelta(days=+30)
             request.session.set_expiry(time_delta_now_plus_30_days)
 
@@ -48,7 +48,7 @@ def forgot_password(request):
 
     if request.POST:
         email = request.POST.get("email")
-        host = request.get_host()
+        host = request.build_absolute_uri()
         data = {
             "email": email
         }
@@ -191,7 +191,8 @@ def edit_recipe(request, recipe_pk):
             "cook_time": int(cook_time),
             "servings": int(servings),
             "description": description,
-            "chef": chef
+            "chef": chef,
+            "is_favorite": recipe.is_favorite
         }
 
         ingredients_data = list()
@@ -424,6 +425,7 @@ def delete_account(request):
         if result:
             messages.success(request, 'Your account has been successfully deleted.')
             models.User.objects.get(email=email).delete()
+            request.session['auth_token'] = None
             return redirect('recipes:login')
 
         messages.error(request, "Something went wrong.Please try again later!")

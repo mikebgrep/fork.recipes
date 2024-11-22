@@ -23,5 +23,5 @@ fullchain.pem
 privkey.pem
 .tox
 db.sqlite3
-recipes/migrations/
+fork_recipes/recipes/migrations/
 static

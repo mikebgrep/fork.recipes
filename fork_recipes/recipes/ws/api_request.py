@@ -4,8 +4,8 @@ from http import HTTPMethod
 
 from dotenv import load_dotenv
 import requests
-from backend import settings
-from recipes.models import User
+from fork_recipes.backend import settings
+from ..models import User
 from types import SimpleNamespace
 
 load_dotenv()
