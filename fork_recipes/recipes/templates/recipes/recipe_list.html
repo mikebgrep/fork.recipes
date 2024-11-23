@@ -32,7 +32,7 @@
     </a>
     {% for category in categories %}
     <a href="{% url 'recipes:recipe_list' %}?category={{ category.pk }}"
-       class="px-4 py-2 rounded-full whitespace-nowrap transition-colors {% if selected_category == category %}bg-mint-500 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+       class="px-4 py-2 rounded-full whitespace-nowrap transition-colors {% if selected_category == category.pk|stringformat:'s' %} bg-mint-500 text-white {% else %} bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
         {{ category.name }}
     </a>
     {% endfor %}

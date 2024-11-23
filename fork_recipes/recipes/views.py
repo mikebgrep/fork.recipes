@@ -104,7 +104,6 @@ def recipe_list(request):
     search = request.GET.get('search', '')
 
     # TODO:// Refactoring must be done
-    total_recipes = None
     if category_pk and len(category_pk) > 0:
         total_recipes = api_request.get_recipes_by_category(category_pk)
     else:

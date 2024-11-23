@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent
 SECRET_KEY = os.getenv('DJANGO_SECRET')
 SERVICE_BASE_URL = os.getenv('SERVICE_BASE_URL')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 LOGIN_URL = '/login/'
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
