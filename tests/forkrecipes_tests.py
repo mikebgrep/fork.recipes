@@ -2,18 +2,16 @@ import json
 import os
 import uuid
 from datetime import timedelta
-from wsgiref.validate import assert_
 
 import pytest
 import responses
-from django.test import TestCase
-from django.utils import timezone
-from dotenv import load_dotenv
-from recipes.ws import api_request
-from recipes.models import User
 from django.contrib.messages import get_messages
 from django.urls import reverse
-from recipes.views import login_view, change_password_after_reset
+from django.utils import timezone
+from dotenv import load_dotenv
+from recipes.models import User
+from recipes.views import change_password_after_reset
+from recipes.ws import api_request
 
 load_dotenv()
 
@@ -78,13 +76,15 @@ def test_login_in_login_view(client):
 
 @responses.activate
 def test_login_non_existing_user(client):
-    responses_register_mock(responses.POST, path="api/auth/token", json_data={"detail": "No User matches the given query."}, status_code=404)
+    responses_register_mock(responses.POST, path="api/auth/token",
+                            json_data={"detail": "No User matches the given query."}, status_code=404)
     api_request.get_user_token("non_existing@test.com", "non_existing")
 
     response = client.post(path="/login/", data={"email": "email@test.com", "password": "admin1"})
 
     assert response.status_code == 200
     assert response.context['message'] == "Wrong email or password!"
+
 
 @responses.activate
 @pytest.mark.django_db
@@ -96,12 +96,13 @@ def test_login_remember_me_session_time(client):
     api_request.get_user_token("email@test.com", "admin1")
 
     response = client.post(path="/login/", data={"email": user_data['user']['email'], "password": "admin1",
-                                                      "remember-me": True})
+                                                 "remember-me": True})
     expiry_date = client.session.get_expiry_date()
     expected_expiry_date = timezone.now() + timedelta(days=30)
 
     assert response.status_code == 302
     assert abs((expiry_date - expected_expiry_date).days) <= 1
+
 
 @responses.activate
 def test_forgot_password_view_user_reset_password(client):
@@ -116,7 +117,8 @@ def test_forgot_password_view_user_reset_password(client):
 
     assert response.status_code == 200
     assert b'Reset Password Email Send' in response.content
-    assert  'recipes/forgot_password_send.html' in [x.name for x in response.templates]
+    assert 'recipes/forgot_password_send.html' in [x.name for x in response.templates]
+
 
 @responses.activate
 def test_forgot_password_forbidden_on_request(client):
@@ -130,8 +132,11 @@ def test_forgot_password_forbidden_on_request(client):
     response = client.post(path="/forgot-password/", data=request_data)
 
     assert response.status_code == 200
-    assert "Somethings when wrong. Please try again later or contact administrator!" in [x.message for x in get_messages(response.wsgi_request)]
+    assert "Somethings when wrong. Please try again later or contact administrator!" in [x.message for x in
+                                                                                         get_messages(
+                                                                                             response.wsgi_request)]
     assert 'recipes/forgot_password.html' in [x.name for x in response.templates]
+
 
 @responses.activate
 @pytest.mark.django_db
@@ -152,6 +157,7 @@ def test_change_password_after_reset(client):
     assert response.status_code == 302
     assert "Password was successfully reset." in [x.message for x in get_messages(response.wsgi_request)]
     assert response.resolver_match.func == change_password_after_reset
+
 
 @responses.activate
 @pytest.mark.django_db
@@ -174,6 +180,7 @@ def test_change_password_after_reset_token_does_not_match(client):
     assert "The provided token does match the query." in [x.message for x in get_messages(response.wsgi_request)]
     assert response.resolver_match.func == change_password_after_reset
 
+
 @responses.activate
 @pytest.mark.django_db
 def test_recipe_list_view_response(login_with_user, client):
@@ -184,10 +191,11 @@ def test_recipe_list_view_response(login_with_user, client):
     api_request.get_recipe_home_preview()
     response = client.get(path=reverse("recipes:recipe_list"))
 
-    assert  response.status_code == 200
-    assert  response.context['selected_category'] == ''
-    assert  response.context['search_query'] == ''
+    assert response.status_code == 200
+    assert response.context['selected_category'] == ''
+    assert response.context['search_query'] == ''
     assert len(json.loads(response.context['categories'])) == 5
+
 
 @responses.activate
 @pytest.mark.django_db
@@ -205,6 +213,7 @@ def test_recipe_list_selected_category(login_with_user, client):
     assert int(response.context['selected_category']) == category_pk
     assert response.context['search_query'] == ''
     assert len(json.loads(response.context['categories'])) == 5
+
 
 @responses.activate
 @pytest.mark.django_db
