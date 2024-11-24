@@ -54,14 +54,14 @@ def get_user_token(email, password):
 def get_categories():
     response = api_request_read_only(method=HTTPMethod.GET, url="api/recipe/category")
     results = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
-    return [x for x in results]
+    return results
 
 
 def get_recipes_by_category(category_pk):
     response = api_request_read_only(method=HTTPMethod.GET, url=f"api/recipe/category/{category_pk}/recipes")
     results = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
 
-    return [x for x in results]
+    return results
 
 
 # TODO:// To be deleted
