@@ -1,10 +1,6 @@
-import json
-import os
-import uuid
 from datetime import timedelta
 
 import pytest
-import responses
 from django.contrib.messages import get_messages
 from django.urls import reverse
 from django.utils import timezone
@@ -13,40 +9,10 @@ from recipes.models import User
 from recipes.views import change_password_after_reset
 from recipes.ws import api_request
 
+from .mock_util import *
+
 load_dotenv()
 
-
-def responses_register_mock(method: responses, path: str, status_code: int, json_data=None):
-    responses.add(
-        method,
-        f"{os.getenv('SERVICE_BASE_URL')}/{path}",
-        json=json_data,
-        status=status_code,
-    )
-
-
-def mock_categories_and_get_json_response(is_category_list: bool = False):
-    responses_register_mock(method=responses.GET, path=f"api/recipe/category",
-                            json_data='[{"pk":1,"name":"Breakfast"},{"pk":2,"name":"Lunch"},{"pk":3,"name":"Sunday"},\
-                                          {"pk":4,"name":"Pizza"},{"pk":5,"name":"Brunch"}]',
-                            status_code=200)
-
-    api_request.get_categories()
-    preview_response = {"count": 1, "next": None,
-                        "previous": None,
-                        "results": [{"pk": 46,
-                                     "image": "http://localhost:8000/media/images/8ddef70f-dd9d-44b1-847f-834cdf97e7bd_d5122d74-1c5e-40d3-a505-f9d09383d1ba_delicio_X3L8djK.jpg",
-                                     "name": "Creamy Mushroom Risotto", "chef": "Julia Child", "servings": 1,
-                                     "total_time": 1.62,
-                                     "difficulty": "Intermediate", "is_favorite": False}]}
-
-    preview_response_list = [{"pk": 46,
-                              "image": "http://localhost:8000/media/images/8ddef70f-dd9d-44b1-847f-834cdf97e7bd_d5122d74-1c5e-40d3-a505-f9d09383d1ba_delicio_X3L8djK.jpg",
-                              "name": "Creamy Mushroom Risotto", "chef": "Julia Child", "servings": 1,
-                              "total_time": 1.62,
-                              "difficulty": "Intermediate", "is_favorite": False}]
-
-    return preview_response_list if is_category_list else preview_response
 
 
 @pytest.fixture
@@ -184,27 +150,27 @@ def test_change_password_after_reset_token_does_not_match(client):
 @responses.activate
 @pytest.mark.django_db
 def test_recipe_list_view_response(login_with_user, client):
-    json_response = mock_categories_and_get_json_response()
+    recipe_response, categories_response = mock_categories_and_get_json_response(models.RecipeResponseType.HOME_PREVIEW_PAGINATE)
 
     responses_register_mock(method=responses.GET, path=f"api/recipe/home/preview/?page=1",
-                            json_data=json_response, status_code=200)
+                            json_data=recipe_response, status_code=200)
     api_request.get_recipe_home_preview()
     response = client.get(path=reverse("recipes:recipe_list"))
 
     assert response.status_code == 200
     assert response.context['selected_category'] == ''
     assert response.context['search_query'] == ''
-    assert len(json.loads(response.context['categories'])) == 5
+    assert len(response.context['categories']) == 5
 
 
 @responses.activate
 @pytest.mark.django_db
 def test_recipe_list_selected_category(login_with_user, client):
     category_pk = 4
-    preview_response = mock_categories_and_get_json_response(is_category_list=True)
+    recipe_response, categories_response = mock_categories_and_get_json_response(models.RecipeResponseType.HOME_PREVIEW_BY_CATEGORY)
 
     responses_register_mock(method=responses.GET, path=f"api/recipe/category/{category_pk}/recipes",
-                            json_data=preview_response, status_code=200)
+                            json_data=recipe_response, status_code=200)
     api_request.get_recipes_by_category(category_pk)
 
     response = client.get(path=reverse("recipes:recipe_list"), data={'category': category_pk})
@@ -212,17 +178,17 @@ def test_recipe_list_selected_category(login_with_user, client):
     assert response.status_code == 200
     assert int(response.context['selected_category']) == category_pk
     assert response.context['search_query'] == ''
-    assert len(json.loads(response.context['categories'])) == 5
+    assert len(response.context['categories']) == 5
 
 
 @responses.activate
 @pytest.mark.django_db
 def test_recipe_list_view_by_search_query(login_with_user, client):
-    json_response = mock_categories_and_get_json_response()
+    recipe_response, categories_response = mock_categories_and_get_json_response(models.RecipeResponseType.HOME_PREVIEW_PAGINATE)
 
     search_query = "Risotto"
     responses_register_mock(method=responses.GET, path=f"api/recipe/home/preview/?search={search_query}&page=1",
-                            json_data=json_response, status_code=200)
+                            json_data=recipe_response, status_code=200)
     api_request.get_recipe_home_preview(search_query)
 
     response = client.get(path=reverse("recipes:recipe_list"), data={'search': search_query})
@@ -230,4 +196,70 @@ def test_recipe_list_view_by_search_query(login_with_user, client):
     assert response.status_code == 200
     assert response.context['selected_category'] == ''
     assert response.context['search_query'] == search_query
-    assert len(json.loads(response.context['categories'])) == 5
+    assert len(response.context['categories']) == 5
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_recipe_details_view(login_with_user, client):
+    json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+
+    response = client.get(reverse("recipes:recipe_detail", args=[recipe_pk]))
+
+    assert response.status_code == 200
+    assert response.context['recipe'].pk == json_response['pk']
+    assert response.context['category'].pk == json_response['category']
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_edit_recipe_view_get_request(login_with_user, client):
+    json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    response = client.get(reverse("recipes:edit_recipe", args=[recipe_pk]))
+
+    assert response.status_code == 200
+    assert response.context['recipe'].pk == json_response['pk']
+    assert [x.pk for x in response.context['categories']] == [x['pk'] for x in categories_response]
+    assert response.context['difficulties'] == DIFFICULTY_CHOICES_CHOICE
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_edit_recipe_post_request(login_with_user, client):
+    json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    post_data = mock_data_recipe_on_update_or_create(HTTPMethod.PUT, recipe_pk, categories_response, 200)
+    response = client.post(reverse("recipes:edit_recipe", args=[recipe_pk]), data=post_data)
+
+    assert response.status_code == 302
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_edit_recipe_post_request_bad_request_on_update(login_with_user, client):
+    json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    post_data = mock_data_recipe_on_update_or_create(HTTPMethod.PUT, recipe_pk, categories_response, 400)
+    response = client.post(reverse("recipes:edit_recipe", args=[recipe_pk]), data=post_data)
+
+    assert response.status_code == 200
+    assert "Something went wrong.Try again later" in response.context['message']
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_new_recipe_view_happy_path(login_with_user, client):
+    json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    post_data = mock_data_recipe_on_update_or_create(HTTPMethod.POST, recipe_pk, categories_response, 201)
+    response = client.post(reverse("recipes:new_recipe"), data=post_data)
+
+    assert response.status_code == 302
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_new_recipe_view_error_on_request(login_with_user, client):
+    json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    post_data = mock_data_recipe_on_update_or_create(HTTPMethod.POST, recipe_pk, categories_response, 400)
+    response = client.post(reverse("recipes:new_recipe"), data=post_data)
+
+    assert response.status_code == 200
+    assert "Something went wrong.Try again later" in response.context['message']
