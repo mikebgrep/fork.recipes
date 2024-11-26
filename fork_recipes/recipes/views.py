@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from fork_recipes.backend import settings
 from .ws import api_request
 from . import models
-from .utils import data_util
+from .utils import date_util
 from .utils import email_util
 
 
@@ -271,7 +271,7 @@ def profile_view(request):
 
     # TODO: Move in utils class
     # format the joined date returned from BE to Month(Full name) Year string
-    formatted_date = data_util.format_date_joined(result.date_joined)
+    formatted_date = date_util.format_date_joined(result.date_joined)
     user_data = {}
 
     if result:

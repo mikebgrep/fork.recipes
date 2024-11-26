@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from recipes.models import User
 from recipes.views import change_password_after_reset
 from recipes.ws import api_request
-from recipes.utils import data_util
+from recipes.utils import date_util
 
 from .mock_util import *
 
@@ -311,7 +311,7 @@ def test_profile_view_get_request(login_with_user, client):
     assert response.status_code == 200
     assert response.context['user']['username'] == profile_response['username']
     assert response.context['user']['email'] == profile_response['email']
-    assert response.context['user']['date_joined'] == data_util.format_date_joined(profile_response['date_joined'])
+    assert response.context['user']['date_joined'] == date_util.format_date_joined(profile_response['date_joined'])
 
 
 @responses.activate
@@ -325,7 +325,7 @@ def test_profile_view_post_request(login_with_user, client):
     assert response.status_code == 200
     assert response.context['user']['username'] == profile_response['username']
     assert response.context['user']['email'] == profile_response['email']
-    assert response.context['user']['date_joined'] == data_util.format_date_joined(profile_response['date_joined'])
+    assert response.context['user']['date_joined'] == date_util.format_date_joined(profile_response['date_joined'])
 
 
 @responses.activate
