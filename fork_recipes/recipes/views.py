@@ -9,12 +9,13 @@ from django.shortcuts import render, redirect
 from fork_recipes.backend import settings
 from .ws import api_request
 from . import models
+from .utils import data_util
 from .utils import email_util
 
 
 def login_view(request):
     if request.user.is_authenticated:
-        return render(request, "recipes/recipe_list.html")
+        return redirect("/")
 
     context = {}
     if request.POST:
@@ -270,8 +271,7 @@ def profile_view(request):
 
     # TODO: Move in utils class
     # format the joined date returned from BE to Month(Full name) Year string
-    date_obj = datetime.datetime.strptime(result.date_joined, "%Y-%m-%dT%H:%M:%S.%fZ")
-    formatted_date = date_obj.strftime("%B %Y")
+    formatted_date = data_util.format_date_joined(result.date_joined)
     user_data = {}
 
     if result:

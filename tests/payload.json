@@ -1,0 +1,133 @@
+{
+  "responses": {
+    "categories": [
+      {
+        "pk": 1,
+        "name": "Breakfast"
+      },
+      {
+        "pk": 2,
+        "name": "Lunch"
+      },
+      {
+        "pk": 3,
+        "name": "Sunday"
+      },
+      {
+        "pk": 4,
+        "name": "Pizza"
+      },
+      {
+        "pk": 5,
+        "name": "Brunch"
+      }
+    ],
+    "steps": [
+      {
+        "text": "Heat the oven"
+      },
+      {
+        "text": "Take a break"
+      },
+      {
+        "text": "Prepare the mix"
+      },
+      {
+        "text": "Enjoy"
+      }
+    ],
+    "ingredients": [
+      {
+        "name": "Kasher salt",
+        "quantity": "1/5",
+        "metric": "tbsp"
+      },
+      {
+        "name": "Pudding mix",
+        "quantity": "1",
+        "metric": "pcs"
+      }
+    ],
+    "recipes": {
+      "search_recipes": {
+        "home_paginate": {
+          "count": 1,
+          "next": null,
+          "previous": null,
+          "results": [
+            {
+              "pk": 46,
+              "image": "http://localhost:8000/media/images/8ddef70f-dd9d-44b1-847f-834cdf97e7bd_d5122d74-1c5e-40d3-a505-f9d09383d1ba_delicio_X3L8djK.jpg",
+              "name": "Creamy Mushroom Risotto",
+              "chef": "Julia Child",
+              "servings": 1,
+              "total_time": 1.62,
+              "difficulty": "Intermediate",
+              "is_favorite": false
+            }
+          ]
+        },
+        "home_by_category": [
+          {
+            "pk": 46,
+            "image": "http://localhost:8000/media/images/8ddef70f-dd9d-44b1-847f-834cdf97e7bd_d5122d74-1c5e-40d3-a505-f9d09383d1ba_delicio_X3L8djK.jpg",
+            "name": "Creamy Mushroom Risotto",
+            "chef": "Julia Child",
+            "servings": 1,
+            "total_time": 1.62,
+            "difficulty": "Intermediate",
+            "is_favorite": false
+          }
+        ]
+      },
+      "recipe_details": {
+        "pk": 1,
+        "image": "http://localhost:8000/media/images/6b732e73-73b9-40e4-b8c9-1d5c65361d0e_1667446a-2636-41d1-9e03-bd43f1873f79_top-vie_eSzouHS.jpg",
+        "name": "Tuscan White Bean Soup",
+        "servings": 5,
+        "chef": "Thomas Keller",
+        "video": "http://localhost:8000/media/videos/58457d14-3f2f-413a-82d4-4a67fbb6a6b8_7451c646-5600-4ab3-801d-c861a2585d00_4935156_Jj5bDqV.mp4",
+        "description": "A savory and hearty chicken stew packed with tender vegetables, slow-cooked in a rich tomato-based broth, perfect for a cozy dinner.",
+        "category": 4,
+        "tag": null,
+        "prep_time": 38,
+        "cook_time": 13,
+        "total_time": 0.85,
+        "difficulty": "Intermediate",
+        "is_favorite": false,
+        "ingredients": [
+          {
+            "name": "chicken breast",
+            "quantity": "2",
+            "metric": "lbs"
+          },
+          {
+            "name": "all-purpose flour",
+            "quantity": "1.5",
+            "metric": "cups"
+          }
+        ],
+        "steps": [
+          {
+            "text": "Preheat the oven to 375°F."
+          },
+          {
+            "text": "Chop the carrots into small cubes."
+          }
+        ]
+      }
+    },
+    "profile_info": {
+      "success": {
+        "username": "test_user",
+        "email": "test_email@mail.com",
+        "date_joined": "2024-11-23T12:07:18.951676Z"
+      },
+      "bad_request": {
+        "errors": [
+          "This email address already exists or is invalid.Please choice another."
+        ]
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 import pytest
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages import get_messages
 from django.urls import reverse
 from django.utils import timezone
@@ -8,11 +9,11 @@ from dotenv import load_dotenv
 from recipes.models import User
 from recipes.views import change_password_after_reset
 from recipes.ws import api_request
+from recipes.utils import data_util
 
 from .mock_util import *
 
 load_dotenv()
-
 
 
 @pytest.fixture
@@ -52,6 +53,13 @@ def test_login_non_existing_user(client):
     assert response.context['message'] == "Wrong email or password!"
 
 
+@pytest.mark.django_db
+def test_login_view_with_authorized_user_redirect(login_with_user, client):
+    response = client.get(path="/login/")
+
+    assert response.status_code == 302
+
+
 @responses.activate
 @pytest.mark.django_db
 def test_login_remember_me_session_time(client):
@@ -70,6 +78,14 @@ def test_login_remember_me_session_time(client):
     assert abs((expiry_date - expected_expiry_date).days) <= 1
 
 
+@pytest.mark.django_db
+def test_log_out_view(login_with_user, client):
+    response = client.get(path="/logout/", follow=True)
+
+    assert response.status_code == 200
+    assert type(response.context['user']) is AnonymousUser
+
+
 @responses.activate
 def test_forgot_password_view_user_reset_password(client):
     request_data = {
@@ -84,6 +100,13 @@ def test_forgot_password_view_user_reset_password(client):
     assert response.status_code == 200
     assert b'Reset Password Email Send' in response.content
     assert 'recipes/forgot_password_send.html' in [x.name for x in response.templates]
+
+
+@pytest.mark.django_db
+def test_forgot_password_view_redirect_for_login_user(login_with_user, client):
+    response = client.get(path="/forgot-password/")
+
+    assert response.status_code == 302
 
 
 @responses.activate
@@ -150,27 +173,24 @@ def test_change_password_after_reset_token_does_not_match(client):
 @responses.activate
 @pytest.mark.django_db
 def test_recipe_list_view_response(login_with_user, client):
-    recipe_response, categories_response = mock_categories_and_get_json_response(models.RecipeResponseType.HOME_PREVIEW_PAGINATE)
-
-    responses_register_mock(method=responses.GET, path=f"api/recipe/home/preview/?page=1",
-                            json_data=recipe_response, status_code=200)
+    recipe_response, categories_response = mock_categories_and_get_recipes_response(
+        models.RecipeResponseType.HOME_PREVIEW_PAGINATE)
+    api_request.get_recipe_home_preview()
     api_request.get_recipe_home_preview()
     response = client.get(path=reverse("recipes:recipe_list"))
 
     assert response.status_code == 200
     assert response.context['selected_category'] == ''
     assert response.context['search_query'] == ''
-    assert len(response.context['categories']) == 5
+    assert len(response.context['categories']) == len(categories_response)
 
 
 @responses.activate
 @pytest.mark.django_db
 def test_recipe_list_selected_category(login_with_user, client):
-    category_pk = 4
-    recipe_response, categories_response = mock_categories_and_get_json_response(models.RecipeResponseType.HOME_PREVIEW_BY_CATEGORY)
-
-    responses_register_mock(method=responses.GET, path=f"api/recipe/category/{category_pk}/recipes",
-                            json_data=recipe_response, status_code=200)
+    recipe_response, categories_response = mock_categories_and_get_recipes_response(
+        models.RecipeResponseType.HOME_PREVIEW_BY_CATEGORY)
+    category_pk = categories_response[0]['pk']
     api_request.get_recipes_by_category(category_pk)
 
     response = client.get(path=reverse("recipes:recipe_list"), data={'category': category_pk})
@@ -184,7 +204,8 @@ def test_recipe_list_selected_category(login_with_user, client):
 @responses.activate
 @pytest.mark.django_db
 def test_recipe_list_view_by_search_query(login_with_user, client):
-    recipe_response, categories_response = mock_categories_and_get_json_response(models.RecipeResponseType.HOME_PREVIEW_PAGINATE)
+    recipe_response, categories_response = mock_categories_and_get_recipes_response(
+        models.RecipeResponseType.HOME_PREVIEW_PAGINATE)
 
     search_query = "Risotto"
     responses_register_mock(method=responses.GET, path=f"api/recipe/home/preview/?search={search_query}&page=1",
@@ -203,11 +224,17 @@ def test_recipe_list_view_by_search_query(login_with_user, client):
 @pytest.mark.django_db
 def test_recipe_details_view(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    api_request.get_recipe_by_pk(recipe_pk)
 
     response = client.get(reverse("recipes:recipe_detail", args=[recipe_pk]))
 
     assert response.status_code == 200
     assert response.context['recipe'].pk == json_response['pk']
+    assert response.context['recipe'].image == json_response['image']
+    assert response.context['recipe'].name == json_response['name']
+    assert response.context['recipe'].chef == json_response['chef']
+    assert response.context['recipe'].video == json_response['video']
+    assert response.context['recipe'].description == json_response['description']
     assert response.context['category'].pk == json_response['category']
 
 
@@ -227,6 +254,8 @@ def test_edit_recipe_view_get_request(login_with_user, client):
 @pytest.mark.django_db
 def test_edit_recipe_post_request(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    api_request.get_recipe_by_pk(recipe_pk)
+
     post_data = mock_data_recipe_on_update_or_create(HTTPMethod.PUT, recipe_pk, categories_response, 200)
     response = client.post(reverse("recipes:edit_recipe", args=[recipe_pk]), data=post_data)
 
@@ -237,6 +266,8 @@ def test_edit_recipe_post_request(login_with_user, client):
 @pytest.mark.django_db
 def test_edit_recipe_post_request_bad_request_on_update(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    api_request.get_recipe_by_pk(recipe_pk)
+
     post_data = mock_data_recipe_on_update_or_create(HTTPMethod.PUT, recipe_pk, categories_response, 400)
     response = client.post(reverse("recipes:edit_recipe", args=[recipe_pk]), data=post_data)
 
@@ -248,6 +279,8 @@ def test_edit_recipe_post_request_bad_request_on_update(login_with_user, client)
 @pytest.mark.django_db
 def test_new_recipe_view_happy_path(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    api_request.get_recipe_by_pk(recipe_pk)
+
     post_data = mock_data_recipe_on_update_or_create(HTTPMethod.POST, recipe_pk, categories_response, 201)
     response = client.post(reverse("recipes:new_recipe"), data=post_data)
 
@@ -258,8 +291,51 @@ def test_new_recipe_view_happy_path(login_with_user, client):
 @pytest.mark.django_db
 def test_new_recipe_view_error_on_request(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk(client)
+    api_request.get_recipe_by_pk(recipe_pk)
     post_data = mock_data_recipe_on_update_or_create(HTTPMethod.POST, recipe_pk, categories_response, 400)
     response = client.post(reverse("recipes:new_recipe"), data=post_data)
 
     assert response.status_code == 200
     assert "Something went wrong.Try again later" in response.context['message']
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_profile_view_get_request(login_with_user, client):
+    profile_response = mock_get_user_profile_request()
+    token = uuid.uuid4()
+    api_request.request_get_profile(token)
+
+    response = client.get(reverse("recipes:profile"))
+
+    assert response.status_code == 200
+    assert response.context['user']['username'] == profile_response['username']
+    assert response.context['user']['email'] == profile_response['email']
+    assert response.context['user']['date_joined'] == data_util.format_date_joined(profile_response['date_joined'])
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_profile_view_post_request(login_with_user, client):
+    profile_response, request_data = mock_change_user_profile_info_success()
+    token = uuid.uuid4()
+    api_request.change_logged_user_username_and_email(request_data, token)
+
+    response = client.post(reverse("recipes:profile"), data=request_data)
+    assert response.status_code == 200
+    assert response.context['user']['username'] == profile_response['username']
+    assert response.context['user']['email'] == profile_response['email']
+    assert response.context['user']['date_joined'] == data_util.format_date_joined(profile_response['date_joined'])
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_profile_view_post_request_bad_request_on_api(login_with_user, client):
+    profile_response, request_data = mock_change_user_profile_info_bad_request()
+    token = uuid.uuid4()
+    api_request.change_logged_user_username_and_email(request_data, token)
+
+    response = client.post(reverse("recipes:profile"), data=request_data)
+
+    assert response.status_code == 200
+    assert "This email address already exists or is invalid.Please choice another." in [x.message for x in get_messages(response.wsgi_request)]

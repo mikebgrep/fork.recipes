@@ -1,4 +1,4 @@
-import os
+import os, json
 import random
 import uuid
 from http import HTTPMethod
@@ -8,11 +8,10 @@ from . import models
 from recipes.ws import api_request
 from recipes.models import DIFFICULTY_CHOICES
 
-
 DIFFICULTY_CHOICES_CHOICE = [choice[0] for choice in DIFFICULTY_CHOICES]
-BOUNDARY = "BoUnDaRyStRiNg"
-MULTIPART_CONTENT = "multipart/form-data; boundary=%s" % BOUNDARY
 
+with open('tests/payload.json', 'r') as file:
+    json_data_responses = json.load(file)
 
 
 def responses_register_mock(method: responses, path: str, status_code: int, json_data=None):
@@ -25,20 +24,17 @@ def responses_register_mock(method: responses, path: str, status_code: int, json
 
 
 def mock_get_recipe_by_pk(client):
-    json_response, categories_response = mock_categories_and_get_json_response(models.RecipeResponseType.RECIPE_DETAILS)
-
+    json_response, categories_response = mock_categories_and_get_recipes_response(
+        models.RecipeResponseType.RECIPE_DETAILS)
     recipe_pk = json_response['pk']
     responses_register_mock(method=responses.GET, path=f"api/recipe/{recipe_pk}/", json_data=json_response,
                             status_code=200)
-    api_request.get_recipe_by_pk(recipe_pk)
 
     return json_response, recipe_pk, categories_response
 
 
 def mock_post_recipe_ingredients(recipe_pk: int):
-    response_data = [{"name": "Kasher salt", "quantity": "1/5", "metric": "tbsp"},
-                     {"name": "Pudding mix", "quantity": "1", "metric": "pcs"}]
-
+    response_data = json_data_responses['responses']['ingredients']
     responses_register_mock(method=responses.POST, path=f"api/recipe/{recipe_pk}/ingredients", status_code=201,
                             json_data=response_data)
 
@@ -46,8 +42,7 @@ def mock_post_recipe_ingredients(recipe_pk: int):
 
 
 def mock_post_recipe_instructions(recipe_pk: int):
-    response_data = [{"text": "Heat the oven"}, {"text": "Take a break"}, {"text": "Prepare the mix"},
-                     {"text": "Enjoy"}]
+    response_data = json_data_responses['responses']['steps']
     responses_register_mock(method=responses.POST, path=f"api/recipe/{recipe_pk}/steps", status_code=201,
                             json_data=response_data)
 
@@ -55,26 +50,17 @@ def mock_post_recipe_instructions(recipe_pk: int):
 
 
 def mock_create_update_recipe_full_info(method: HTTPMethod, status_code: int):
-    response_recipe = {"pk": 1,
-                     "image": "http://localhost:8000/media/images/d729b3c0-104a-46b4-8947-b212ca8a4c95_annie-spratt-vI-uFNolpLA-unsplash.jpg",
-                     "name": "New name", "servings": 4, "chef": "Thomas Keller",
-                     "video": "http://localhost:8000/media/videos/6022c9d3-ad36-4130-a947-53d93cee0163_upload-video.mp4",
-                     "description": "asd", "category": 1, "tag": None, "prep_time": 21, "cook_time": 25,
-                     "total_time": 0.77,
-                     "difficulty": "Intermediate", "is_favorite": False,
-                     "ingredients": [{"name": "chicken breast", "quantity": "2", "metric": "lbs"},
-                                     {"name": "all-purpose flour", "quantity": "1.5", "metric": "cups"}],
-                     "steps": [{"text": "Preheat the oven to 375°F."}, {"text": "Chop the carrots into small cubes."},
-                               {"text": "Whisk the eggs until fluffy."},
-                               {"text": "Add 2 cups of flour to the mixture."}]}
-
-    response_data = response_recipe if status_code != 400 else {"category":["Incorrect type. Expected pk value, received str."]}
+    response_recipe = json_data_responses['responses']['recipes']['recipe_details']
+    response_data = response_recipe if status_code != 400 else {
+        "category": ["Incorrect type. Expected pk value, received str."]}
 
     match method:
         case HTTPMethod.POST:
-            responses_register_mock(method=responses.POST, path=f"api/recipe/", status_code=status_code, json_data=response_data)
+            responses_register_mock(method=responses.POST, path=f"api/recipe/", status_code=status_code,
+                                    json_data=response_data)
         case HTTPMethod.PUT:
-            responses_register_mock(method=responses.PUT, path=f"api/recipe/{response_recipe['pk']}", status_code=status_code,
+            responses_register_mock(method=responses.PUT, path=f"api/recipe/{response_recipe['pk']}",
+                                    status_code=status_code,
                                     json_data=response_data)
 
     ingredients_response_data = mock_post_recipe_ingredients(response_recipe['pk'])
@@ -131,19 +117,20 @@ def mock_data_recipe_on_update_or_create(method: HTTPMethod, recipe_pk, categori
 
     match method:
         case HTTPMethod.PUT:
-            api_request.update_recipe_main_info(recipe_pk, multipart_form_data=recipe_main_info_data, files=recipe_files, token=generate_token)
+            api_request.update_recipe_main_info(recipe_pk, multipart_form_data=recipe_main_info_data,
+                                                files=recipe_files, token=generate_token)
         case HTTPMethod.POST:
-            api_request.post_new_recipe_main_info(multipart_form_data=recipe_main_info_data, files=recipe_files, token=generate_token)
+            api_request.post_new_recipe_main_info(multipart_form_data=recipe_main_info_data, files=recipe_files,
+                                                  token=generate_token)
 
     api_request.post_ingredients_for_recipe(recipe_pk, token=generate_token, data=ingredients_data)
     api_request.post_instructions_for_recipe(recipe_pk, token=generate_token, data=instructions_data)
 
-    return  post_data
+    return post_data
 
 
-def mock_categories_and_get_json_response(recipe_response_type: models.RecipeResponseType):
-    categories_response = [{"pk": 1, "name": "Breakfast"}, {"pk": 2, "name": "Lunch"}, {"pk": 3, "name": "Sunday"},
-                           {"pk": 4, "name": "Pizza"}, {"pk": 5, "name": "Brunch"}]
+def mock_categories_and_get_recipes_response(recipe_response_type: models.RecipeResponseType):
+    categories_response = json_data_responses['responses']['categories']
 
     responses_register_mock(method=responses.GET, path=f"api/recipe/category",
                             json_data=categories_response,
@@ -154,58 +141,44 @@ def mock_categories_and_get_json_response(recipe_response_type: models.RecipeRes
 
     match recipe_response_type:
         case models.RecipeResponseType.HOME_PREVIEW_PAGINATE:
+            recipe_response = json_data_responses['responses']['recipes']['search_recipes']['home_paginate']
+            responses_register_mock(method=responses.GET, path=f"api/recipe/home/preview/?page=1",
+                                    json_data=recipe_response, status_code=200)
 
-            recipe_response = {"count": 1, "next": None,
-                               "previous": None,
-                               "results": [{"pk": 46,
-                                            "image": "http://localhost:8000/media/images/8ddef70f-dd9d-44b1-847f-834cdf97e7bd_d5122d74-1c5e-40d3-a505-f9d09383d1ba_delicio_X3L8djK.jpg",
-                                            "name": "Creamy Mushroom Risotto", "chef": "Julia Child", "servings": 1,
-                                            "total_time": 1.62,
-                                            "difficulty": "Intermediate", "is_favorite": False}]}
         case models.RecipeResponseType.HOME_PREVIEW_BY_CATEGORY:
-
-            recipe_response = [{"pk": 46,
-                                "image": "http://localhost:8000/media/images/8ddef70f-dd9d-44b1-847f-834cdf97e7bd_d5122d74-1c5e-40d3-a505-f9d09383d1ba_delicio_X3L8djK.jpg",
-                                "name": "Creamy Mushroom Risotto", "chef": "Julia Child", "servings": 1,
-                                "total_time": 1.62,
-                                "difficulty": "Intermediate", "is_favorite": False}]
+            recipe_response = json_data_responses['responses']['recipes']['search_recipes']['home_by_category']
+            category_pk = categories_response[0]['pk']
+            responses_register_mock(method=responses.GET,
+                                    path=f"api/recipe/category/{category_pk}/recipes",
+                                    json_data=recipe_response, status_code=200)
         case models.RecipeResponseType.RECIPE_DETAILS:
-
-            recipe_response = {
-                "pk": 1,
-                "image": "http://localhost:8000/media/images/6b732e73-73b9-40e4-b8c9-1d5c65361d0e_1667446a-2636-41d1-9e03-bd43f1873f79_top-vie_eSzouHS.jpg",
-                "name": "Tuscan White Bean Soup",
-                "servings": 5,
-                "chef": "Thomas Keller",
-                "video": "http://localhost:8000/media/videos/58457d14-3f2f-413a-82d4-4a67fbb6a6b8_7451c646-5600-4ab3-801d-c861a2585d00_4935156_Jj5bDqV.mp4",
-                "description": "A savory and hearty chicken stew packed with tender vegetables, slow-cooked in a rich tomato-based broth, perfect for a cozy dinner.",
-                "category": 4,
-                "tag": None,
-                "prep_time": 38,
-                "cook_time": 13,
-                "total_time": 0.85,
-                "difficulty": "Intermediate",
-                "is_favorite": False,
-                "ingredients": [
-                    {
-                        "name": "chicken breast",
-                        "quantity": "2",
-                        "metric": "lbs"
-                    },
-                    {
-                        "name": "all-purpose flour",
-                        "quantity": "1.5",
-                        "metric": "cups"
-                    }
-                ],
-                "steps": [
-                    {
-                        "text": "Preheat the oven to 375°F."
-                    },
-                    {
-                        "text": "Chop the carrots into small cubes."
-                    }
-                ]
-            }
+            recipe_response = json_data_responses['responses']['recipes']['recipe_details']
 
     return recipe_response, categories_response
+
+
+def mock_get_user_profile_request():
+    profile_response = json_data_responses['responses']['profile_info']['success']
+    responses_register_mock(method=responses.GET, path="api/auth/user/info",json_data=profile_response, status_code=200)
+
+    return profile_response
+
+
+def mock_change_user_profile_info_success():
+    profile_response = mock_get_user_profile_request()
+
+    request_data = {
+        "username": profile_response['username'],
+        "email": profile_response['email'],
+    }
+
+    responses_register_mock(method=responses.PATCH, path="api/auth/user", json_data=profile_response, status_code=200)
+
+    return profile_response, request_data
+
+def mock_change_user_profile_info_bad_request():
+    profile_response = json_data_responses['responses']['profile_info']['bad_request']
+    responses_register_mock(method=responses.PATCH, path="api/auth/user", json_data=profile_response, status_code=400)
+    get_profile_response = mock_get_user_profile_request()
+
+    return profile_response, get_profile_response
