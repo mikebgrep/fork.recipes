@@ -24,4 +24,4 @@ privkey.pem
 .tox
 db.sqlite3
 fork_recipes/recipes/migrations/
-static
+fork_recipes/static/
