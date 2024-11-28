@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from fork_recipes.backend import settings
+
 from .ws import api_request
 from . import models
 from .utils import date_util
@@ -283,7 +283,7 @@ def profile_view(request):
 
     return render(request, 'recipes/profile.html', {'user': user_data})
 
-
+@login_required
 def toggle_favorite(request, recipe_pk):
     status_code = api_request.patch_favorite_recipe(recipe_pk, request.session.get("auth_token"))
     return JsonResponse({'status': 'success' if status_code == 201 else "failure"})
@@ -367,19 +367,18 @@ def new_recipe(request):
 
 @login_required
 def settings_view(request):
-    context = {
-
-    }
-    return render(request, 'recipes/settings.html', context)
+    return render(request, 'recipes/settings.html')
 
 
 @login_required
 def change_password(request):
     context = {}
     if request.method == 'POST':
+
         current_password = request.POST.get("current_password")
         new_password = request.POST.get("new_password")
         confirm_password = request.POST.get("confirm_password")
+
         if new_password == confirm_password:
             data = {
                 "old_password": current_password,
@@ -403,23 +402,11 @@ def change_password(request):
 
 
 @login_required
-def update_service_url(request):
-    if request.method == 'POST':
-        url = request.POST.get('service_url')
-        if url:
-            settings.SERVICE_BASE_URL = url
-            messages.success(request, 'Service URL updated successfully!')
-        else:
-            messages.error(request, 'Please provide a valid URL.')
-    return redirect('recipes:settings')
-
-
-@login_required
 def delete_account(request):
     if request.method == 'POST':
         token = request.session.get('auth_token')
         email = request.session.get('email')
-
+        print(email)
         result = api_request.delete_user_account(token)
         if result:
             messages.success(request, 'Your account has been successfully deleted.')

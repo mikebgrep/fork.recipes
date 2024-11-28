@@ -18,7 +18,6 @@ urlpatterns = [
     path('recipe/<int:recipe_pk>/edit/', views.edit_recipe, name='edit_recipe'),
     path('settings/', views.settings_view, name='settings'),
     path('settings/change-password/', views.change_password, name='change_password'),
-    path('settings/update-service-url/', views.update_service_url, name='update_service_url'),
     path('settings/delete-account/', views.delete_account, name='delete_account'),
 
 ]

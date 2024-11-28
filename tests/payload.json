@@ -115,6 +115,85 @@
             "text": "Chop the carrots into small cubes."
           }
         ]
+      },
+      "favorite_recipes": {
+        "count": 2,
+        "next": null,
+        "previous": null,
+        "results": [
+          {
+            "pk": 16,
+            "image": "http://localhost:8000/media/images/6f827d64-9390-441b-a8ad-38d9b17472a7_f02b7568-5cfa-48bd-b68a-911f0426d61c_pancake_hHpm3G5.jpg",
+            "name": "Vegetarian Enchilada Casserole",
+            "servings": 2,
+            "chef": "Gordon Ramsay",
+            "video": null,
+            "description": "A refreshing Mediterranean salad featuring crisp cucumbers, juicy tomatoes, Kalamata olives, and a zesty lemon-oregano dressing.",
+            "category": 4,
+            "tag": null,
+            "prep_time": 31,
+            "cook_time": 20,
+            "total_time": 0.85,
+            "difficulty": "Easy",
+            "is_favorite": true,
+            "ingredients": [
+              {
+                "name": "chicken breast",
+                "quantity": "2",
+                "metric": "lbs"
+              },
+              {
+                "name": "all-purpose flour",
+                "quantity": "1.5",
+                "metric": "cups"
+              }
+            ],
+            "steps": [
+              {
+                "text": "Preheat the oven to 375\u00b0F."
+              },
+              {
+                "text": "Chop the carrots into small cubes."
+              }
+            ]
+          },
+          {
+            "pk": 15,
+            "image": "http://localhost:8000/media/images/de251b0c-bf07-411b-aab8-9b2bf810d584_0512c997-a679-4fa7-8477-a4d1723dde76_gourme.png",
+            "name": "Slow-Cooked Beef Bourguignon",
+            "servings": 3,
+            "chef": "Nigella Lawson",
+            "video": null,
+            "description": "A refreshing Mediterranean salad featuring crisp cucumbers, juicy tomatoes, Kalamata olives, and a zesty lemon-oregano dressing.",
+            "category": 4,
+            "tag": null,
+            "prep_time": 34,
+            "cook_time": 19,
+            "total_time": 0.88,
+            "difficulty": "Expert",
+            "is_favorite": true,
+            "ingredients": [
+              {
+                "name": "chicken breast",
+                "quantity": "2",
+                "metric": "lbs"
+              },
+              {
+                "name": "all-purpose flour",
+                "quantity": "1.5",
+                "metric": "cups"
+              }
+            ],
+            "steps": [
+              {
+                "text": "Preheat the oven to 375\u00b0F."
+              },
+              {
+                "text": "Chop the carrots into small cubes."
+              }
+            ]
+          }
+        ]
       }
     },
     "profile_info": {
@@ -127,6 +206,49 @@
         "errors": [
           "This email address already exists or is invalid.Please choice another."
         ]
+      }
+    },
+    "authentication": {
+      "user_login_success": {
+        "token": "bba74ec6c4e78d9226bf980cc98bc7177509e279",
+        "user": {
+          "username": "user_123",
+          "email": "email@test.com",
+          "is_superuser": true
+        }
+      },
+      "user_not_found": {
+        "detail": "No User matches the given query."
+      },
+      "password_reset_success": {
+        "token": "bba74ec6c4e78d9226bf980cc98bc7177509e279"
+      },
+      "password_reset_forbidden": {
+        "detail": "You must use authentication header"
+      },
+      "password_reset_token_does_not_match": {
+        "detail": "No PasswordResetToken matches the given query."
+      }
+    }
+  },
+  "requests": {
+    "authentication": {
+      "password_reset_json": {
+        "email": "testemail@email.com"
+      },
+      "change_password_success": {
+        "old_password": "admin123??",
+        "new_password": "new_password123??"
+      },
+      "change_password_logged_user_success": {
+        "current_password": "admin",
+        "new_password": "new_password123??",
+        "confirm_password": "new_password123??"
+      },
+      "change_password_logged_user_passwords_does_not_match": {
+        "current_password": "admin",
+        "new_password": "new_password123??",
+        "confirm_password": "new_password123??4"
       }
     }
   }
