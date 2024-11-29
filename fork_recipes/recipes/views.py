@@ -48,6 +48,12 @@ def forgot_password(request):
         return redirect("/")
 
     if request.POST:
+        has_smtp_settings, message = email_util.check_smtp_configuration()
+
+        if not has_smtp_settings:
+            messages.error(request, message)
+            return render(request, 'recipes/forgot_password.html')
+
         email = request.POST.get("email")
         host = request.build_absolute_uri()
         data = {

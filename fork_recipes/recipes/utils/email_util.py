@@ -29,3 +29,22 @@ def send_reset_password_link(host, user_email, reset_password_token):
     )
     msg.attach_alternative(email_html_message, "text/html")
     msg.send()
+
+
+def check_smtp_configuration():
+    required_settings = [
+        "EMAIL_HOST",
+        "EMAIL_PORT",
+        "EMAIL_USE_TLS",
+        "EMAIL_HOST_USER",
+        "EMAIL_HOST_PASSWORD",
+    ]
+
+    missing_settings = [
+        setting for setting in required_settings if not getattr(settings, setting, None)
+    ]
+
+    if missing_settings:
+        return False, f"Missing SMTP configuration settings: {', '.join(missing_settings)} in environment variables!"
+
+    return True, "SMTP is properly configured."
