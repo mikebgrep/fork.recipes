@@ -1,5 +1,5 @@
 # Fork recipes 
-<img align="right" src="fork_recipes/recipes/static/images/avatar.png" height="170px" alt="Logo">
+<img align="right" src="assets/avatar.png" height="170px" alt="Logo">
 
 Simple, elegant frontend Python web application that work seamlessly with the [ForkApi](https://www.github.com/mikebgrep/forkapi) to provide managment for food recipies collections.
 
@@ -12,8 +12,8 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Deploy on cloud ☁️ with one click
 - more comming ... (ai futures)
 
-### Application preview
-`ToDo://`
+### Application previewf
+![preview](assets/preview.gif)
 
 ### Installation
 I will skip in dept documentation for the application and I will include the same steps in the [forkapi docs](https://mikebgrep.github.io/forkapi/Installation/) 
