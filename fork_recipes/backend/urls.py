@@ -1,7 +1,9 @@
-from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from recipes import views
+
+
 if settings.DEBUG:
     urlpatterns = [
         path('', include('recipes.urls', namespace="recipes")),
@@ -10,3 +12,7 @@ else:
     urlpatterns = [
         path('', include('recipes.urls', namespace="recipes")),
     ]
+
+
+handler404 = views.handler404
+handler500 = views.handler500

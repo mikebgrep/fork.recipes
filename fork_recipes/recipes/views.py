@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
 from .ws import api_request
@@ -417,3 +417,12 @@ def delete_account(request):
         messages.error(request, "Something went wrong.Please try again later!")
 
     return redirect('recipes:settings')
+
+
+
+def handler404(request, exception=None):
+    return render(request, 'recipes/404.html')
+
+
+def handler500(request, exception=None):
+    return render(request, 'recipes/500.html')
