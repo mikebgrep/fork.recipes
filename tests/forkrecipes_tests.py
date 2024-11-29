@@ -26,7 +26,6 @@ def login_with_user(client):
     session['email'] = "test@email.com"
     session.save()
 
-
 @responses.activate
 @pytest.mark.django_db
 def test_login_in_login_view(client):
@@ -80,6 +79,9 @@ def test_log_out_view(login_with_user, client):
 
 @responses.activate
 def test_forgot_password_view_user_reset_password(client):
+    """
+        This test should have smtp vars set in .env file.Keep in mine if its failing
+    """
     mock_forgot_password_success()
     json_request = json_data_responses['requests']['authentication']['password_reset_json']
     api_request.request_forgot_password_token(json_request)
@@ -87,6 +89,7 @@ def test_forgot_password_view_user_reset_password(client):
     response = client.post(reverse("recipes:forgot_password"), data=json_request)
 
     assert response.status_code == 200
+    print(response.context)
     assert b'Reset Password Email Send' in response.content
     assert 'recipes/forgot_password_send.html' in [x.name for x in response.templates]
 
@@ -100,6 +103,9 @@ def test_forgot_password_view_redirect_for_login_user(login_with_user, client):
 
 @responses.activate
 def test_forgot_password_forbidden_on_request(client):
+    """
+        This test should have smtp vars set in .env file.Keep in mine if its failing
+    """
     mock_forgot_password_forbidden()
     json_request = json_data_responses['requests']['authentication']['password_reset_json']
     api_request.request_forgot_password_token(json_request)

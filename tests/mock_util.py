@@ -24,6 +24,7 @@ def get_new_password_data_and_token():
 
     return request_password_data, token
 
+
 def responses_register_mock(method: responses, path: str, status_code: int, json_data=None):
     responses.add(
         method,
@@ -50,14 +51,14 @@ def mock_login_user_not_found():
 
 def mock_forgot_password_success():
     json_response = json_data_responses['responses']['authentication']['password_reset_success']
-    responses_register_mock(method=responses.POST, path="api/auth/password_reset", json_data=json_response, status_code=201)
+    responses_register_mock(method=responses.POST, path="api/auth/password_reset", json_data=json_response,
+                            status_code=201)
 
 
 def mock_forgot_password_forbidden():
     json_response = json_data_responses['responses']['authentication']['password_reset_forbidden']
     responses_register_mock(method=responses.POST, path="api/auth/password_reset",
                             json_data=json_response, status_code=403)
-
 
 
 def mock_change_password_after_reset():
@@ -67,16 +68,17 @@ def mock_change_password_after_reset():
 
     return token, request_password_data
 
+
 def mock_change_password_after_reset_token_does_not_match():
     json_response = json_data_responses['responses']['authentication']['password_reset_token_does_not_match']
     request_password_data, token = get_new_password_data_and_token()
-
 
     responses_register_mock(method=responses.POST, path=f"api/auth/password_reset/reset?token={token}",
                             json_data=json_response,
                             status_code=404)
 
     return request_password_data, token
+
 
 def mock_get_recipe_by_pk():
     json_response, categories_response = mock_categories_and_get_recipes_response(
@@ -241,18 +243,19 @@ def mock_change_user_profile_info_bad_request():
     return profile_response, get_profile_response
 
 
-def mock_get_favorite_recipes(page_number:int):
+def mock_get_favorite_recipes(page_number: int):
     json_response = json_data_responses['responses']['recipes']['favorite_recipes']
-    responses_register_mock(responses.GET, path=f"api/recipe/home/favorites/?page={page_number}", json_data=json_response, status_code=200)
+    responses_register_mock(responses.GET, path=f"api/recipe/home/favorites/?page={page_number}",
+                            json_data=json_response, status_code=200)
 
     return json_response
 
 
-def mock_favorite_action_recipe(recipe_pk, status_code:int):
+def mock_favorite_action_recipe(recipe_pk, status_code: int):
     responses_register_mock(method=responses.PATCH, path=f"api/recipe/{recipe_pk}/favorite", status_code=status_code)
 
 
-def mock_change_password_from_settings(status_code:int):
+def mock_change_password_from_settings(status_code: int):
     json_request = json_data_responses['requests']['authentication']['change_password_logged_user_success']
     data = json_data_responses['requests']['authentication']['change_password_success']
 
@@ -261,6 +264,5 @@ def mock_change_password_from_settings(status_code:int):
     return data, json_request
 
 
-def mock_delete_account(status_code:int):
+def mock_delete_account(status_code: int):
     responses_register_mock(responses.DELETE, path="api/auth/delete-account", status_code=status_code)
-
