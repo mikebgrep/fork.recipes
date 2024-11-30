@@ -35,7 +35,6 @@ WORKDIR /fork_recipes
 COPY /fork_recipes /fork_recipes
 
 COPY ./requirements.txt /fork_recipes/requirements.txt
-COPY ./nginx/ssl /fork_recipes/nginx/ssl
 
 # Install dependencies
 RUN pip install --upgrade pip

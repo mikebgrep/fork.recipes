@@ -1,28 +1,47 @@
-version: '3.8'
-
 services:
   nginx:
     build:
       context: .
       dockerfile: nginx/Dockerfile
-    container_name: nginx-yaml
+    container_name: nginx
+    ports:
+      - "80:80"
+#      - "443:443"  # Uncomment if ssl is enabled
+    env_file:
+      - .env
+    command: /bin/sh -c "envsubst < /etc/nginx/sites-enabled/forkrecipes.nginx.template > /etc/nginx/sites-enabled/forkrecipes.nginx.conf && nginx -g 'daemon off;'"
     volumes:
       - uwsgi_data:/tmp/uwsgi/
-      - web_static:/fork_recipes/static/:ro
-      - cert:/fork_recipes/nginx/ssl/:ro
-    ports:
-      - "8080:8080"
-#      - "443:443"
+      - web_static:/forkapi/static/:ro
+      - web_media:/forkapi/media/
+      - web_static_fe:/fork_recipes/static/:ro
     networks:
       - fork_recipes_network
     depends_on:
       - web
+      - be
+
+  be:
+    image: mikebgrep/forkapi:latest
+    container_name: forkapi
+    env_file:
+      - .env
+    restart: always
+    command: >
+      sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
+    volumes:
+      - data:/forkapi/sql/
+      - uwsgi_data:/tmp/uwsgi/
+      - web_media:/forkapi/media/
+      - web_static:/forkapi/static/
+    networks:
+      - fork_recipes_network
 
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: recipe-yaml
+    container_name: recipes
     env_file:
       - .env
     restart: always
@@ -30,18 +49,20 @@ services:
       sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
     volumes:
       - data:/fork_recipes/sql/
-      - cert:/fork_recipes/nginx/ssl/
       - uwsgi_data:/tmp/uwsgi/
-      - web_static:/fork_recipes/static/
+      - web_static_fe:/fork_recipes/static/
     networks:
       - fork_recipes_network
+    depends_on:
+      - be
+
 
 volumes:
   data:
-  cert:
   uwsgi_data:
   web_static:
   web_media:
+  web_static_fe:
 
 networks:
    fork_recipes_network:
