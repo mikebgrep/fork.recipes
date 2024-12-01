@@ -25,4 +25,4 @@ This project relies only on donations if you feel generous you can support it.
 
 
 ### License 
-The application code is with [MIT license](https://opensource.org/license/MIT)
+The application code is with [BSD-3-Clause license](https://opensource.org/license/bsd-3-clause)
