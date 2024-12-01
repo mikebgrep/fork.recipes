@@ -10,7 +10,6 @@ from types import SimpleNamespace
 
 load_dotenv()
 
-
 def api_request_read_only(method: str, url: str, data=None):
     headers = {
         'X-Auth-Header': os.getenv('X_AUTH_HEADER'),

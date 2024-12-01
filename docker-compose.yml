@@ -15,15 +15,17 @@ services:
       - web_static:/forkapi/static/:ro
       - web_media:/forkapi/media/
       - web_static_fe:/fork_recipes/static/:ro
-    networks:
-      - fork_recipes_network
     depends_on:
       - web
       - be
+    networks:
+      - default
+
 
   be:
     image: mikebgrep/forkapi:latest
     container_name: forkapi
+    hostname: forkapi-host
     env_file:
       - .env
     restart: always
@@ -35,7 +37,8 @@ services:
       - web_media:/forkapi/media/
       - web_static:/forkapi/static/
     networks:
-      - fork_recipes_network
+      - default
+
 
   web:
     build:
@@ -51,10 +54,10 @@ services:
       - data:/fork_recipes/sql/
       - uwsgi_data:/tmp/uwsgi/
       - web_static_fe:/fork_recipes/static/
-    networks:
-      - fork_recipes_network
     depends_on:
       - be
+    networks:
+      - default
 
 
 volumes:
@@ -64,6 +67,7 @@ volumes:
   web_media:
   web_static_fe:
 
+
 networks:
-   fork_recipes_network:
-        driver: bridge
+  default:
+    driver: bridge

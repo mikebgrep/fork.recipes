@@ -6,21 +6,6 @@ server {
     # Uncomment if certificate is available (1)
     # return 301 https://$host$request_uri;
 
-    location /be/ {
-        include /etc/nginx/uwsgi_params;
-        uwsgi_pass unix:/tmp/uwsgi/uwsgi.sock;
-    }
-
-    location /be/static {
-        autoindex on;
-        alias /forkapi/static;
-    }
-
-    location /be/media {
-        autoindex on;
-        alias /forkapi/media;
-    }
-
     location / {
         include /etc/nginx/uwsgi_params;
         uwsgi_pass unix:/tmp/uwsgi/uwsgi_recipes.sock;
@@ -29,6 +14,33 @@ server {
     location /static {
         autoindex on;
         alias /fork_recipes/static;
+    }
+
+    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+}
+
+server {
+    listen 80;
+    server_name ${DOMAIN_NAME_NGINX_API};
+    client_max_body_size 100M;
+
+    # Uncomment if certificate is available (1)
+    # return 301 https://$host$request_uri;
+
+    location / {
+        include /etc/nginx/uwsgi_params;
+        uwsgi_pass unix:/tmp/uwsgi/uwsgi.sock;
+    }
+
+    location /static {
+        autoindex on;
+        alias /forkapi/static;
+    }
+
+    location /media {
+        autoindex on;
+        alias /forkapi/media;
     }
 
     error_log /var/log/nginx/error.log;
@@ -69,6 +81,34 @@ server {
 #     location / {
 #         include /etc/nginx/uwsgi_params;
 #         uwsgi_pass unix:/tmp/uwsgi/uwsgi_recipes.sock;;
+#     }
+#
+#     error_log /var/log/nginx/error.log;
+#     access_log /var/log/nginx/access.log;
+# }
+
+# server {
+#     listen 443 ssl;
+#     server_name ${DOMAIN_NAME_NGINX_API};
+#     charset utf-8;
+#     client_max_body_size 100M;
+#
+#     ssl_certificate /nginx/ssl/fullchain.pem;
+#     ssl_certificate_key /nginx/ssl/privkey.pem;
+#
+#    location /be/static {
+#        autoindex on;
+#        alias /forkapi/static;
+#    }
+#
+#    location /be/media {
+#        autoindex on;
+#        alias /forkapi/media;
+#    }
+#
+#     location / {
+#        include /etc/nginx/uwsgi_params;
+#        uwsgi_pass unix:/tmp/uwsgi/uwsgi.sock;
 #     }
 #
 #     error_log /var/log/nginx/error.log;
