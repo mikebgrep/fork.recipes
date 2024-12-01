@@ -3,6 +3,8 @@
 
 Simple, elegant frontend Python web application that work seamlessly with the [ForkApi](https://www.github.com/mikebgrep/forkapi) to provide managment for food recipies collections.
 
+# ⚠ Not Production ready Docker setup and Readme.md
+
 ### Futures
 - Django v5.x 🐍based
 - Docker image on Dockerhub 🛳
