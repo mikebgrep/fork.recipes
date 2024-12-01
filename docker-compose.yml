@@ -29,8 +29,10 @@ services:
     env_file:
       - .env
     restart: always
+    expose:
+      - "8000"
     command: >
-      sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
+      sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data --socket=0.0.0.0:8000 --protocol=http"
     volumes:
       - data:/forkapi/sql/
       - uwsgi_data:/tmp/uwsgi/
