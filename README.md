@@ -12,7 +12,7 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Save your favorite recipes 😍
 - Categorize 📑 your recipes for easy managment
 - Deploy on cloud ☁️ with one click
-- more comming ... (ai futures)
+- more coming ... (ai futures)
 
 ### Application previewf
 ![preview](assets/preview.gif)
