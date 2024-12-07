@@ -3,12 +3,15 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
+#      dockerfile: nginx/DockerfileSSL # Uncomment if ssl certificate is available
     container_name: nginx
     ports:
       - "80:80"
 #      - "443:443"  # Uncomment if ssl is enabled
     env_file:
       - .env
+#    Uncomment if ssl certificate is available and comment next command
+#    command: /bin/sh -c "envsubst < /etc/nginx/sites-enabled/forkrecipes-ssl.nginx.template > /etc/nginx/sites-enabled/forkrecipes.nginx.conf && nginx -g 'daemon off;'"
     command: /bin/sh -c "envsubst < /etc/nginx/sites-enabled/forkrecipes.nginx.template > /etc/nginx/sites-enabled/forkrecipes.nginx.conf && nginx -g 'daemon off;'"
     volumes:
       - uwsgi_data:/tmp/uwsgi/
@@ -18,8 +21,6 @@ services:
     depends_on:
       - web
       - be
-    networks:
-      - default
 
 
   be:
@@ -29,17 +30,14 @@ services:
     env_file:
       - .env
     restart: always
-    expose:
-      - "8000"
+    network_mode: "host"
     command: >
-      sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data --socket=0.0.0.0:8000 --protocol=http"
+      sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
     volumes:
       - data:/forkapi/sql/
       - uwsgi_data:/tmp/uwsgi/
       - web_media:/forkapi/media/
       - web_static:/forkapi/static/
-    networks:
-      - default
 
 
   web:
@@ -50,6 +48,7 @@ services:
     env_file:
       - .env
     restart: always
+    network_mode: "host"
     command: >
       sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
     volumes:
@@ -58,8 +57,6 @@ services:
       - web_static_fe:/fork_recipes/static/
     depends_on:
       - be
-    networks:
-      - default
 
 
 volumes:
@@ -68,8 +65,3 @@ volumes:
   web_static:
   web_media:
   web_static_fe:
-
-
-networks:
-  default:
-    driver: bridge
