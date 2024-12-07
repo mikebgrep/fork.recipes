@@ -10,7 +10,6 @@ from types import SimpleNamespace
 
 load_dotenv()
 
-
 def api_request_read_only(method: str, url: str, data=None):
     headers = {
         'X-Auth-Header': os.getenv('X_AUTH_HEADER'),
@@ -86,6 +85,8 @@ def get_recipe_home_preview(search_query=None, page_number=1):
 
 def get_recipe_by_pk(pk: int):
     response = api_request_read_only(HTTPMethod.GET, url=f"api/recipe/{pk}/")
+    if response.status_code == 404:
+        return False
     result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
     return result
 

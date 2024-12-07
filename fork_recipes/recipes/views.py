@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 
 from .ws import api_request
@@ -142,6 +142,9 @@ def recipe_list(request):
 @login_required
 def recipe_detail(request, recipe_pk):
     recipe = api_request.get_recipe_by_pk(recipe_pk)
+    if not recipe:
+        return HttpResponseNotFound("Recipe not found")
+
     categories = api_request.get_categories()
     category = [x for x in categories if recipe.category == x.pk][0]
     return render(request, 'recipes/recipe_detail.html', {
