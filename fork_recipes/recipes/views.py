@@ -146,7 +146,13 @@ def recipe_detail(request, recipe_pk):
         return HttpResponseNotFound("Recipe not found")
 
     categories = api_request.get_categories()
-    category = [x for x in categories if recipe.category == x.pk][0]
+    matching_categories = [x for x in categories if recipe.category == x.pk]
+
+    if len(matching_categories) > 0:
+        category = matching_categories[0]
+    else:
+        category = None
+
     return render(request, 'recipes/recipe_detail.html', {
         'recipe': recipe,
         'category': category
