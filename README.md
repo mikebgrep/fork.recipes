@@ -15,7 +15,6 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Video or image recipes 👨‍🍳
 - Save your favorite recipes 😍
 - Categorize 📑 your recipes for easy management
-- Deploy on cloud ☁️ with one click [TODO]
 - more coming ... (ai futures) [TODO]
 
 ### Installation 
