@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Fork Recipes{% endblock %}</title>
     <link rel="stylesheet" href="/static/src/output.css">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="manifest" href="/static/images/site.webmanifest">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
 </head>
 <body class="bg-gray-50">
 <div class="min-h-screen flex flex-col">
@@ -85,7 +88,7 @@
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <div class="md:flex md:items-center md:justify-between">
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate text-center">
+                            <h2 class="font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate text-center break-words">
                                 {% block header %}Discover Recipes{% endblock %}
                             </h2>
                         </div>

@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: nginx/Dockerfile
 #      dockerfile: nginx/DockerfileSSL # Uncomment if ssl certificate is available
+    image: nginx:latest
     container_name: nginx
     ports:
       - "80:80"
@@ -45,6 +46,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: recipes
+    image: forkrecipes:latest
     env_file:
       - .env
     restart: always
