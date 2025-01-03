@@ -246,6 +246,18 @@ def edit_recipe(request, recipe_pk):
 
     return render(request, 'recipes/edit_recipe.html', context)
 
+@login_required
+def delete_recipe(request, recipe_pk):
+    token = request.session.get("auth_token")
+    delete_recipe_response = api_request.request_delete_recipe(recipe_pk, token)
+    if delete_recipe_response:
+        messages.success(request, 'Recipe was deleted.')
+        return redirect('recipes:recipe_list')
+
+    messages.error(request, 'Something when wrong please try again later.')
+
+    return redirect("recipes:edit_recipe", recipe_pk=recipe_pk)
+
 
 @login_required
 def saved_recipes(request):
@@ -263,6 +275,19 @@ def saved_recipes(request):
     return render(request, 'recipes/saved_recipes.html', {
         'page_obj': page_obj
     })
+
+@login_required
+def scrape_recipe(request):
+    if request.method == 'POST':
+        recipe_url = request.POST.get('recipe_url')
+        token = request.session.get("auth_token")
+        response_recipe = api_request.request_download_recipe(recipe_url, token)
+        if response_recipe:
+            return redirect('recipes:edit_recipe', recipe_pk=response_recipe.pk)
+
+        messages.error(request, 'Something when wrong.You can try with different recipe url!')
+
+    return render(request, 'recipes/scrape_recipe.html')
 
 
 @login_required

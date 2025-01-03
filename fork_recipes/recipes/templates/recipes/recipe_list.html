@@ -57,6 +57,7 @@
         <div class="p-5">
             <h3 class="text-xl font-semibold text-gray-800 mb-3">{{ recipe.name }}</h3>
             <div class="flex items-center gap-4 text-gray-600 mb-3">
+                {% if recipe.total_time %}
                 <div class="flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2">
@@ -65,6 +66,7 @@
                     </svg>
                     <span class="text-sm">{{ recipe.total_time }} hrs</span>
                 </div>
+                {% endif %}
                 <div class="flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2">
@@ -127,4 +129,14 @@
        class="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Last</a>
     {% endif %}
 </div>
+
+{% if messages %}
+<div class="fixed bottom-4 right-4">
+    {% for message in messages %}
+    <div class="bg-white shadow-lg rounded-lg px-4 py-3 {% if message.tags %}{{ message.tags }}{% endif %} mb-2">
+        <p class="text-sm">{{ message }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}

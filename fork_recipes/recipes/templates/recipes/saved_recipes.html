@@ -20,6 +20,7 @@
         <div class="p-5">
             <h3 class="text-xl font-semibold text-gray-800 mb-3">{{ recipe.name }}</h3>
             <div class="flex items-center gap-4 text-gray-600 mb-3">
+            {% if recipe.total_time %}
                 <div class="flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -27,6 +28,7 @@
                     </svg>
                     <span class="text-sm">{{ recipe.total_time }} hrs</span>
                 </div>
+            {% endif %}
                 <div class="flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -37,19 +39,19 @@
                     <span class="text-sm">{{ recipe.servings }} servings</span>
                 </div>
             </div>
-
-<!-- TODO:// Uncomment if chef is added to the BE -->
-
-<!--            <div class="flex items-center gap-2 text-gray-600">-->
-<!--                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">-->
-<!--                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>-->
-<!--                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>-->
-<!--                    <line x1="6" y1="1" x2="6" y2="4"></line>-->
-<!--                    <line x1="10" y1="1" x2="10" y2="4"></line>-->
-<!--                    <line x1="14" y1="1" x2="14" y2="4"></line>-->
-<!--                </svg>-->
-<!--                <span class="text-sm">By {{ recipe.chef }}</span>-->
-<!--            </div>-->
+            {% if recipe.chef %}
+            <div class="flex items-center gap-2 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                </svg>
+                <span class="text-sm">By {{ recipe.chef }}</span>
+            </div>
+            {% endif %}
         </div>
 
     </a>

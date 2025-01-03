@@ -24,7 +24,7 @@
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
                     <label for="category" class="block text-lg font-medium text-gray-800">Category</label>
-                    <select name="category" id="category" required
+                    <select name="category" id="category"
                             class="bg-white mt-2 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-mint-500 shadow-sm">
                         {% for category in categories %}
                         <option value="{{ category.pk }}" {% if category.pk == recipe.category %}selected{% endif %}>
@@ -187,13 +187,18 @@
 
                 </div>
             </div>
-
             <!-- Submit Button -->
-            <div class="flex justify-end">
+           <div class="flex justify-between w-full">
+                <!-- Delete Button -->
+                <a href="{% url 'recipes:delete_recipe' recipe_pk=recipe.pk %}" class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700">
+                    Delete Recipe
+                </a>
+
+                <!-- Save Button -->
                 <button type="submit" class="bg-mint-600 text-white px-6 py-3 rounded-md hover:bg-mint-700">
                     Save Recipe
                 </button>
-            </div>
+           </div>
         </div>
     </form>
 </div>
@@ -328,4 +333,13 @@
         container.appendChild(newStep);
     }
 </script>
+{% if messages %}
+<div class="fixed bottom-4 right-4">
+    {% for message in messages %}
+    <div class="bg-white shadow-lg rounded-lg px-4 py-3 {% if message.tags %}{{ message.tags }}{% endif %} mb-2">
+        <p class="text-sm">{{ message }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}

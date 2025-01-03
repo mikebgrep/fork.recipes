@@ -203,3 +203,22 @@ def request_get_profile(token: str):
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
     return None
+
+
+def request_download_recipe(recipe_url:str, token: str):
+    data = {
+        "url": recipe_url
+    }
+    response = api_request_write(method=HTTPMethod.POST, url="api/recipe/scrape", token=token, data=json.dumps(data))
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+    return None
+
+
+def request_delete_recipe(recipe_pk:int, token:str):
+    response = api_request_write(method=HTTPMethod.DELETE, url=f"api/recipe/{recipe_pk}/", token=token)
+    if response.status_code == 204:
+        return True
+
+    return False
