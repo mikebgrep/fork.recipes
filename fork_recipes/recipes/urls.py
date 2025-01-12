@@ -17,6 +17,7 @@ urlpatterns = [
     path('new-recipe/', views.new_recipe, name='new_recipe'),
     path('recipe/<int:recipe_pk>/edit/', views.edit_recipe, name='edit_recipe'),
     path('scrape-recipe/', views.scrape_recipe, name='scrape_recipe'),
+    path('generate-recipes/', views.generate_recipe, name="generate_recipes"),
     path('recipe/<int:recipe_pk>/delete', views.delete_recipe, name="delete_recipe"),
     path('settings/', views.settings_view, name='settings'),
     path('settings/change-password/', views.change_password, name='change_password'),

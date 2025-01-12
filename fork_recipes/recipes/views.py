@@ -1,4 +1,5 @@
 import datetime
+from time import sleep
 
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -288,6 +289,26 @@ def scrape_recipe(request):
         messages.error(request, 'Something when wrong.You can try with different recipe url!')
 
     return render(request, 'recipes/scrape_recipe.html')
+
+
+@login_required
+def generate_recipe(request):
+    if request.method == 'POST':
+        ingredients = request.POST.getlist('ingredients[]')
+        token = request.session.get("auth_token")
+        is_results_available, response_generated_recipes = api_request.reqeust_generate_recipes(ingredients, token)
+
+        if is_results_available:
+            if len(response_generated_recipes) > 0:
+                context = {'recipes': response_generated_recipes, 'ingredients': ingredients}
+                return render(request, "recipes/generate_recipe.html", context=context)
+
+            messages.error(request, 'There no recipe results try again with different ingredients.')
+        else:
+            messages.error(request, 'There are an error. Please try again.')
+
+    return render(request, "recipes/generate_recipe.html")
+
 
 
 @login_required

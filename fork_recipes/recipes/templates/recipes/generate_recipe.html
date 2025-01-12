@@ -1,0 +1,220 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Get Recipe - Fork Recipes{% endblock %}
+
+{% block header %}Generate Recipes{% endblock %}
+
+{% block content %}
+
+{% if recipes %}
+<div class="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Results</h2>
+    <ul role="list" class="divide-y divide-gray-200 rounded-lg border border-gray-300 bg-white shadow-sm">
+        <!-- First Item -->
+        {% for recipe in recipes %}
+        <li class="flex flex-col gap-y-4 px-6 py-6 bg-white shadow-md rounded-lg mb-4 border-b border-gray-200">
+            <form action="{% url 'recipes:scrape_recipe' %}" method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="flex gap-x-6 items-center justify-between">
+                    <input type="hidden" name="recipe_url" value="{{ recipe.url }}">
+                    <!-- Image (Adjusted size for better card view) -->
+                    <img class="h-16 w-16 flex-none rounded-full bg-gray-50"
+                         src="{{ recipe.thumbnail }}"
+                         alt="Recipe Image">
+                    <!-- Recipe Name and Link Section -->
+                    <div class="flex flex-col min-w-0 flex-auto">
+                        <p class="text-lg font-bold text-gray-900">{{ recipe.name }}</p>
+                        <a href="{{ recipe.url }}"
+                           target="_blank"
+                           class="flex items-center mt-2 truncate text-sm text-blue-500 hover:underline w-full break-words">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-5 h-5 mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.2l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/>
+                            </svg>
+                            {{ recipe.url }}
+                        </a>
+                    </div>
+                </div>
+                <!-- Button Section -->
+                <div class="flex gap-4 mt-4 justify-end">
+                    <button
+                            type="submit"
+                            id="downloadButton"
+                            class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                        Download Recipe
+                    </button>
+                    <button
+                            disabled=""
+                            id="downloadingButton"
+                            type="submit"
+                            class="inline-flex hidden items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                        <svg aria-hidden="true" role="status" class="inline mr-3 w-5 h-5 text-white animate-spin"
+                             viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                  fill="#E5E7EB"></path>
+                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                  fill="currentColor"></path>
+                        </svg>
+                        Downloading..
+                    </button>
+                </div>
+            </form>
+        </li>
+        {% endfor %}
+        <!-- Badge Item -->
+        <li class="px-4 py-3">
+            <div class="flex flex-wrap gap-2">
+                {% for ingredient in ingredients %}
+                <span class="inline-flex items-center rounded-md bg-green-50 px-6 py-3 text-xs font-medium  text-white bg-mint-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500 ">
+                    {{ ingredient }}
+                </span>
+                {% endfor %}
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+{% else %}
+
+<div id="loadingDiv" class="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg hidden">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Doing the magic.Your recipes are on it's way.Please
+        wait....</h2>
+    <div class="animate-pulse flex space-x-4">
+        <div class="square-full bg-slate-200 h-16 w-16"></div>
+        <div class="flex-1 space-y-6 py-1">
+            <div class="h-2 bg-slate-200 rounded"></div>
+            <div class="space-y-3">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="h-2 bg-slate-200 rounded col-span-2"></div>
+                    <div class="h-2 bg-slate-200 rounded col-span-1"></div>
+                </div>
+                <div class="h-2 bg-slate-200 rounded"></div>
+            </div>
+        </div>
+    </div>
+    <div class="animate-pulse flex space-x-4">
+        <div class="square-full bg-slate-200 h-16 w-16"></div>
+        <div class="flex-1 space-y-6 py-1">
+            <div class="h-2 bg-slate-200 rounded"></div>
+            <div class="space-y-3">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="h-2 bg-slate-200 rounded col-span-2"></div>
+                    <div class="h-2 bg-slate-200 rounded col-span-1"></div>
+                </div>
+                <div class="h-2 bg-slate-200 rounded"></div>
+            </div>
+        </div>
+    </div>
+    <div class="animate-pulse flex space-x-4">
+        <div class="square-full bg-slate-200 h-16 w-16"></div>
+        <div class="flex-1 space-y-6 py-1">
+            <div class="h-2 bg-slate-200 rounded"></div>
+            <div class="space-y-3">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="h-2 bg-slate-200 rounded col-span-2"></div>
+                    <div class="h-2 bg-slate-200 rounded col-span-1"></div>
+                </div>
+                <div class="h-2 bg-slate-200 rounded"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mainDiv" class="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Add your ingredients to generate recipes</h2>
+    <form action="{% url 'recipes:generate_recipes' %}" method="post" class="space-y-4">
+        {% csrf_token %}
+        <div id="ingredients-container" class="space-y-3 mt-4 ">
+            <label class="block text-lg font-medium text-gray-800">Ingredients list</label>
+            <div class="flex gap-2">
+                <span class="bg-mint-100 text-mint-700 w-8 h-8 rounded-full flex items-center justify-center font-medium">1</span>
+                <input type="text" name="ingredients[]" required=""
+                       class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+                <button type="button" onclick="#" class="text-red-500 hover:text-red-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="block text-lg font-medium text-gray-800"></label>
+            <button type="button" onclick="addIngredient()"
+                    class="bg-mint-100 text-mint-700 px-3 py-1 rounded-md hover:bg-mint-200 text-sm font-medium">
+                + Add Ingredient
+            </button>
+        </div>
+        <div class="mt-6 flex justify-between items-center">
+            <button id="generateBtn" type="submit"
+                    class="items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                Generate
+            </button>
+            <a id="home_btn" href="{% url 'recipes:recipe_list' %}" class="text-mint-600 hover:underline">
+                Back to Home
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endif %}
+
+
+{% if messages %}
+<div class="fixed bottom-4 right-4">
+    {% for message in messages %}
+    <div class="bg-white shadow-lg rounded-lg px-4 py-3 {% if message.tags %}{{ message.tags }}{% endif %} mb-2">
+        <p class="text-sm">{{ message }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<script>
+    var counter = 2
+    function addIngredient() {
+        const container = document.getElementById('ingredients-container');
+        const div = document.createElement('div');
+        div.className = 'flex gap-2';
+        div.innerHTML = `
+            <span class="bg-mint-100 text-mint-700 w-8 h-8 rounded-full flex items-center justify-center font-medium">${counter}</span>
+            <input type="text" name="ingredients[]" required
+                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500">
+            <button type="button" onclick="removeField(this)" class="text-red-500 hover:text-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        `;
+        counter += 1
+        container.appendChild(div);
+    }
+
+    function removeField(button) {
+        button.parentElement.remove();
+        counter -= 1
+    }
+
+     document.getElementById('generateBtn').addEventListener('click', function () {
+        const loadingDiv = document.getElementById('loadingDiv');
+        const mainDiv = document.getElementById('mainDiv');
+
+        mainDiv.classList.add('hidden');
+        loadingDiv.classList.remove('hidden');
+     });
+
+</script>
+<script>
+    document.getElementById('downloadButton').addEventListener('click', function (e) {
+        e.preventDefault();
+        const downloading_button = document.getElementById('downloadingButton');
+        const download_button = document.getElementById('downloadButton');
+
+        download_button.classList.add('hidden');
+        downloading_button.classList.remove('hidden');
+        e.target.closest('form').submit();
+    });
+</script>
+{% endblock %}

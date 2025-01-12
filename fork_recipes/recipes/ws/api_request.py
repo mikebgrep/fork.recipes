@@ -1,6 +1,7 @@
 import json
 import os
 from http import HTTPMethod
+from typing import List
 
 from dotenv import load_dotenv
 import requests
@@ -222,3 +223,14 @@ def request_delete_recipe(recipe_pk:int, token:str):
         return True
 
     return False
+
+
+def reqeust_generate_recipes(ingredients: List[str], token:str):
+    data = {
+        "ingredients": ingredients
+    }
+    response = api_request_write(method=HTTPMethod.POST, url="api/recipe/generate", token=token, data=json.dumps(data))
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return True, [x for x in result]
+    return False, None

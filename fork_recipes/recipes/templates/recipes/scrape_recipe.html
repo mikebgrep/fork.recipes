@@ -20,7 +20,8 @@
                 class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-mint-500 focus:border-mint-500 text-gray-900"
                 required>
         </div>
-            <button
+        <div class="mt-6 flex justify-between items-center">
+        <button
             type="submit"
             id="downloadButton"
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
@@ -37,13 +38,11 @@
             </svg>
             Downloading..
         </button>
-    </form>
-
-    <div class="mt-6">
-        <a id="home_btn" href="{% url 'recipes:recipe_list' %}" class="text-mint-600 hover:underline">
+             <a id="home_btn" href="{% url 'recipes:recipe_list' %}" class="text-mint-600 hover:underline">
             Back to Home
         </a>
     </div>
+    </form>
 </div>
 
 
