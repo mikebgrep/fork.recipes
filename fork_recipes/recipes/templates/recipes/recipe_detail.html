@@ -5,210 +5,205 @@
 {% block header %}{{ recipe.name }}{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-xl overflow-hidden max-w-4xl mx-auto">
-    <div class="bg-white rounded-xl overflow-hidden max-w-4xl mx-auto">
-        <div class="relative h-96">
-            {% if recipe.video %}
-            <div class="aspect-video">
-                <video class="absolute inset-0 w-full h-full" controls>
-                    <source src="{{ recipe.video }}" type="video/mp4">
-                </video>
-            </div>
-            {% else %}
-            <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            {% endif %}
+<div class="bg-white rounded-xl overflow-hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative h-96">
+        {% if recipe.video %}
+        <div class="aspect-video">
+            <video class="absolute inset-0 w-full h-full" controls>
+                <source src="{{ recipe.video }}" type="video/mp4">
+            </video>
+        </div>
+        {% else %}
+        <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        {% endif %}
 
-            <div class="absolute top-4 right-4 flex gap-2">
-                <button onclick="toggleFavorite(this, {{ recipe.pk }})"
-                        class="bg-white/90 p-2 rounded-full text-gray-600 hover:text-mint-500 transition-colors">
-                    {% if recipe.is_favorite %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-mint-500" fill="currentColor"
-                         viewBox="0 0 24 24" stroke="currentColor">
+        <div class="absolute top-4 right-4 flex gap-2 z-10">
+            <button onclick="toggleFavorite(this, {{ recipe.pk }})"
+                    class="bg-white/90 p-2 rounded-full text-gray-600 hover:text-mint-500 transition-colors">
+                {% if recipe.is_favorite %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-mint-500" fill="currentColor"
+                     viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                {% endif %}
+            </button>
+            <button onclick="location.href='/recipe/{{ recipe.pk }}/edit/'"
+                    class="bg-white/90 p-2 rounded-full text-gray-600 hover:text-mint-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+            </button>
+        </div>
 
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                    {% else %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none"
-                         viewBox="0 0 24 24" stroke="currentColor">
-
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                    {% endif %}
-                </button>
-                <button onclick="location.href='/recipe/{{ recipe.pk }}/edit/'"
-                        class="bg-white/90 p-2 rounded-full text-gray-600 hover:text-mint-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                </button>
-            </div>
-
-            {% if not recipe.video %}
-            <div class="absolute bottom-4 right-4">
+        {% if not recipe.video %}
+        <div class="absolute bottom-4 right-4">
             <span class="px-3 py-1 bg-white/90 rounded-full text-sm font-medium text-gray-800">
                 {{ recipe.difficulty }}
             </span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="p-6 pt-16 sm:pt-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
+            {% if recipe.total_time %}
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>{{ recipe.total_time }} hrs</span>
+            </div>
+            {% endif %}
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>{{ recipe.servings }} servings</span>
+            </div>
+            {% if recipe.chef %}
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                </svg>
+                <span>By {{ recipe.chef }}</span>
             </div>
             {% endif %}
         </div>
-
-
-        <div class="p-6">
-            <div class="flex items-center gap-6 mb-6">
-                {% if recipe.total_time %}
-                <div class="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span>{{ recipe.total_time }} hrs</span>
-                </div>
-                {% endif %}
-                <div class="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    <span>{{ recipe.servings }} servings</span>
-                </div>
-                {% if recipe.chef %}
-                <div class="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                        <line x1="6" y1="1" x2="6" y2="4"></line>
-                        <line x1="10" y1="1" x2="10" y2="4"></line>
-                        <line x1="14" y1="1" x2="14" y2="4"></line>
-                    </svg>
-                    <span>By {{ recipe.chef }}</span>
-                </div>
-                {% endif %}
-
-            </div>
-            {% if recipe.reference %}
-            <div class="flex items-center gap-6 mb-6">
-              <a href=" {{ recipe.reference }}" target="_blank" class="inline-flex items-center text-current" aria-placeholder="source">
+        {% if recipe.reference %}
+        <div class="flex items-center gap-6 mb-6">
+            <a href="{{ recipe.reference }}" target="_blank" class="inline-flex items-center text-current">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
                 </svg>
-                  &nbsp;  {{ recipe.reference }}
-              </a>
+                &nbsp;{{ recipe.reference }}
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="space-y-6">
+            {% if recipe.description %}
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Description</h3>
+                <p class="text-gray-600">{{ recipe.description }}</p>
             </div>
             {% endif %}
-
-            <div class="space-y-6">
-                {% if recipe.description %}
-                <div>
-                    <h3 class="text-lg font-semibold mb-2">Description</h3>
-                    <p class="text-gray-600">{{ recipe.description }}</p>
-                </div>
-                {% endif %}
-                {% if category %}
-                <div>
-                    <h3 class="text-lg font-semibold mb-2">Category</h3>
-                    <span class="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-800">
+            {% if category %}
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Category</h3>
+                <span class="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-800">
                     {{ category.name }}
                 </span>
+            </div>
+            {% endif %}
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-mint-500" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    <h3 class="text-lg font-semibold">Ingredients</h3>
                 </div>
-                {% endif %}
-                <div>
-                    <div class="flex items-center gap-2 mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-mint-500" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="8" y1="6" x2="21" y2="6"></line>
-                            <line x1="8" y1="12" x2="21" y2="12"></line>
-                            <line x1="8" y1="18" x2="21" y2="18"></line>
-                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                        </svg>
-                        <h3 class="text-lg font-semibold">Ingredients</h3>
-                    </div>
-                    <ul class="list-disc list-inside space-y-2 text-gray-600">
-                        {% for ingredient in recipe.ingredients %}
-                        <li>{{ ingredient.quantity }} {{ ingredient.metric }} {{ ingredient.name }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    {% for ingredient in recipe.ingredients %}
+                    <li>{{ ingredient.quantity }} {{ ingredient.metric }} {{ ingredient.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-                <div>
-                    <div class="flex items-center gap-2 mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-mint-500" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="4" y1="9" x2="20" y2="9"></line>
-                            <line x1="4" y1="15" x2="20" y2="15"></line>
-                            <line x1="10" y1="3" x2="8" y2="21"></line>
-                            <line x1="16" y1="3" x2="14" y2="21"></line>
-                        </svg>
-                        <h3 class="text-lg font-semibold">Instructions</h3>
-                    </div>
-                    <ol class="list-decimal list-inside space-y-2 text-gray-600">
-                        {% for step in recipe.steps %}
-                        <li>{{ step.text }}</li>
-                        {% endfor %}
-                    </ol>
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-mint-500" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="9" x2="20" y2="9"></line>
+                        <line x1="4" y1="15" x2="20" y2="15"></line>
+                        <line x1="10" y1="3" x2="8" y2="21"></line>
+                        <line x1="16" y1="3" x2="14" y2="21"></line>
+                    </svg>
+                    <h3 class="text-lg font-semibold">Instructions</h3>
                 </div>
+                <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                    {% for step in recipe.steps %}
+                    <li>{{ step.text }}</li>
+                    {% endfor %}
+                </ol>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        async function toggleFavorite(button, recipeId) {
-            const svg = button.querySelector('svg');
-            const isFavorited = svg.classList.contains('text-mint-500');
+<script>
+    async function toggleFavorite(button, recipeId) {
+        const svg = button.querySelector('svg');
+        const isFavorited = svg.classList.contains('text-mint-500');
 
-            // Toggle UI state immediately for responsiveness
+        // Toggle UI state immediately for responsiveness
+        svg.classList.toggle('text-gray-600');
+        svg.classList.toggle('text-mint-500');
+        svg.setAttribute('fill', isFavorited ? 'none' : 'currentColor');
+
+        // Send the request to the server
+        try {
+            const response = await fetch(`/toggle-favorite/${recipeId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'), // Django-specific CSRF token
+                },
+                body: JSON.stringify({ is_favorite: !isFavorited }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update favorite status.');
+            }
+        } catch (error) {
+            // Revert UI state if the request fails
             svg.classList.toggle('text-gray-600');
             svg.classList.toggle('text-mint-500');
-            svg.setAttribute('fill', isFavorited ? 'none' : 'currentColor');
-
-            // Send the request to the server
-            try {
-                const response = await fetch(`/toggle-favorite/${recipeId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken'), // Django-specific CSRF token
-                    },
-                    body: JSON.stringify({ is_favorite: !isFavorited }),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to update favorite status.');
-                }
-            } catch (error) {
-                // Revert UI state if the request fails
-                svg.classList.toggle('text-gray-600');
-                svg.classList.toggle('text-mint-500');
-                svg.setAttribute('fill', isFavorited ? 'currentColor' : 'none');
-                console.error(error.message);
-            }
+            svg.setAttribute('fill', isFavorited ? 'currentColor' : 'none');
+            console.error(error.message);
         }
+    }
 
-        // Utility function to retrieve CSRF token (Django-specific)
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.startsWith(name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
+    // Utility function to retrieve CSRF token (Django-specific)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
             }
-            return cookieValue;
         }
-    </script>
+        return cookieValue;
+    }
+</script>
 {% endblock %}

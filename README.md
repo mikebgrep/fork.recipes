@@ -1,6 +1,6 @@
 # Fork recipes 
 
-![version](https://img.shields.io/badge/version-0.1.1-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
+![version](https://img.shields.io/badge/version-0.2.1-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
 
 
 <img align="right" src="assets/avatar.png" height="170px" alt="Logo">
@@ -16,7 +16,7 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Save your favorite recipes 😍
 - Categorize 📑 your recipes for easy management
 - Scrape recipe from any webpage and save it locally (openai token needed) 🤖
-- more coming ... (ai futures) [TODO]
+- Generate recipes by ingredients and save them locally (openai token needed) 🤖
 
 ### Installation 
 I include the installation instructions in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
