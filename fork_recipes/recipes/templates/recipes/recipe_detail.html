@@ -8,13 +8,11 @@
 <div class="bg-white rounded-xl overflow-hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="relative h-96">
         {% if recipe.video %}
-        <div class="aspect-video">
-            <video class="absolute inset-0 w-full h-full" controls>
-                <source src="{{ recipe.video }}" type="video/mp4">
-            </video>
-        </div>
+        <video class="absolute inset-0 w-full h-full object-cover" controls>
+            <source src="{{ recipe.video }}" type="video/mp4">
+        </video>
         {% else %}
-        <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover">
+        <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="absolute inset-0 w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
         {% endif %}
 
@@ -54,7 +52,7 @@
         {% endif %}
     </div>
 
-    <div class="p-6 pt-16 sm:pt-6">
+    <div class="p-6 pt-24 sm:pt-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
             {% if recipe.total_time %}
             <div class="flex items-center gap-2">
@@ -205,5 +203,16 @@
         }
         return cookieValue;
     }
+
+    // Ensure video is centered and displayed at full size in fullscreen mode on mobile devices
+    document.querySelectorAll('video').forEach(video => {
+        video.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                video.style.objectFit = 'contain';
+            } else {
+                video.style.objectFit = 'cover';
+            }
+        });
+    });
 </script>
 {% endblock %}
