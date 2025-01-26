@@ -8,6 +8,8 @@
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
     <link rel="manifest" href="/static/images/site.webmanifest">
     <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
+
 </head>
 <body class="bg-gray-50">
 <div class="min-h-screen flex flex-col">
@@ -61,6 +63,16 @@
                               <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                             </svg>
                             Generate Recipes
+                        </a>
+                        <a href="{% url 'schedule:schedule_list' %}"
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
+                                  {% if request.path == '/schedule/' %}bg-mint-100 text-mint-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-6 w-6
+                                 {% if request.path == '/schedule/' %}text-mint-500{% else %}text-gray-400 group-hover:text-gray-500{% endif %}"
+                                 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                            </svg>
+                            Meal Planner
                         </a>
                         <a href="{% url 'recipes:profile' %}"
                            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.path == '/profile/' %}bg-mint-100 text-mint-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">

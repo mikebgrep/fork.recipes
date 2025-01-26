@@ -1,0 +1,166 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Get Recipe - Fork Recipes{% endblock %}
+
+{% block header %}Meal Planner{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Select date</h2>
+
+    <div class="relative max-w-sm mx-auto mb-6">
+        <form id="date-form" method="POST" action="/schedule/">
+            {% csrf_token %}
+            <input id="default-datepicker" type="date" name="selected_date" value="{{ current_selected_date }}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="Select date">
+        </form>
+    </div>
+
+
+    <section class="bg-white dark:bg-gray-900 antialiased">
+        <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">
+                    Schedule
+                </h2>
+            </div>
+
+            {% if is_plan_empty %}
+            <div class="text-center">
+                <p class="text-base  font-semibold text-mint-700">404</p>
+                <h1 class="mt-4 text-3xl font-semibold tracking-tight text-balance text-gray-600 sm:text-4xl">No plan for this date</h1>
+            </div>
+            {% else %}
+            <div class="flow-root max-w-3xl mx-auto mt-8 sm:mt-12 lg:mt-16">
+                <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% if breakfast %}
+                    <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                            Breakfast
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">
+                            <!-- Image Section -->
+                            <img class="h-16 w-16 flex-none rounded-full bg-gray-50 object-cover"
+                                 src="{{ breakfast.recipe.image }}" alt="Recipe Image">
+                            <!-- Recipe Name and Link Section -->
+                            <div class="flex flex-col flex-auto text-center sm:text-left justify-center items-center sm:items-start">
+                                <p class="text-sm font-bold text-gray-900">{{ breakfast.recipe.name }}</p>
+                            </div>
+                        </div>
+                        <!-- Button Section -->
+                        <div class="flex gap-4 mt-4 justify-center sm:justify-end sm:mt-0">
+                            <button onclick="location.href='{% url 'recipes:recipe_detail' recipe_pk=breakfast.recipe.pk %}'"
+                                    class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                                Prepare Recipe
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    {% endif %}
+                    {% if lunch %}
+                    <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                            Lunch
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">
+                            <!-- Image Section -->
+                            <img class="h-16 w-16 flex-none rounded-full bg-gray-50 object-cover"
+                                 src="{{ lunch.recipe.image }}" alt="Recipe Image">
+                            <!-- Recipe Name and Link Section -->
+                            <div class="flex flex-col flex-auto text-center sm:text-left justify-center">
+                                <p class="text-sm font-bold text-gray-900">{{ lunch.recipe.name }}</p>
+                            </div>
+                        </div>
+                        <!-- Button Section -->
+                        <div class="flex gap-4 mt-4 justify-center sm:justify-end sm:mt-0">
+                            <button onclick="location.href='{% url 'recipes:recipe_detail' recipe_pk=lunch.recipe.pk %}'"
+                                    class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                                Prepare Recipe
+                            </button>
+                        </div>
+
+                    </div>
+                    {% else %}
+                    {% endif %}
+                    {% if dinner %}
+                    <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                            Dinner
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">
+                            <!-- Image Section -->
+                            <img class="h-16 w-16 flex-none rounded-full bg-gray-50 object-cover"
+                                 src="{{ dinner.recipe.image }}" alt="Recipe Image">
+                            <!-- Recipe Name and Link Section -->
+                            <div class="flex flex-col flex-auto text-center sm:text-left justify-center">
+                                <p class="text-sm font-bold text-gray-900">{{ dinner.recipe.name }}</p>
+                            </div>
+                        </div>
+                        <!-- Button Section -->
+                        <div class="flex gap-4 mt-4 justify-center sm:justify-end sm:mt-0">
+                            <button onclick="location.href='{% url 'recipes:recipe_detail' recipe_pk=dinner.recipe.pk %}'"
+                                    class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                                Prepare Recipe
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    {% endif %}
+                    {% if side %}
+                    <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                            Side
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">
+                            <!-- Image Section -->
+                            <img class="h-16 w-16 flex-none rounded-full bg-gray-50 object-cover"
+                                 src="{{ side.recipe.image }}" alt="Recipe Image">
+                            <!-- Recipe Name and Link Section -->
+                            <div class="flex flex-col flex-auto text-center sm:text-left justify-center">
+                                <p class="text-sm font-bold text-gray-900">{{ side.recipe.name }}</p>
+                            </div>
+                        </div>
+                        <!-- Button Section -->
+                        <div class="flex gap-4 mt-4 justify-center sm:justify-end sm:mt-0">
+                            <button onclick="location.href='{% url 'recipes:recipe_detail' recipe_pk=side.recipe.pk %}'"
+                                    class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                                Prepare Recipe
+                            </button>
+                        </div>
+
+                    </div>
+                    {% else %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <form action="{% url 'recipes:scrape_recipe' %}" method="post" class="space-y-4">
+        {% csrf_token %}
+
+    </form>
+</div>
+
+{% if messages %}
+<div class="fixed bottom-4 right-4">
+    {% for message in messages %}
+    <div class="bg-white shadow-lg rounded-lg px-4 py-3 {% if message.tags %}{{ message.tags }}{% endif %} mb-2">
+        <p class="text-sm">{{ message }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("default-datepicker");
+
+        dateInput.addEventListener("change", function () {
+            document.getElementById('date-form').submit();
+
+        });
+    });
+</script>
+{% endblock %}

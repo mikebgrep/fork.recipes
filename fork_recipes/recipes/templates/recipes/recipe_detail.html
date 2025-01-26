@@ -33,6 +33,25 @@
                 </svg>
                 {% endif %}
             </button>
+
+
+            <div class="relative">
+                <button
+                        type="button"
+                        class="flex items-center bg-white/90 p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition-all"
+                        aria-expanded="false"
+                        id="dropdownButton"
+                        onclick="document.getElementById('plan-modal').classList.remove('hidden')"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="h-6 w-6 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
+                    </svg>
+                    <span>Add to plan</span>
+                </button>
+            </div>
+
             <button onclick="location.href='/recipe/{{ recipe.pk }}/edit/'"
                     class="bg-white/90 p-2 rounded-full text-gray-600 hover:text-mint-500 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -91,8 +110,10 @@
         {% if recipe.reference %}
         <div class="flex items-center gap-6 mb-6">
             <a href="{{ recipe.reference }}" target="_blank" class="inline-flex items-center text-current">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-6 h-6 text-gray-500">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/>
                 </svg>
                 &nbsp;{{ recipe.reference }}
             </a>
@@ -154,6 +175,70 @@
         </div>
     </div>
 </div>
+<div id="plan-modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Background backdrop -->
+    <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+    <div class="fixed inset-0 z-10 flex items-center justify-center p-4 overflow-y-auto">
+        <!-- Modal panel -->
+        <div class="relative w-full max-w-md transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8">
+            <form action="{% url 'schedule:create_schedule' %}" method="POST" class="space-y-6">
+                {% csrf_token %}
+                <input type="hidden" name="recipe_id" value="{{ recipe.pk }}">
+                <div class="bg-white px-6 py-5 sm:px-8">
+                    <div class="sm:flex sm:items-start sm:justify-center">
+                        <!-- Icon container with updated background and rounded style -->
+                        <div class="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/90 p-2">
+                            <!-- Mint-colored icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="h-6 w-6 text-mint-500">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
+                            </svg>
+                        </div>
+                        <div class="mt-3 sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg font-medium text-gray-900" id="modal-title">Select Meal and Date</h3>
+                            <p class="mt-2 text-sm text-gray-600">Choose a meal type and date for your meal planning. This information will help us organize your preferences.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 space-y-4">
+                        <div>
+                            <label for="meal-type" class="block text-sm font-medium text-gray-700 mb-1">Meal Type</label>
+                            <select id="meal-type" name="meal_type"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-9 px-3">
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Side">Side</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="date" id="date" name="date"
+                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-9 px-3">
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4">
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            class="mb-4 w-full rounded-md bg-mint-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Submit
+                    </button>
+                    <!-- Cancel Button -->
+                    <button type="button" onclick="document.getElementById('plan-modal').classList.add('hidden')"
+                            class="w-full rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 focus:ring-offset-2">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 
 <script>
     async function toggleFavorite(button, recipeId) {
@@ -214,5 +299,16 @@
             }
         });
     });
+
+
 </script>
+{% if messages %}
+<div class="fixed bottom-4 right-4">
+    {% for message in messages %}
+    <div class="bg-white shadow-lg rounded-lg px-4 py-3 {% if message.tags %}{{ message.tags }}{% endif %} mb-2">
+        <p class="text-sm">{{ message }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}

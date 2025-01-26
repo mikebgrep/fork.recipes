@@ -5,7 +5,7 @@ from http import HTTPMethod
 
 import responses
 from . import models
-from recipes.ws import api_request
+from fork_recipes.ws import api_request
 from recipes.models import DIFFICULTY_CHOICES
 
 DIFFICULTY_CHOICES_CHOICE = [choice[0] for choice in DIFFICULTY_CHOICES]

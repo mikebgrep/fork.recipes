@@ -6,8 +6,10 @@ from typing import List
 from dotenv import load_dotenv
 import requests
 from fork_recipes.backend import settings
-from ..models import User
+from recipes.models import User
 from types import SimpleNamespace
+
+from fork_recipes.schedule.models import TIMING_CHOICES
 
 load_dotenv()
 
@@ -234,3 +236,23 @@ def reqeust_generate_recipes(ingredients: List[str], token:str):
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return True, [x for x in result]
     return False, None
+
+
+def request_get_schedule_of_a_day(date: str):
+    response = api_request_read_only(method=HTTPMethod.GET, url=f"api/schedule/?date={date}")
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+    return None
+
+def request_post_schedule(date:str, recipe_id: int, timing: TIMING_CHOICES, token:str):
+    data = {
+        "timing": timing,
+        "recipe": recipe_id,
+        "date": date
+    }
+    response = api_request_write(method=HTTPMethod.POST, url="api/schedule/", token=token, data=json.dumps(data))
+    if response.status_code == 201:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+    return None

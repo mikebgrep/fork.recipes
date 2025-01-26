@@ -1,14 +1,13 @@
 import datetime
-from time import sleep
 
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 
-from .ws import api_request
+from fork_recipes.ws import api_request
 from . import models
 from .utils import date_util
 from .utils import email_util

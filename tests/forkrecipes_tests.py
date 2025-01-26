@@ -10,7 +10,7 @@ from django.utils import timezone
 from dotenv import load_dotenv
 from recipes.models import User
 from recipes.views import change_password_after_reset
-from recipes.ws import api_request
+from fork_recipes.ws import api_request
 from recipes.utils import date_util
 
 from .mock_util import *

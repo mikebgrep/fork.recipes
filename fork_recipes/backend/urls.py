@@ -7,10 +7,14 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 if settings.DEBUG:
     urlpatterns = [
         path('', include('recipes.urls', namespace="recipes")),
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
+        path('schedule/', include('schedule.urls', namespace="schedule")),
+
+                  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
 else:
     urlpatterns = [
         path('', include('recipes.urls', namespace="recipes")),
+        path('schedule/', include('schedule.urls', namespace="schedule")),
+
     ]
 
 
