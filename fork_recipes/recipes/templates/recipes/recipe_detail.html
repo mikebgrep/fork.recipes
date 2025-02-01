@@ -299,8 +299,18 @@
             }
         });
     });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("date");
+        const today = new Date();
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(today.getDate() - 7);
+        const formatDate = (date) => date.toISOString().split("T")[0];
 
-
+        dateInput.max = formatDate(today);
+        dateInput.min = formatDate(oneWeekAgo);
+    });
 </script>
 {% if messages %}
 <div class="fixed bottom-4 right-4">
