@@ -387,7 +387,7 @@ def new_recipe(request):
 
         recipe_main_info_data = {
             "name": name,
-            "category": category.pk if category else int(category_pk),
+            "category": category.pk if category else (int(category_pk) if category_pk else None),
             "difficulty": difficulty,
             "prep_time": int(prep_time),
             "cook_time": int(cook_time),

@@ -190,7 +190,7 @@
             <!-- Submit Button -->
            <div class="flex justify-between w-full">
                 <!-- Delete Button -->
-                <a href="{% url 'recipes:delete_recipe' recipe_pk=recipe.pk %}" class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700">
+                <a onclick="document.getElementById('delete-modal').classList.remove('hidden')" class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700">
                     Delete Recipe
                 </a>
 
@@ -201,6 +201,25 @@
            </div>
         </div>
     </form>
+</div>
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg max-w-sm mx-auto">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Confirm Recipe Deletion</h3>
+        <p class="text-sm text-gray-500 mb-4">Are you sure you want to delete this recipe? This action cannot be
+            undone.</p>
+        <form method="POST" action="{% url 'recipes:delete_recipe' recipe_pk=recipe.pk  %}" class="space-x-4">
+            {% csrf_token %}
+            <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Yes, Delete Recipe
+            </button>
+            <button type="button" onclick="document.getElementById('delete-modal').classList.add('hidden')"
+                    class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Cancel
+            </button>
+        </form>
+    </div>
 </div>
 
 
