@@ -308,7 +308,6 @@
         oneWeekAgo.setDate(today.getDate() - 7);
         const formatDate = (date) => date.toISOString().split("T")[0];
 
-        dateInput.max = formatDate(today);
         dateInput.min = formatDate(oneWeekAgo);
     });
 </script>
