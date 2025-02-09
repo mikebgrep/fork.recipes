@@ -44,8 +44,9 @@ def get_user_token(email, password):
     response = api_request_read_only(method=HTTPMethod.POST, url="api/auth/token", data=json.dumps(login_data))
 
     if response.status_code == 200:
-        user, created = User.objects.get_or_create(email=email)
-        user.token = json.loads(response.content)['token']
+        user_response = json.loads(response.content)
+        user, created = User.objects.get_or_create(email=email, username=user_response['user']['username'])
+        user.token = user_response['token']
         user.save()
 
         return user
