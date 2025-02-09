@@ -19,6 +19,10 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Scrape recipe from any webpage and save it locally (openai token needed) 🤖
 - Generate recipes by ingredients and save them locally (openai token needed) 🤖
 
+more comming...
+- Translate recipes to any language 🈹️(openai token needed) 🤖
+- Automatic unit conversion (openai token needed) 🤖
+
 ### Installation 
 I include the installation instructions in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
 
