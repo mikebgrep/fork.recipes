@@ -16,4 +16,21 @@ DIFFICULTY_CHOICES = [
         ('Expert', 'Expert'),
     ]
 
+LANGUAGES_CHOICES = [
+    ('English', 'English'),
+    ('Spanish', 'Español'),
+    ('French', 'Français'),
+    ('German', 'Deutsch'),
+    ('Chinese', '中文'),
+    ('Russian', 'Русский'),
+    ('Italian', 'Italiano'),
+    ('Japanese', '日本語'),
+    ('Dutch', 'Nederlands'),
+    ('Polish', 'Polski'),
+    ('Greek', 'Ελληνικά'),
+    ('Swedish', 'Svenska'),
+    ('Czech', 'Čeština'),
+    ('Bulgarian', 'Български'),
+]
+
 

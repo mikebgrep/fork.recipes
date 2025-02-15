@@ -257,3 +257,43 @@ def request_post_schedule(date:str, recipe_id: int, timing: TIMING_CHOICES, toke
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
     return None
+
+def request_get_user_settings(token:str):
+    response = api_request_write(method=HTTPMethod.GET, url="api/auth/settings", token=token)
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+    return None
+
+
+def request_change_user_settings_language(language_choice: str, token:str):
+    data = {
+        "language": language_choice
+    }
+
+    response = api_request_write(method=HTTPMethod.PATCH, url="api/auth/settings", token=token, data=json.dumps(data))
+    if response.status_code == 201:
+        return True
+    return False
+
+
+def request_translate_recipe(data: dict, token:str):
+
+    response = api_request_write(method=HTTPMethod.POST, url="api/recipe/translate", token=token, data=json.dumps(data))
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return True, result
+    elif response.status_code == 400:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return False, result
+
+    return None, None
+
+
+def request_get_recipe_variations(recipe_pk:int):
+    response = api_request_read_only(method=HTTPMethod.GET, url=f"api/recipe/{recipe_pk}/variations")
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None

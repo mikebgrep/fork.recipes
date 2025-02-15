@@ -147,6 +147,10 @@ def recipe_detail(request, recipe_pk):
 
     categories = api_request.get_categories()
     matching_categories = [x for x in categories if recipe.category == x.pk]
+    recipes_variations = None
+
+    if recipe.is_translated:
+        recipes_variations = api_request.request_get_recipe_variations(recipe_pk=recipe_pk)
 
     if len(matching_categories) > 0:
         category = matching_categories[0]
@@ -155,7 +159,8 @@ def recipe_detail(request, recipe_pk):
 
     return render(request, 'recipes/recipe_detail.html', {
         'recipe': recipe,
-        'category': category
+        'category': category,
+        "recipe_variations": recipes_variations,
     })
 
 
@@ -246,6 +251,7 @@ def edit_recipe(request, recipe_pk):
 
     return render(request, 'recipes/edit_recipe.html', context)
 
+
 @login_required
 def delete_recipe(request, recipe_pk):
     token = request.session.get("auth_token")
@@ -275,6 +281,7 @@ def saved_recipes(request):
     return render(request, 'recipes/saved_recipes.html', {
         'page_obj': page_obj
     })
+
 
 @login_required
 def scrape_recipe(request):
@@ -309,7 +316,6 @@ def generate_recipe(request):
     return render(request, "recipes/generate_recipe.html")
 
 
-
 @login_required
 def profile_view(request):
     token = request.session.get("auth_token")
@@ -342,6 +348,7 @@ def profile_view(request):
         }
 
     return render(request, 'recipes/profile.html', {'user': user_data})
+
 
 @login_required
 def toggle_favorite(request, recipe_pk):
@@ -426,14 +433,61 @@ def new_recipe(request):
 
 
 @login_required
+def translate_recipe_view(request, recipe_pk):
+    token = request.session.get("auth_token")
+    user_settings = api_request.request_get_user_settings(token=token)
+
+    if user_settings.preferred_translate_language is None:
+        messages.error(request, "Please select default translation language from settings")
+        return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
+
+    data = {
+        "pk": recipe_pk,
+        "language": user_settings.preferred_translate_language,
+    }
+
+    is_translated, result = api_request.request_translate_recipe(data=data, token=token)
+
+    if is_translated is False:
+        messages.error(request, result.errors[0])
+        return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
+    if (is_translated is None) and (result is None):
+        messages.error(request, "Server error. Please try again later or contact administrator.")
+        return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
+
+    return redirect("recipes:edit_recipe", recipe_pk=result.pk)
+
+
+@login_required
 def settings_view(request):
-    return render(request, 'recipes/settings.html')
+    token = request.session.get("auth_token")
+    user_settings = api_request.request_get_user_settings(token=token)
+    languages = [choice[0] for choice in models.LANGUAGES_CHOICES if
+                 choice[0] != user_settings.preferred_translate_language]
+    context = {
+        'languages': languages,
+        'selected_language': user_settings.preferred_translate_language,
+    }
+
+    return render(request, 'recipes/settings.html', context=context)
+
+
+@login_required
+def change_translation_language(request):
+    if request.method == 'POST':
+        language_choice = request.POST.get("language_choice")
+        token = request.session.get("auth_token")
+        response = api_request.request_change_user_settings_language(language_choice, token)
+        if response:
+            messages.success(request, 'Your translation language was successfully updated!')
+            return redirect('recipes:settings')
 
 
 @login_required
 def change_password(request):
     context = {}
     if request.method == 'POST':
+        token = request.session.get("auth_token")
 
         current_password = request.POST.get("current_password")
         new_password = request.POST.get("new_password")
@@ -444,8 +498,6 @@ def change_password(request):
                 "old_password": current_password,
                 "new_password": new_password
             }
-            token = request.session.get("auth_token")
-
             result = api_request.change_logged_user_password(data=data, token=token)
             if result is True:
                 messages.success(request, 'Your password was successfully updated!')
@@ -456,6 +508,12 @@ def change_password(request):
         else:
             context = {
                 "error": "Your new password does not match confirm password!"}
+
+        user_settings = api_request.request_get_user_settings(token=token)
+        languages = [choice[0] for choice in models.LANGUAGES_CHOICES if
+                     choice[0] != user_settings.preferred_translate_language]
+        context['languages'] = languages
+        context['selected_language'] = user_settings.preferred_translate_language
 
         messages.error(request, 'Please correct the error below.')
     return render(request, 'recipes/settings.html', context=context)
@@ -477,7 +535,6 @@ def delete_account(request):
         messages.error(request, "Something went wrong.Please try again later!")
 
     return redirect('recipes:settings')
-
 
 
 def handler404(request, exception=None):

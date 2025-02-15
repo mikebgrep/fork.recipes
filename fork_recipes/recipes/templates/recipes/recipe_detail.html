@@ -19,47 +19,63 @@
         <div class="absolute top-4 right-4 flex gap-2 z-10">
             <button onclick="toggleFavorite(this, {{ recipe.pk }})"
                     class="bg-white/90 p-2 rounded-full text-gray-600 hover:text-mint-500 transition-colors">
-                {% if recipe.is_favorite %}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-mint-500" fill="currentColor"
-                     viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-                {% else %}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-                {% endif %}
-            </button>
-
-
-            <div class="relative">
-                <button
-                        type="button"
-                        class="flex items-center bg-white/90 p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition-all"
-                        aria-expanded="false"
-                        id="dropdownButton"
-                        onclick="document.getElementById('plan-modal').classList.remove('hidden')"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                         stroke="currentColor" class="h-6 w-6 mr-2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
-                    </svg>
-                    <span>Add to plan</span>
-                </button>
-            </div>
-
-            <button onclick="location.href='/recipe/{{ recipe.pk }}/edit/'"
-                    class="bg-white/90 p-2 rounded-full text-gray-600 hover:text-mint-500 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
             </button>
+
+            <button type="button"
+                    class="flex items-center bg-white/90 p-2 rounded-md text-gray-700 hover:text-mint-500 hover:bg-gray-100 transition-all"
+                    aria-expanded="false" id="dropdownButton"
+                    onclick="document.getElementById('plan-modal').classList.remove('hidden')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="h-6 w-6 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
+                </svg>
+                <span>Add to plan</span>
+            </button>
+            <div class="relative">
+                <button id="toggleDropdown"
+                        class="bg-white/90 p-2 rounded-md text-gray-700 hover:text-mint-500 hover:bg-gray-100 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"/>
+                    </svg>
+                </button>
+                <ul id="dropdownMenu"
+                    class="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-md shadow-lg hidden">
+                    <li>
+                        <a href="/recipe/{{ recipe.pk }}/edit/"
+                           class="flex justify-between items-center text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-md whitespace-nowrap">
+                            Edit recipe
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/recipe/{{ recipe.pk }}/translate/" onclick="toggleTranslation()"
+                           class="flex justify-between items-center text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-md whitespace-nowrap">
+                            Translate
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="h-5 w-5 ml-2" id="language-svg">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802"/>
+                            </svg>
+                            <svg id="translation-spinner" class="hidden h-5 w-5 ml-2 text-mint-500 animate-spin"
+                                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="10"
+                                        stroke-dasharray="150 50" stroke-linecap="round"/>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         {% if not recipe.video %}
@@ -121,6 +137,18 @@
         {% endif %}
 
         <div class="space-y-6">
+            {% if recipe_variations %}
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Translations</h3>
+                {% for recipe_variation in recipe_variations %}
+                <a href="{% url 'recipes:recipe_detail' recipe_variation.pk %}"
+                   class="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium
+       {% if recipe.pk == recipe_variation.pk %} text-mint-600 {% else %} text-gray-800 {% endif %}">
+                    {{ recipe_variation.language }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
             {% if recipe.description %}
             <div>
                 <h3 class="text-lg font-semibold mb-2">Description</h3>
@@ -197,8 +225,10 @@
                             </svg>
                         </div>
                         <div class="mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="block text-lg font-medium text-gray-800" id="modal-title">Select Meal and Date</h3>
-                            <p class="mt-2 text-sm text-gray-600">Choose a meal type and date for your meal planning. This information will help us organize your preferences.</p>
+                            <h3 class="block text-lg font-medium text-gray-800" id="modal-title">Select Meal and
+                                Date</h3>
+                            <p class="mt-2 text-sm text-gray-600">Choose a meal type and date for your meal planning.
+                                This information will help us organize your preferences.</p>
                         </div>
                     </div>
                     <div class="mt-6 space-y-4">
@@ -236,8 +266,6 @@
         </div>
     </div>
 </div>
-
-
 
 
 <script>
@@ -310,6 +338,25 @@
 
         dateInput.min = formatDate(oneWeekAgo);
     });
+</script>
+<script>
+    document.getElementById('toggleDropdown').addEventListener('click', function() {
+        document.getElementById('dropdownMenu').classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('dropdownMenu');
+        const button = document.getElementById('toggleDropdown');
+        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+</script>
+<script>
+    function toggleTranslation() {
+        document.getElementById('language-svg').classList.add('hidden');
+        document.getElementById('translation-spinner').classList.remove('hidden');
+    }
 </script>
 {% if messages %}
 <div class="fixed bottom-4 right-4">

@@ -6,6 +6,35 @@
 {% block content %}
 <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto space-y-8">
+        <!-- Translate Language Settings -->
+        <div class="bg-white shadow-sm rounded-lg">
+            <div class="px-6 py-5 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Change Translation Language</h3>
+            </div>
+            <form method="POST" action="{% url 'recipes:change_translation_language' %}" class="p-6 space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label for="current_password" class="block text-sm font-medium text-gray-700">Select language</label>
+                        <div class="w-64">
+                        <select id="options" name="language_choice" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-mint-500 focus:border-mint-500 sm:text-sm">
+                            {% if selected_language %}
+                            <option selected value="{{ selected_language }}">{{ selected_language }}</option>
+                            {% endif %}
+                            {% for option in languages %}
+                            <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                        Save Language
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- Password Change Section -->
         <div class="bg-white shadow-sm rounded-lg">
             <div class="px-6 py-5 border-b border-gray-200">
