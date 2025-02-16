@@ -95,6 +95,9 @@
         "total_time": 0.85,
         "difficulty": "Intermediate",
         "is_favorite": false,
+        "language": "English",
+        "is_original": true,
+        "is_translated": false,
         "ingredients": [
           {
             "name": "chicken breast",
@@ -229,6 +232,11 @@
       "password_reset_token_does_not_match": {
         "detail": "No PasswordResetToken matches the given query."
       }
+    },
+    "user_profile": {
+      "user_settings": {
+        "preferred_translate_language": "English"
+      }
     }
   },
   "requests": {
@@ -250,6 +258,9 @@
         "new_password": "new_password123??",
         "confirm_password": "new_password123??4"
       }
+    },
+    "user_settings": {
+      "language": " English"
     }
   }
 }

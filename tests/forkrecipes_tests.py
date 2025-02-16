@@ -351,15 +351,18 @@ def test_toggle_favorite_success(login_with_user, client):
 def test_toggle_favorite_bad_request(login_with_user, client):
     recipe_pk = int(random.uniform(1, 100))
     mock_favorite_action_recipe(recipe_pk, status_code=400)
-    api_request.patch_favorite_recipe(recipe_pk, token=uuid.uuid4())
+    api_request.patch_favorite_recipe(recipe_pk, token=str(uuid.uuid4()))
 
     response = client.post(reverse("recipes:toggle_favorite", args=[recipe_pk]))
     assert response.status_code == 200
     assert "failure" == response.json()['status']
 
-
+@responses.activate
 @pytest.mark.django_db
 def test_settings_view_render(login_with_user, client):
+    mock_get_user_settings()
+    api_request.request_get_user_settings(token=str(uuid.uuid4()))
+
     response = client.get(reverse("recipes:settings"))
 
     assert response.status_code == 200
@@ -370,7 +373,10 @@ def test_settings_view_render(login_with_user, client):
 @pytest.mark.django_db
 def test_change_password_settings_happy_path(login_with_user, client):
     data, json_request = mock_change_password_from_settings(status_code=204)
-    api_request.change_logged_user_password(data=data, token=uuid.uuid4())
+    api_request.change_logged_user_password(data=data, token=str(uuid.uuid4()))
+
+    mock_get_user_settings()
+    api_request.request_get_user_settings(token=str(uuid.uuid4()))
 
     response = client.post(reverse("recipes:change_password"), data=json_request, follow=True)
     assert response.status_code == 200
@@ -383,6 +389,10 @@ def test_change_password_settings_happy_path(login_with_user, client):
 def test_change_password_settings_passwords_does_not_match(login_with_user, client):
     json_request = json_data_responses['requests']['authentication'][
         'change_password_logged_user_passwords_does_not_match']
+
+    mock_get_user_settings()
+    api_request.request_get_user_settings(token=str(uuid.uuid4()))
+
     response = client.post(reverse("recipes:change_password"), data=json_request)
 
     assert response.status_code == 200
@@ -395,7 +405,10 @@ def test_change_password_settings_passwords_does_not_match(login_with_user, clie
 @pytest.mark.django_db
 def test_change_password_api_bad_request(login_with_user, client):
     data, json_request = mock_change_password_from_settings(status_code=400)
-    api_request.change_logged_user_password(data=data, token=uuid.uuid4())
+    api_request.change_logged_user_password(data=data, token=str(uuid.uuid4()))
+
+    mock_get_user_settings()
+    api_request.request_get_user_settings(token=str(uuid.uuid4()))
 
     response = client.post(reverse("recipes:change_password"), data=json_request)
 
@@ -411,6 +424,9 @@ def test_settings_delete_account_happy_path(login_with_user, client):
     token = uuid.uuid4()
     mock_delete_account(status_code=204)
     api_request.delete_user_account(token)
+
+    mock_get_user_settings()
+    api_request.request_get_user_settings(token=str(uuid.uuid4()))
 
     response = client.post(reverse("recipes:delete_account"), follow=True)
 
@@ -428,6 +444,10 @@ def test_settings_delete_account_happy_path(login_with_user, client):
 def test_settings_delete_account_api_no_creds_provided(login_with_user, client):
     mock_delete_account(status_code=403)
     api_request.delete_user_account(None)
+
+    mock_get_user_settings()
+    api_request.request_get_user_settings(token=str(uuid.uuid4()))
+
     response = client.post(reverse("recipes:delete_account"), follow=True)
 
     assert response.status_code == 200
@@ -440,6 +460,10 @@ def test_settings_delete_account_api_no_creds_provided(login_with_user, client):
 def test_settings_delete_account_api_bad_request(login_with_user, client):
     mock_delete_account(status_code=500)
     api_request.delete_user_account(None)
+
+    mock_get_user_settings()
+    api_request.request_get_user_settings(token=str(uuid.uuid4()))
+
     response = client.post(reverse("recipes:delete_account"), follow=True)
 
     assert response.status_code == 200

@@ -266,3 +266,7 @@ def mock_change_password_from_settings(status_code: int):
 
 def mock_delete_account(status_code: int):
     responses_register_mock(responses.DELETE, path="api/auth/delete-account", status_code=status_code)
+
+def mock_get_user_settings():
+    json_response = json_data_responses['responses']['user_profile']['user_settings']
+    responses_register_mock(method=responses.GET, path="api/auth/settings", json_data=json_response, status_code=200)
