@@ -29,10 +29,11 @@ server {
         uwsgi_pass unix:/tmp/uwsgi/uwsgi_recipes.sock;
 
         # This timeouts are needed regarding the amount of wait when using openai model
-        proxy_connect_timeout 460s;        # Timeout for connection to upstream
-        proxy_send_timeout 460s;           # Timeout for sending data to upstream
-        proxy_read_timeout 460s;           # Timeout for reading data from upstream
-        send_timeout 460s;
+        proxy_connect_timeout 760s;        # Timeout for connection to upstream
+        proxy_send_timeout 760s;           # Timeout for sending data to upstream
+        proxy_read_timeout 760s;           # Timeout for reading data from upstream
+        send_timeout 760s;
+        uwsgi_read_timeout 760s;
     }
 
     location /static {
