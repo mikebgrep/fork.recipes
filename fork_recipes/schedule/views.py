@@ -14,8 +14,11 @@ def schedule_list(request):
 
     if request.POST:
         date = request.POST.get('selected_date')
+        if not date:
+            date = str(datetime.datetime.now().date())
 
     response = api_request.request_get_schedule_of_a_day(date)
+
     breakfast = [x for x in response if x.timing == 'Breakfast']
     lunch = [x for x in response if x.timing == 'Lunch']
     dinner = [x for x in response if x.timing == 'Dinner']
