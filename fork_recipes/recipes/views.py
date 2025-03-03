@@ -219,6 +219,10 @@ def edit_recipe(request, recipe_pk):
         instructions_data = list()
         recipe_files = []
 
+        #TODO: // make a better way to extend or set the missing metrics as None
+        max_length = max(len(ingredient_names), len(ingredient_quantities), len(ingredient_metrics))
+        ingredient_metrics.extend([None] * (max_length - len(ingredient_metrics)))
+
         for name, quantity, metric in zip(ingredient_names, ingredient_quantities, ingredient_metrics):
             ingredients_data.append({"name": name, "quantity": quantity, "metric": metric})
 
