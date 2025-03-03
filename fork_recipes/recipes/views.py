@@ -266,6 +266,12 @@ def delete_recipe(request, recipe_pk):
 
 
 @login_required
+def print_recipe(request, recipe_pk: int):
+    recipe = api_request.get_recipe_by_pk(pk=recipe_pk)
+    return render(request, 'print/recipe_print.html', context={"recipe": recipe})
+
+
+@login_required
 def saved_recipes(request):
     current_page_number = request.GET.get('page', 1)
     count, next_page, prev_page, recipes = api_request.get_favorite_recipes(current_page_number)

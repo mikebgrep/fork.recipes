@@ -24,5 +24,5 @@ urlpatterns = [
     path('settings/change-password/', views.change_password, name='change_password'),
     path('settings/delete-account/', views.delete_account, name='delete_account'),
     path('settings/change-translation-language/', views.change_translation_language, name="change_translation_language"),
-
+    path("recipe/<int:recipe_pk>/print/", views.print_recipe, name="print_recipe")
 ]

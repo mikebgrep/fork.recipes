@@ -588,6 +588,17 @@ video {
   }
 }
 
+@media print {
+  .print-img {
+    max-width: 100%;
+    height: 400px;
+    -o-object-fit: cover;
+       object-fit: cover;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -698,6 +709,11 @@ video {
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.my-6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .mb-1 {
@@ -849,12 +865,20 @@ video {
   height: 24rem;
 }
 
+.h-\[300px\] {
+  height: 300px;
+}
+
 .h-auto {
   height: auto;
 }
 
 .h-full {
   height: 100%;
+}
+
+.h-px {
+  height: 1px;
 }
 
 .max-h-32 {
@@ -939,6 +963,10 @@ video {
 
 .max-w-md {
   max-width: 28rem;
+}
+
+.max-w-screen-md {
+  max-width: 768px;
 }
 
 .max-w-screen-sm {
@@ -1046,6 +1074,10 @@ video {
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .grid-cols-3 {
@@ -1277,6 +1309,11 @@ video {
   border-color: transparent;
 }
 
+.bg-eggshell {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 230 216 / var(--tw-bg-opacity, 1));
+}
+
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
@@ -1358,6 +1395,12 @@ video {
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
 }
 
+.from-black\/30 {
+  --tw-gradient-from: rgb(0 0 0 / 0.3) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
 .from-black\/60 {
   --tw-gradient-from: rgb(0 0 0 / 0.6) var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position);
@@ -1384,6 +1427,10 @@ video {
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.p-3 {
+  padding: 0.75rem;
 }
 
 .p-4 {
@@ -1505,6 +1552,14 @@ video {
   text-align: center;
 }
 
+.font-fancy {
+  font-family: "Young Serif", sans-serif;
+}
+
+.font-outfit {
+  font-family: "Outfit", serif;
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1595,6 +1650,11 @@ video {
   color: currentColor;
 }
 
+.text-dark-charcoal {
+  --tw-text-opacity: 1;
+  color: rgb(48 45 44 / var(--tw-text-opacity, 1));
+}
+
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity, 1));
@@ -1640,6 +1700,11 @@ video {
   color: rgb(68 164 126 / var(--tw-text-opacity, 1));
 }
 
+.text-nutmeg {
+  --tw-text-opacity: 1;
+  color: rgb(133 70 50 / var(--tw-text-opacity, 1));
+}
+
 .text-primary-600 {
   --tw-text-opacity: 1;
   color: rgb(77 184 141 / var(--tw-text-opacity, 1));
@@ -1653,6 +1718,11 @@ video {
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity, 1));
+}
+
+.text-wenge-brown {
+  --tw-text-opacity: 1;
+  color: rgb(95 87 78 / var(--tw-text-opacity, 1));
 }
 
 .text-white {
@@ -1765,6 +1835,22 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.marker\:font-semibold *::marker {
+  font-weight: 600;
+}
+
+.marker\:text-nutmeg *::marker {
+  color: rgb(133 70 50 );
+}
+
+.marker\:font-semibold::marker {
+  font-weight: 600;
+}
+
+.marker\:text-nutmeg::marker {
+  color: rgb(133 70 50 );
+}
+
 .file\:mr-4::file-selector-button {
   margin-right: 1rem;
 }
@@ -1870,6 +1956,11 @@ video {
 .hover\:text-mint-500:hover {
   --tw-text-opacity: 1;
   color: rgb(86 204 157 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-mint-700:hover {
+  --tw-text-opacity: 1;
+  color: rgb(68 164 126 / var(--tw-text-opacity, 1));
 }
 
 .hover\:text-red-700:hover {
@@ -2057,6 +2148,10 @@ video {
     display: flex;
   }
 
+  .sm\:h-\[350px\] {
+    height: 350px;
+  }
+
   .sm\:flex-row {
     flex-direction: row;
   }
@@ -2169,12 +2264,20 @@ video {
     display: none;
   }
 
+  .md\:h-\[400px\] {
+    height: 400px;
+  }
+
   .md\:w-12 {
     width: 3rem;
   }
 
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .md\:flex-row {
@@ -2189,9 +2292,23 @@ video {
     justify-content: space-between;
   }
 
+  .md\:rounded-xl {
+    border-radius: 0.75rem;
+  }
+
+  .md\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
   .md\:text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
+  }
+
+  .md\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
   }
 }
 

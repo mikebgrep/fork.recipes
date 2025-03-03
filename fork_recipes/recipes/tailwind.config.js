@@ -19,6 +19,8 @@ content: ['./templates/**/*.html', '../schedule/templates/**/*.html'],
         },
       },
       fontFamily: {
+      fancy: ['"Young Serif"', 'sans-serif'],
+        outfit: ['"Outfit"', 'serif'],
         body: [
           'Inter',
           'ui-sans-serif',
@@ -56,6 +58,10 @@ content: ['./templates/**/*.html', '../schedule/templates/**/*.html'],
       },
 
       colors: {
+      'nutmeg': '#854632',
+      'eggshell': '#f3e6d8',
+      'wenge-brown': '#5f574e',
+      'dark-charcoal': '#302d2c',
         mint: {
           50: '#edfbf6',
           100: '#d3f5e8',
@@ -84,5 +90,19 @@ content: ['./templates/**/*.html', '../schedule/templates/**/*.html'],
       }
     },
   },
-  plugins: [],
+  plugins:
+        [ function ({ addComponents }) {
+      addComponents({
+        '@media print': {
+          '.print-img': {
+            maxWidth: '100%',
+            height: '400px',  // Adjust this value for A4 paper
+            objectFit: 'cover',
+            display: 'block',
+            margin: '0 auto',
+          },
+        },
+      });
+    },
+  ],
 };

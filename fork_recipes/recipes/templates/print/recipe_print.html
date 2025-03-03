@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="robots" content="noindex,nofollow"/>
+    <meta name="author" content="Bartosz Utratny"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Young+Serif&display=swap"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/src/output.css"/>
+    <link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico"/>
+</head>
+<body class="min-h-screen bg-eggshell text-wenge-brown font-outfit">
+<main class="max-w-screen-md mx-auto bg-white py-6 px-6 md:px-10 md:rounded-xl shadow-md">
+    <!-- Recipe Title -->
+    <h1 class="font-fancy text-3xl mt-4 text-dark-charcoal text-center mb-4">
+        {{ recipe.name }}
+    </h1>
+    <!-- Image Section -->
+    <div class="flex justify-center mb-4">
+        <img
+                src="{{ recipe.image }}"
+                alt="Recipe image"
+                class="print-img w-full h-[300px] sm:h-[350px] md:h-[400px] object-cover rounded-lg shadow-md"
+        />
+    </div>
+    <!-- Description -->
+    <p class="mt-4 text-center">
+        {{ recipe.description }}
+    </p>
+    <!-- Chef, Reference & Preparation Time -->
+    <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm md:text-base text-center font-medium p-3 rounded-lg shadow-sm">
+        <p><strong>Chef:</strong> {{ recipe.chef }}</p>
+        <p><strong>Prep Time:</strong> {{ recipe.prep_time }} min</p>
+        <p><strong>Cook Time:</strong> {{ recipe.cook_time }} min</p>
+        <p><strong>Total Time:</strong> {{ recipe.total_time }} hrs</p>
+    </div>
+    <!-- Ingredients -->
+    <div class="mt-6">
+        <h3 class="font-fancy text-2xl text-nutmeg">Ingredients</h3>
+        <ul class="list-disc list-inside mt-3 marker:text-nutmeg">
+            {% for ingredient in recipe.ingredients %}
+            <li>{{ ingredient.quantity }} {{ ingredient.metric }} {{ ingredient.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Separator -->
+    <div class="w-full h-px bg-light-gray mx-auto my-6"></div>
+    <!-- Instructions -->
+    <div style="{% if recipe.ingredients|length >= 10 and recipe.ingredients|length < 12 %} page-break-before: always; {% endif %}">
+        <h3 class="font-fancy text-2xl text-nutmeg">Instructions</h3>
+        <ol class="list-decimal list-inside mt-3 marker:text-nutmeg marker:font-semibold">
+            {% for step in recipe.steps %}
+            <li class="mt-2">{{ step.text }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+</main>
+</body>
+</html>
