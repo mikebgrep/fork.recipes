@@ -13,14 +13,16 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <input type="checkbox"
-                               id="complete-item-btn"
                                class="check-box w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                               onchange="toggleCheckbox(this, {{ ingredient.pk }})"
+                               onclick="toggleItemStatus(this, {{ ingredient.pk }})"
                                {% if ingredient.is_completed %} checked {% endif %}>
-                        <div class="clickable-text flex flex-col cursor-pointer"
-                             onclick="toggleCheckbox(this, {{ ingredient.pk }})">
-                            <span class="ingredient-name text-lg font-medium text-gray-700 dark:text-gray-200">{% if ingredient.times > 1 %} (x{{ ingredient.times }}) {% endif %} {{ ingredient.name }}</span>
-                            <span class="ingredient-quantity text-sm text-gray-500 dark:text-gray-400">{{ ingredient.quantity }} {{ ingredient.metric }}</span>
+                        <div class="clickable-text flex flex-col cursor-pointer" onclick="toggleItemStatus(this.previousElementSibling, {{ ingredient.pk }})">
+                            <span class="ingredient-name text-lg font-medium text-gray-700 dark:text-gray-200 {% if ingredient.is_completed %}line-through{% endif %}">
+                                {% if ingredient.times > 1 %} (x{{ ingredient.times }}) {% endif %} {{ ingredient.name }}
+                            </span>
+                            <span class="ingredient-quantity text-sm text-gray-500 dark:text-gray-400 {% if ingredient.is_completed %}line-through{% endif %}">
+                                {{ ingredient.quantity }} {{ ingredient.metric }}
+                            </span>
                         </div>
                     </div>
                     <div class="flex space-x-2">
@@ -251,6 +253,52 @@
     }
 </script>
 <script>
+    async function toggleItemStatus(checkbox, itemPk) {
+        // Get the elements
+        const ingredientItem = checkbox.closest('.ingredient-item');
+        const ingredientName = ingredientItem.querySelector('.ingredient-name');
+        const ingredientQuantity = ingredientItem.querySelector('.ingredient-quantity');
+        
+        // If this was triggered by clicking the text, toggle the checkbox
+        if (!event.target.matches('input[type="checkbox"]')) {
+            checkbox.checked = !checkbox.checked;
+        }
+
+        // Store the original state to revert if needed
+        const wasChecked = checkbox.checked;
+
+        try {
+            const response = await fetch(`/shopping/complete/${itemPk}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    is_completed: checkbox.checked
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update item status');
+            }
+
+            // Only update the UI after successful API call
+            if (checkbox.checked) {
+                ingredientName.classList.add('line-through');
+                ingredientQuantity.classList.add('line-through');
+            } else {
+                ingredientName.classList.remove('line-through');
+                ingredientQuantity.classList.remove('line-through');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            // Revert checkbox state on error
+            checkbox.checked = !wasChecked;
+        }
+    }
+
     function openDeleteModal(listPk, itemPk) {
         const form = document.getElementById('delete-form');
         const deleteUrl = "{% url 'shopping:remove_item' list_pk=0 item_pk=1 %}";
