@@ -375,8 +375,8 @@ def request_complete_shopping_list(list_pk:int, token:str):
 
 
 def request_complete_single_ingredient(item_pk:int, token:str):
-    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/item/{item_pk}/", token=token)
-    if response.status_code == 200:
+    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/item/{item_pk}/complete/", token=token)
+    if response.status_code == 201:
         return True
 
     return None

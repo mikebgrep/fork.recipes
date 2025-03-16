@@ -12,6 +12,6 @@ urlpatterns = [
     path('item/<int:item_pk>/', views.update_shopping_item, name="update_item"),
     path('<int:list_pk>/add-ingredient', views.add_shopping_list_item, name="add_item"),
     path('<int:list_pk>/delete/<int:item_pk>/', views.delete_shopping_list_item, name="remove_item"),
-    path('<int:list_pk>/complete/<int:item_pk>/', views.delete_shopping_list_item, name="complete_item"),
+    path('complete/<int:item_pk>/', views.complete_single_shopping_list_item, name="complete_item"),
     path('<int:list_pk>/complete/', views.complete_shopping_list, name="complete_list"),
 ]

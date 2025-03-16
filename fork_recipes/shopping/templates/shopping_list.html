@@ -9,17 +9,16 @@
     <div id="recipe-content">
         <div id="ingredient-list" class="mt-6 space-y-4">
             {% for ingredient in shopping_list.items %}
-            <div class="ingredient-item {% if shopping_list.is_completed %}  line-through {% endif %} border rounded-xl p-4 bg-white dark:bg-gray-800">
+            <div class="ingredient-item {% if ingredient.is_completed %}  line-through {% endif %} border rounded-xl p-4 bg-white dark:bg-gray-800">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <input type="checkbox"
                                id="complete-item-btn"
-                               data-list-pk="{{ shopping_list.pk }}"
-                               data-item-pk="{{ ingredient.pk }}"
-                        class="check-box w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        onchange="toggleStrikeThrough(this)"
-                        {% if shopping_list.is_completed %} checked {% endif %} >
-                        <div class="clickable-text flex flex-col cursor-pointer" onclick="toggleCheckbox(this)">
+                               class="check-box w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                               onchange="toggleCheckbox(this, {{ ingredient.pk }})"
+                               {% if ingredient.is_completed %} checked {% endif %}>
+                        <div class="clickable-text flex flex-col cursor-pointer"
+                             onclick="toggleCheckbox(this, {{ ingredient.pk }})">
                             <span class="ingredient-name text-lg font-medium text-gray-700 dark:text-gray-200">{% if ingredient.times > 1 %} (x{{ ingredient.times }}) {% endif %} {{ ingredient.name }}</span>
                             <span class="ingredient-quantity text-sm text-gray-500 dark:text-gray-400">{{ ingredient.quantity }} {{ ingredient.metric }}</span>
                         </div>
@@ -94,7 +93,7 @@
             </button>
             <a id="mark-complete"
                class="sm:w-auto px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-500"
-               href="{% url 'shopping:complete_list' list_pk=shopping_list.pk %}">{% if shopping_list.is_completed %}
+               href="{% url 'shopping:complete_list' list_pk=shopping_list.pk %}">{% if shopping_list.is_completed  %}
                 Mark as Un-Complete {% else %} Mark as Complete {% endif %}
             </a>
         </div>
@@ -151,8 +150,6 @@
             ingredientName.classList.remove('line-through');
             ingredientQuantity.classList.remove('line-through');
         }
-
-
     }
 
     function editIngredient(button) {
@@ -160,11 +157,11 @@
             editSection.classList.toggle('hidden');
         }
 
-    function toggleCheckbox(textElement) {
+    function toggleCheckbox(textElement, item_pk) {
         const checkbox = textElement.closest('.ingredient-item').querySelector('.check-box');
         checkbox.checked = !checkbox.checked;
         toggleStrikeThrough(checkbox);
-        completeItem();
+        completeItem(item_pk);
     }
 
 
@@ -217,43 +214,27 @@
         });
     }
 
-    // Function to handle "Complete Item" AJAX request
-    function completeItem() {
-        // Get the list and item primary keys from the button's data attributes
-        const listPk = document.getElementById("complete-item-btn").getAttribute("data-list-pk");
-        const itemPk = document.getElementById("complete-item-btn").getAttribute("data-item-pk");
-
-        // Construct the URL dynamically using the list and item primary keys
-        const url = `/${listPk}/complete/${itemPk}/`;
-
-        // Create a POST request using the Fetch API (AJAX)
+    function completeItem(item_pk) {
+        const url = `/shopping/complete/${item_pk}/`;
         fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token for Django
+                'X-CSRFToken': getCookie('csrftoken')
             },
             body: JSON.stringify({
-                // Optional: Send any necessary data in the request body
                 "action": "complete"
             })
         })
-        .then(response => response.json())  // Parse the JSON response
+        .then(response => response.json())
         .then(data => {
-            // Handle success response (e.g., UI update or success message)
             console.log("Success:", data);
-
-            // Optionally update UI or show a message
-            alert("Item marked as complete!");
         })
         .catch((error) => {
-            // Handle error response
             console.error('Error:', error);
-            alert("An error occurred while marking the item as complete.");
         });
     }
 
-    // Function to get CSRF token for Django (if using Django)
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {

@@ -123,7 +123,7 @@ def complete_shopping_list(request, list_pk):
 
 
 @login_required
-def complete_single_shopping_list_item(request, list_pk, item_pk):
+def complete_single_shopping_list_item(request, item_pk):
     token = request.session.get("auth_token")
     is_completed = api_request.request_complete_single_ingredient(item_pk, token)
     if is_completed:
