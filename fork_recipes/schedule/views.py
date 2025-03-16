@@ -1,5 +1,4 @@
 import datetime
-import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -50,3 +49,6 @@ def create_schedule_meal_type(request):
             messages.error(request, f'There was an error processing the request.Please try again.')
 
         return redirect("recipes:recipe_detail", recipe_pk=recipe_id)
+
+
+

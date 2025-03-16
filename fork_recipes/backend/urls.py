@@ -8,12 +8,14 @@ if settings.DEBUG:
     urlpatterns = [
         path('', include('recipes.urls', namespace="recipes")),
         path('schedule/', include('schedule.urls', namespace="schedule")),
+        path('shopping/', include('shopping.urls', namespace="shopping")),
 
                   ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
 else:
     urlpatterns = [
         path('', include('recipes.urls', namespace="recipes")),
         path('schedule/', include('schedule.urls', namespace="schedule")),
+        path('shopping/', include('shopping.urls', namespace="shopping")),
 
     ]
 

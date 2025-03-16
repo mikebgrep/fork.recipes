@@ -13,6 +13,7 @@ from fork_recipes.schedule.models import TIMING_CHOICES
 
 load_dotenv()
 
+
 def api_request_read_only(method: str, url: str, data=None):
     headers = {
         'X-Auth-Header': os.getenv('X_AUTH_HEADER'),
@@ -209,7 +210,7 @@ def request_get_profile(token: str):
     return None
 
 
-def request_download_recipe(recipe_url:str, token: str):
+def request_download_recipe(recipe_url: str, token: str):
     data = {
         "url": recipe_url
     }
@@ -220,7 +221,7 @@ def request_download_recipe(recipe_url:str, token: str):
     return None
 
 
-def request_delete_recipe(recipe_pk:int, token:str):
+def request_delete_recipe(recipe_pk: int, token: str):
     response = api_request_write(method=HTTPMethod.DELETE, url=f"api/recipe/{recipe_pk}/", token=token)
     if response.status_code == 204:
         return True
@@ -228,7 +229,7 @@ def request_delete_recipe(recipe_pk:int, token:str):
     return False
 
 
-def reqeust_generate_recipes(ingredients: List[str], token:str):
+def reqeust_generate_recipes(ingredients: List[str], token: str):
     data = {
         "ingredients": ingredients
     }
@@ -246,7 +247,8 @@ def request_get_schedule_of_a_day(date: str):
         return result
     return None
 
-def request_post_schedule(date:str, recipe_id: int, timing: TIMING_CHOICES, token:str):
+
+def request_post_schedule(date: str, recipe_id: int, timing: TIMING_CHOICES, token: str):
     data = {
         "timing": timing,
         "recipe": recipe_id,
@@ -258,7 +260,8 @@ def request_post_schedule(date:str, recipe_id: int, timing: TIMING_CHOICES, toke
         return result
     return None
 
-def request_get_user_settings(token:str):
+
+def request_get_user_settings(token: str):
     response = api_request_write(method=HTTPMethod.GET, url="api/auth/settings", token=token)
     if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
@@ -266,7 +269,7 @@ def request_get_user_settings(token:str):
     return None
 
 
-def request_change_user_settings_language(language_choice: str, token:str):
+def request_change_user_settings_language(language_choice: str, token: str):
     data = {
         "language": language_choice
     }
@@ -277,8 +280,7 @@ def request_change_user_settings_language(language_choice: str, token:str):
     return False
 
 
-def request_translate_recipe(data: dict, token:str):
-
+def request_translate_recipe(data: dict, token: str):
     response = api_request_write(method=HTTPMethod.POST, url="api/recipe/translate", token=token, data=json.dumps(data))
     if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
@@ -290,10 +292,91 @@ def request_translate_recipe(data: dict, token:str):
     return None, None
 
 
-def request_get_recipe_variations(recipe_pk:int):
+def request_get_recipe_variations(recipe_pk: int):
     response = api_request_read_only(method=HTTPMethod.GET, url=f"api/recipe/{recipe_pk}/variations")
     if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
+
+    return None
+
+
+def request_get_list_shopping_lists(token: str):
+    response = api_request_write(method=HTTPMethod.GET, url="api/shopping/", token=token)
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None
+
+
+def request_delete_shopping_list(list_pk: int, token: str):
+    response = api_request_write(method=HTTPMethod.DELETE, url=f"api/shopping/{list_pk}/", token=token)
+    if response.status_code == 204:
+        return True
+
+    return None
+
+
+def request_create_shopping_list(name: str, token: str):
+    data = {
+        "name": name
+
+    }
+
+    response = api_request_write(method=HTTPMethod.POST, url="api/shopping/", data=json.dumps(data), token=token)
+    if response.status_code == 201:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None
+
+
+def request_get_shopping_list(list_pk: int, token: str):
+    response = api_request_write(method=HTTPMethod.GET, url=f"api/shopping/single/{list_pk}/", token=token)
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None
+
+
+def request_update_shopping_list_item(item_pk: int, data: dict, token: str):
+    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/item/{item_pk}/", data=json.dumps(data),
+                                 token=token)
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None
+
+
+def request_add_ingredient_to_shopping_list(list_pk:int, data: dict, token:str):
+    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/single/{list_pk}/", data=json.dumps(data), token=token)
+    if response.status_code == 201:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None
+
+def request_delete_ingredient_from_shopping_list(item_pk:int, token:str):
+    response = api_request_write(method=HTTPMethod.DELETE, url=f"api/shopping/item/{item_pk}/", token=token)
+    if response.status_code == 204:
+        return True
+
+    return None
+
+def request_complete_shopping_list(list_pk:int, token:str):
+    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/complete-list/{list_pk}/", token=token)
+    if response.status_code == 201:
+        return True
+
+    return None
+
+
+def request_complete_single_ingredient(item_pk:int, token:str):
+    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/item/{item_pk}/", token=token)
+    if response.status_code == 200:
+        return True
 
     return None
