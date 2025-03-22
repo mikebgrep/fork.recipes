@@ -141,7 +141,9 @@ def recipe_list(request):
 
 @login_required
 def recipe_detail(request, recipe_pk):
+    token = request.session.get("auth_token")
     recipe = api_request.get_recipe_by_pk(recipe_pk)
+    shopping_lists = api_request.request_get_shopping_lists(token)
     if not recipe:
         return HttpResponseNotFound("Recipe not found")
 
@@ -161,6 +163,7 @@ def recipe_detail(request, recipe_pk):
         'recipe': recipe,
         'category': category,
         "recipe_variations": recipes_variations,
+        "shopping_lists": shopping_lists
     })
 
 

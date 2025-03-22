@@ -9,7 +9,7 @@ from fork_recipes.ws import api_request
 @login_required
 def shopping_list(request):
     token = request.session.get("auth_token")
-    shopping_lists = api_request.request_get_list_shopping_lists(token)
+    shopping_lists = api_request.request_get_shopping_lists(token)
 
     return render(request, "shopping.html", context={"shopping_lists": shopping_lists})
 
@@ -18,6 +18,7 @@ def shopping_list(request):
 def get_shopping_list(request, list_pk):
     token = request.session.get("auth_token")
     single_shopping_list = api_request.request_get_shopping_list(list_pk, token)
+    print(single_shopping_list)
     recipes = None
     try:
         recipes = [api_request.get_recipe_by_pk(x) for x in single_shopping_list.recipes]
@@ -98,6 +99,19 @@ def add_shopping_list_item(request, list_pk):
 
         messages.error(request, "There an error.Please try again later or contact support")
         return redirect("shopping:single_shopping_list", list_pk=list_pk)
+
+@login_required
+def add_shopping_list_recipe_items(request, recipe_pk):
+    if request.method == "POST":
+        list_pk = request.POST.get('list_pk')
+        token = request.session.get("auth_token")
+        list_from_recipe = api_request.request_add_recipe_to_shopping_list(list_pk, recipe_pk, token)
+        if list_from_recipe:
+            messages.success(request, message=f"Recipe ingredients added to list {list_from_recipe.name}")
+        else:
+            messages.error(request, message="Recipe ingredients are not added to list. Please try again!")
+
+        return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
 
 
 @login_required

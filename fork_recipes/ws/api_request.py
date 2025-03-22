@@ -301,7 +301,7 @@ def request_get_recipe_variations(recipe_pk: int):
     return None
 
 
-def request_get_list_shopping_lists(token: str):
+def request_get_shopping_lists(token: str):
     response = api_request_write(method=HTTPMethod.GET, url="api/shopping/", token=token)
     if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
@@ -328,9 +328,18 @@ def request_create_shopping_list(name: str, token: str):
     if response.status_code == 201:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
-
     return None
 
+
+def request_add_recipe_to_shopping_list(list_pk: int, recipe_pk: int, token: str):
+    data = {
+        "recipe": recipe_pk
+    }
+    response = api_request_write(method=HTTPMethod.PUT, url=f"api/shopping/{list_pk}/", data=json.dumps(data), token=token)
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+    return None
 
 def request_get_shopping_list(list_pk: int, token: str):
     response = api_request_write(method=HTTPMethod.GET, url=f"api/shopping/single/{list_pk}/", token=token)
