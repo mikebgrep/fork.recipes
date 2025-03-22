@@ -1,6 +1,6 @@
 # Fork recipes 
 
-![version](https://img.shields.io/badge/version-2.0.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
+![version](https://img.shields.io/badge/version-2.1.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
 
 
 <img align="right" src="assets/avatar.png" height="170px" alt="Logo">
@@ -16,6 +16,7 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Save your favorite recipes 😍
 - Categorize 📑 your recipes for easy management
 - Plan meals with in app Scheduler 📋
+- Add recipe ingredients to Shopping List 🛒
 - Scrape recipe from any webpage and save it locally (openai token needed) 🤖
 - Generate recipes by ingredients and save them locally (openai token needed) 🤖
 - Translate recipes to any language 🈹️(openai token needed) 🤖
