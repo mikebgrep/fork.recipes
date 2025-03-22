@@ -237,6 +237,44 @@
       "user_settings": {
         "preferred_translate_language": "English"
       }
+    },
+    "shopping": {
+      "shopping_lists": [
+        {
+          "pk": 17,
+          "items": [
+            {
+              "pk": 132,
+              "name": "unsalted butter",
+              "quantity": "4",
+              "metric": "sticks",
+              "times": 1,
+              "is_completed": false
+            },
+            {
+              "pk": 133,
+              "name": "olive oil",
+              "quantity": "0.25",
+              "metric": "cups",
+              "times": 1,
+              "is_completed": false
+            },
+            {
+              "pk": 134,
+              "name": "Test ingredient11",
+              "quantity": "1231",
+              "metric": "gr",
+              "times": 1,
+              "is_completed": false
+            }
+          ],
+          "name": "112",
+          "is_completed": false,
+          "recipes": [
+            10
+          ]
+        }
+      ]
     }
   },
   "requests": {

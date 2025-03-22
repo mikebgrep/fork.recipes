@@ -202,6 +202,8 @@ def test_recipe_list_view_by_search_query(login_with_user, client):
 def test_recipe_details_view(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk()
     api_request.get_recipe_by_pk(recipe_pk)
+    mock_get_shopping_list()
+    api_request.request_get_shopping_lists(str(uuid.uuid4()))
 
     response = client.get(reverse("recipes:recipe_detail", args=[recipe_pk]))
 
