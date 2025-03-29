@@ -292,6 +292,21 @@ def request_translate_recipe(data: dict, token: str):
     return None, None
 
 
+def request_generate_recipe_audio(recipe_pk: int, token):
+    data = {
+        "recipe_pk": recipe_pk,
+    }
+    response = api_request_write(method=HTTPMethod.POST, url="api/recipe/audio", data=json.dumps(data), token=token)
+    if response.status_code == 201:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return True, result
+    elif response.status_code == 400:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return False, result
+
+    return None, None
+
+
 def request_get_recipe_variations(recipe_pk: int):
     response = api_request_read_only(method=HTTPMethod.GET, url=f"api/recipe/{recipe_pk}/variations")
     if response.status_code == 200:
@@ -389,3 +404,5 @@ def request_complete_single_ingredient(item_pk:int, token:str):
         return True
 
     return None
+
+

@@ -19,6 +19,7 @@ urlpatterns = [
     path('scrape-recipe/', views.scrape_recipe, name='scrape_recipe'),
     path('generate-recipes/', views.generate_recipe, name="generate_recipes"),
     path('recipe/<int:recipe_pk>/translate/', views.translate_recipe_view, name="translate_recipe"),
+    path('recipe/<int:recipe_pk>/audio/', views.generate_audio_for_recipe, name="audio_recipe"),
     path('recipe/<int:recipe_pk>/delete', views.delete_recipe, name="delete_recipe"),
     path('settings/', views.settings_view, name='settings'),
     path('settings/change-password/', views.change_password, name='change_password'),

@@ -93,6 +93,26 @@
                             </svg>
                         </a>
                     </li>
+                    {% if not recipe.audio_instructions %}
+                    <li>
+                        <a href="/recipe/{{ recipe.pk }}/audio/" onclick="toggleAudio()"
+                           class="flex justify-between items-center text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-md whitespace-nowrap"
+                        >
+                            Make Audio
+                            <svg id="audio-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"/>
+                            </svg>
+                            <svg id="audio-spinner" class="hidden h-5 w-5 ml-2 text-mint-500 animate-spin"
+                                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="10"
+                                        stroke-dasharray="150 50" stroke-linecap="round"/>
+                            </svg>
+                        </a>
+                    </li>
+                    {% endif %}
                     <li>
                         <a href="/recipe/{{ recipe.pk }}/translate/" onclick="toggleTranslation()"
                            class="flex justify-between items-center text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-md whitespace-nowrap">
@@ -205,13 +225,13 @@
                     ></audio>
 
                     <media-time-range
-                            class="block @md:hidden w-full h-2 min-h-0 p-0 bg-slate-50 focus-visible:ring-slate-700 focus-visible:ring-2"
+                            class="block @md:hidden w-full h-2 min-h-0 p-0 bg-slate-50 focus-visible:ring-mint-600 focus-visible:ring-2"
                             style="
           --media-range-track-background: transparent;
           --media-time-range-buffered-color: rgb(0 0 0 / 0.02);
-          --media-range-bar-color: rgb(79 70 229);
+          --media-range-bar-color: rgb(77 184 141);
           --media-range-track-height: 0.5rem;
-          --media-range-thumb-background: rgb(79 70 229);
+          --media-range-thumb-background: rgb(77 184 141);
           --media-range-thumb-box-shadow: 0 0 0 2px rgb(255 255 255 / 0.9);
           --media-range-thumb-width: 0.25rem;
           --media-range-thumb-height: 1rem;
@@ -220,57 +240,43 @@
                     >
                         <media-preview-time-display
                                 slot="preview"
-                                class="text-slate-600 text-xs"
+                                class="text-mint-600 text-xs"
                         ></media-preview-time-display>
                     </media-time-range>
 
                     <media-control-bar
-                            class="w-full h-20 @md:h-16 px-4 bg-white items-center justify-between @md:rounded-md @md:ring-1 @md:ring-slate-700/10 shadow-xl shadow-black/5"
+                            class="w-full h-20 @md:h-16 px-4 bg-white items-center justify-between @md:rounded-md border border-mint-700 shadow-xl shadow-black/5"
                     >
-                        <media-seek-backward-button class="p-0">
-                            <svg
-                                    slot="icon"
-                                    aria-hidden="true"
-                                    class="w-7 h-7 fill-none stroke-slate-500"
-                            >
-                                <use href="#backward"/>
-                            </svg>
-                        </media-seek-backward-button>
-                        <media-play-button class="h-10 w-10 p-2 mx-3 rounded-full bg-slate-700">
-                            <svg slot="play" aria-hidden="true" class="relative left-px">
-                                <use href="#play"/>
-                            </svg>
-                            <svg slot="pause" aria-hidden="true">
-                                <use href="#pause"/>
-                            </svg>
+                        <media-play-button
+                                class="h-10 w-10 mx-3 rounded-full bg-mint-600 hover:bg-mint-700 transition-colors">
+                            <button slot="play" class="w-full h-full flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24"
+                                     fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </button>
+                            <button slot="pause" class="w-full h-full flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24"
+                                     fill="currentColor">
+                                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                                </svg>
+                            </button>
                         </media-play-button>
-                        <media-seek-forward-button class="p-0">
-                            <svg
-                                    slot="icon"
-                                    aria-hidden="true"
-                                    class="w-7 h-7 fill-none stroke-slate-500"
-                            >
-                                <use href="#forward"/>
-                            </svg>
-                        </media-seek-forward-button>
-
                         <div
-                                class="hidden @md:block h-full border-l border-slate-700/10 mx-4"
+                                class="hidden @md:block h-full border-l border-mint-700 mx-4"
                         ></div>
-
                         <media-time-display
-                                class="order-last @md:order-none text-slate-500 text-sm"
+                                class="order-last @md:order-none text-gray-900 text-sm"
                         ></media-time-display>
-
                         <media-time-range
                                 class="hidden @md:block h-2 min-h-0 p-0 m-2 rounded-md bg-slate-50"
                                 style="
             --media-range-track-background: transparent;
             --media-time-range-buffered-color: rgb(0 0 0 / 0.02);
-            --media-range-bar-color: rgb(79 70 229);
+            --media-range-bar-color: rgb(77 184 141);
             --media-range-track-border-radius: 4px;
             --media-range-track-height: 0.5rem;
-            --media-range-thumb-background: rgb(79 70 229);
+            --media-range-thumb-background: rgb(77 184 141);
             --media-range-thumb-box-shadow: 0 0 0 2px rgb(255 255 255 / 0.9);
             --media-range-thumb-width: 0.25rem;
             --media-range-thumb-height: 1rem;
@@ -279,27 +285,21 @@
                         >
                             <media-preview-time-display
                                     slot="preview"
-                                    class="text-slate-600 text-xs"
+                                    class="text-mint-600 text-xs"
                             ></media-preview-time-display>
                         </media-time-range>
 
                         <media-duration-display
-                                class="hidden @md:block text-slate-500 text-sm"
+                                class="hidden @md:block text-gray-900 text-sm"
                         ></media-duration-display>
 
-                        <media-mute-button class="order-first @md:order-none">
-                            <svg slot="high" aria-hidden="true" class="h-5 w-5 fill-slate-500">
-                                <use href="#high"/>
-                            </svg>
-                            <svg slot="medium" aria-hidden="true" class="h-5 w-5 fill-slate-500">
-                                <use href="#high"/>
-                            </svg>
-                            <svg slot="low" aria-hidden="true" class="h-5 w-5 fill-slate-500">
-                                <use href="#high"/>
-                            </svg>
-                            <svg slot="off" aria-hidden="true" class="h-5 w-5 fill-slate-500">
-                                <use href="#off"/>
-                            </svg>
+                        <media-mute-button class="order-first @md:order-none stroke-mint-700">
+                            <button type="button" class="transition-colors text-mint-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 " viewBox="0 0 24 24"
+                                     fill="none">
+                                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                                </svg>
+                            </button>
                         </media-mute-button>
                     </media-control-bar>
                 </media-controller>
@@ -555,7 +555,12 @@
         document.getElementById('translation-spinner').classList.remove('hidden');
     }
 </script>
-
+<script>
+    function toggleAudio() {
+        document.getElementById('audio-svg').classList.add('hidden');
+        document.getElementById('audio-spinner').classList.remove('hidden');
+    }
+</script>
 
 <script>
     document.getElementById('print-btn').addEventListener('click', function() {
@@ -587,3 +592,19 @@
 </div>
 {% endif %}
 {% endblock %}
+<style>
+    media-controller {
+        --media-control-background: transparent !important;
+        --media-control-hover-background: transparent !important;
+    }
+    
+    media-controller button {
+        opacity: 1 !important;
+    }
+    
+    /* Fix initial button state */
+    media-play-button[media-paused] button[slot="pause"],
+    media-play-button:not([media-paused]) button[slot="play"] {
+        display: none;
+    }
+</style>

@@ -222,7 +222,7 @@ def edit_recipe(request, recipe_pk):
         instructions_data = list()
         recipe_files = []
 
-        #TODO: // make a better way to extend or set the missing metrics as None
+        # TODO: // make a better way to extend or set the missing metrics as None
         max_length = max(len(ingredient_names), len(ingredient_quantities), len(ingredient_metrics))
         ingredient_metrics.extend([None] * (max_length - len(ingredient_metrics)))
 
@@ -466,6 +466,20 @@ def translate_recipe_view(request, recipe_pk):
         return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
     if (is_translated is None) and (result is None):
         messages.error(request, "Server error. Please try again later or contact administrator.")
+        return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
+
+    return redirect("recipes:edit_recipe", recipe_pk=result.pk)
+
+
+@login_required
+def generate_audio_for_recipe(request, recipe_pk):
+    token = request.session.get("auth_token")
+
+    is_generated, result = api_request.request_generate_recipe_audio(recipe_pk, token)
+    if is_generated:
+        return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
+    elif is_generated is False:
+        messages.error(request, result.errors[0])
         return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
 
     return redirect("recipes:edit_recipe", recipe_pk=result.pk)
