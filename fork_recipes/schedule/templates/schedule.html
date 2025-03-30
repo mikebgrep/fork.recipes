@@ -12,16 +12,16 @@
         <form id="date-form" method="POST" action="/schedule/">
             {% csrf_token %}
             <input id="default-datepicker" type="date" name="selected_date" value="{{ current_selected_date }}"
-                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-2"
                    placeholder="Select date">
         </form>
     </div>
 
 
-    <section class="bg-white dark:bg-gray-900 antialiased">
+    <section class="bg-white antialiased">
         <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
             <div class="max-w-3xl mx-auto text-center">
-                <h2 class="text-2xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">
+                <h2 class="text-2xl font-extrabold leading-tight tracking-tight text-gray-900">
                     Schedule
                 </h2>
             </div>
@@ -35,10 +35,10 @@
             </div>
             {% else %}
             <div class="flow-root max-w-3xl mx-auto mt-8 sm:mt-12 lg:mt-16">
-                <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700">
+                <div class="-my-4 divide-y divide-gray-200 ">
                     {% if breakfast %}
                     <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right  shrink-0">
                             Breakfast
                         </p>
                         <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">
@@ -62,7 +62,7 @@
                     {% endif %}
                     {% if lunch %}
                     <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right shrink-0">
                             Lunch
                         </p>
                         <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">
@@ -87,7 +87,7 @@
                     {% endif %}
                     {% if dinner %}
                     <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right  shrink-0">
                             Dinner
                         </p>
                         <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">
@@ -111,7 +111,7 @@
                     {% endif %}
                     {% if side %}
                     <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
+                        <p class="w-32 text-lg font-normal text-gray-500 sm:text-right  shrink-0">
                             Side
                         </p>
                         <div class="flex flex-col sm:flex-row items-center sm:items-center gap-y-4 sm:gap-x-6 flex-1">

@@ -9,7 +9,7 @@
     <div id="recipe-content">
         <div id="ingredient-list" class="mt-6 space-y-4">
             {% for ingredient in shopping_list.items %}
-            <div class="ingredient-item {% if ingredient.is_completed %}  line-through {% endif %} border rounded-xl p-4 bg-white dark:bg-gray-800">
+            <div class="ingredient-item {% if ingredient.is_completed %}  line-through {% endif %} border rounded-xl p-4 bg-white ">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <input type="checkbox"
@@ -17,10 +17,10 @@
                                onclick="toggleItemStatus(this, {{ ingredient.pk }})"
                                {% if ingredient.is_completed %} checked {% endif %}>
                         <div class="clickable-text flex flex-col cursor-pointer" onclick="toggleItemStatus(this.previousElementSibling, {{ ingredient.pk }})">
-                            <span class="ingredient-name text-lg font-medium text-gray-700 dark:text-gray-200 {% if ingredient.is_completed %}line-through{% endif %}">
+                            <span class="ingredient-name text-lg font-medium text-gray-700  {% if ingredient.is_completed %}line-through{% endif %}">
                                 {% if ingredient.times > 1 %} (x{{ ingredient.times }}) {% endif %} {{ ingredient.name }}
                             </span>
-                            <span class="ingredient-quantity text-sm text-gray-500 dark:text-gray-400 {% if ingredient.is_completed %}line-through{% endif %}">
+                            <span class="ingredient-quantity text-sm text-gray-500 {% if ingredient.is_completed %}line-through{% endif %}">
                                 {{ ingredient.quantity }} {{ ingredient.metric }}
                             </span>
                         </div>
@@ -70,7 +70,7 @@
         <!-- Recipe Card -->
 
         {% for recipe in recipes %}
-        <div class="mt-6 p-4 border rounded-lg bg-white dark:bg-gray-800 shadow">
+        <div class="mt-6 p-4 border rounded-lg bg-white shadow">
             <div class="flex items-center space-x-4">
                 <img class="h-12 w-12 flex-none rounded-full bg-gray-50"
                      src="{{ recipe.image }}"
@@ -170,14 +170,14 @@
     function addIngredient() {
         const ingredientList = document.getElementById('ingredient-list');
         const newIngredient = document.createElement('div');
-        newIngredient.classList.add('ingredient-item', 'border', 'rounded-xl', 'p-4', 'bg-white', 'dark:bg-gray-800');
+        newIngredient.classList.add('ingredient-item', 'border', 'rounded-xl', 'p-4', 'bg-white');
         newIngredient.innerHTML = `
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <input type="checkbox" class="check-box w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" onchange="toggleStrikeThrough(this)">
                     <div class="clickable-text flex flex-col cursor-pointer" onclick="toggleCheckbox(this)">
-                        <span class="ingredient-name text-lg font-medium text-gray-700 dark:text-gray-200">New Ingredient</span>
-                        <span class="ingredient-quantity text-sm text-gray-500 dark:text-gray-400">0g</span>
+                        <span class="ingredient-name text-lg font-medium text-gray-700">New Ingredient</span>
+                        <span class="ingredient-quantity text-sm text-gray-500">0g</span>
                     </div>
                 </div>
                 <div class="flex space-x-2">
