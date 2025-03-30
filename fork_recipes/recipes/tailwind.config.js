@@ -1,9 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-content: ['./templates/**/*.html', '../schedule/templates/**/*.html'],
+content: ['./templates/**/*.html', '../schedule/templates/**/*.html', "../shopping/templates/**/*.html"],
   darkMode: 'class',
   theme: {
     extend: {
+    textDecoration: {
+        'line-through': 'line-through',
+      },
         animation: {
         spin: 'spin 1s linear infinite',
         pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
