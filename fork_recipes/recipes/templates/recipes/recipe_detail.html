@@ -243,7 +243,7 @@
                     </media-time-range>
 
                     <media-control-bar
-                            class="w-full h-20 @md:h-16 px-4 bg-white items-center justify-between @md:rounded-md border border-mint-700 shadow-xl shadow-black/5"
+                            class="w-full h-20 @md:h-16 px-4 bg-white items-center justify-between @md:rounded-md border  shadow-xl shadow-black/5"
                     >
                         <media-play-button
                                 class="h-10 w-10 mx-3 rounded-full bg-mint-600 hover:bg-mint-700 transition-colors">
@@ -261,7 +261,7 @@
                             </button>
                         </media-play-button>
                         <div
-                                class="hidden @md:block h-full border-l border-mint-700 mx-4"
+                                class="hidden @md:block h-full border-l  mx-4"
                         ></div>
                         <media-time-display
                                 class="order-last @md:order-none text-gray-900 text-sm"
@@ -500,7 +500,7 @@
     // Ensure video is centered and displayed at full size in fullscreen mode on mobile devices
     document.querySelectorAll('video').forEach(video => {
         const container = video.parentElement;
-    container.style.backgroundColor = 'black';
+        container.style.backgroundColor = 'black';
         video.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 video.style.objectFit = 'contain';
@@ -571,15 +571,6 @@
         type="module"
         src="https://cdn.jsdelivr.net/npm/media-chrome@3/+esm"
 ></script>
-<script type="module">
-    import containerQueries from "https://cdn.jsdelivr.net/npm/@tailwindcss/container-queries/+esm";
-
-    const { defaultTheme } = tailwind;
-    tailwind.config = {
-      theme: defaultTheme,
-      plugins: [containerQueries],
-    };
-</script>
 
 {% if messages %}
 <div class="fixed bottom-4 right-4">

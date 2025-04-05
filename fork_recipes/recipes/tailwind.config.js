@@ -93,8 +93,9 @@ content: ['./templates/**/*.html', '../schedule/templates/**/*.html', "../shoppi
       }
     },
   },
-  plugins:
-        [ function ({ addComponents }) {
+  plugins: [
+    require('@tailwindcss/container-queries'),
+    function({ addComponents }) {
       addComponents({
         '@media print': {
           '.print-img': {
@@ -105,7 +106,123 @@ content: ['./templates/**/*.html', '../schedule/templates/**/*.html', "../shoppi
             margin: '0 auto',
           },
         },
+        'media-controller': {
+          '--media-background-color': 'transparent',
+          '--media-control-background': 'transparent',
+          '--media-control-hover-background': 'transparent',
+          display: 'block',
+          opacity: '1 !important',
+          '& button': {
+            opacity: '1 !important',
+          }
+        },
+        'media-control-bar': {
+          width: '100%',
+          height: '5rem',
+          '@screen md': {
+            height: '4rem',
+            borderRadius: '0.375rem',
+            borderWidth: '1px',
+            borderColor: 'rgb(226 232 240)', // slate-200 color
+            borderStyle: 'solid',
+          },
+          padding: '0 1rem',
+          backgroundColor: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
+          position: 'relative',
+          overflow: 'hidden', // Add this to contain the progress bar
+        },
+        'media-time-range': {
+          '--media-range-track-background': 'transparent',
+          '--media-time-range-buffered-color': 'rgb(0 0 0 / 0.02)',
+          '--media-range-bar-color': 'rgb(77 184 141)',
+          '--media-range-track-height': '0.5rem',
+          '--media-range-thumb-background': 'rgb(77 184 141)',
+          '--media-range-thumb-box-shadow': '0 0 0 2px rgb(255 255 255 / 0.9)',
+          '--media-range-thumb-width': '0.25rem',
+          '--media-range-thumb-height': '1rem',
+          '--media-preview-time-text-shadow': 'transparent',
+          '--media-range-track-border-radius': '0',
+          display: 'block',
+          width: '100%',
+          height: '0.5rem',
+          minHeight: '0',
+          padding: '0',
+          backgroundColor: 'rgb(248 250 252)',
+          '&.block\\@md\\:hidden': {
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            margin: '0',
+            borderRadius: '0',
+          },
+          '&.hidden\\@md\\:block': {
+            flexGrow: '1',
+            margin: '0 1rem',
+            borderRadius: '0.375rem',
+          },
+        },
+        'media-play-button': {
+          height: '2.5rem',
+          width: '2.5rem',
+          margin: '0 0.75rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '9999px',
+          backgroundColor: 'rgb(77 184 141)',
+          color: 'white',
+          transition: 'background-color 150ms',
+          '&:hover': {
+            backgroundColor: 'rgb(68 164 126)',
+          },
+          '& button': {
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+          }
+        },
+        'media-time-display': {
+          color: 'rgb(17 24 39)',
+          fontSize: '0.875rem',
+          '&.order-last': {
+            '@screen md': {
+              order: 'initial',
+            }
+          }
+        },
+        'media-duration-display': {
+          color: 'rgb(17 24 39)',
+          fontSize: '0.875rem',
+          '&.hidden': {
+            '@screen md': {
+              display: 'block',
+            }
+          }
+        },
+        'media-mute-button': {
+          color: 'rgb(77 184 141)',
+          transition: 'color 150ms',
+          '&.order-first': {
+            '@screen md': {
+              order: 'initial',
+            }
+          },
+          '&:hover': {
+            color: 'rgb(68 164 126)',
+          },
+          '& button': {
+            color: 'currentColor',
+          }
+        },
       });
-    },
+    }
   ],
 };
