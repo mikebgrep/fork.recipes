@@ -1,6 +1,6 @@
 # Fork recipes 
 
-![version](https://img.shields.io/badge/version-2.1.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
+![version](https://img.shields.io/badge/version-3.0.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
 
 
 <img align="right" src="assets/avatar.png" height="170px" alt="Logo">
@@ -21,6 +21,8 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Scrape recipe from any webpage and save it locally (openai token needed) 🤖
 - Generate recipes by ingredients and save them locally (openai token needed) 🤖
 - Translate recipes to any language 🈹️(openai token needed) 🤖
+- Generate recipe audio 🈹️(openai token needed) 🤖 (English only!)
+
 
 more comming...
 - Automatic unit conversion (openai token needed) 🤖
