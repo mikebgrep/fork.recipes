@@ -475,7 +475,7 @@ def generate_audio_for_recipe(request, recipe_pk):
     recipe = api_request.get_recipe_by_pk(recipe_pk)
 
     if recipe.language != "English" or not general_util.is_recipe_english("".join([x.text for x in recipe.steps])):
-        messages.error(request, "The recipe Instructions are not in English alphabet or the language of the recipe is not English.!")
+        messages.error(request, "The recipe Instructions or language are not in English.!")
         return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
 
     is_generated, result = api_request.request_generate_recipe_audio(recipe_pk, token)
