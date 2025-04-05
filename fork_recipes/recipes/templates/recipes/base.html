@@ -9,6 +9,11 @@
     <link rel="manifest" href="/static/images/site.webmanifest">
     <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    .custom-hanging-indent {
+        padding-left: 2rem;
+    }
+</style>
 </head>
 <body class="bg-gray-50">
 <div class="min-h-screen flex flex-col">
@@ -133,7 +138,7 @@
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <div class="md:flex md:items-center md:justify-between">
                         <div class="flex-1 min-w-0">
-                            <h2 class="font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate text-center break-words">
+                            <h2 id="headerText" class="font-bold text-gray-900 sm:text-3xl sm:truncate text-center break-words">
                                 {% block header %}Discover Recipes{% endblock %}
                             </h2>
                         </div>
@@ -238,5 +243,13 @@
         sidebar.classList.toggle("block");
     });
 </script>
+<script>
+    const headerText = document.getElementById('headerText').innerText;
+    const headerTextLength = headerText.length;
+    if (headerTextLength > 49) {
+        document.getElementById('headerText').classList.add('indent-10');
+    }
+</script>
+
 </body>
 </html>
