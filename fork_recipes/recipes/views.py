@@ -9,9 +9,7 @@ from django.shortcuts import render, redirect
 
 from fork_recipes.ws import api_request
 from . import models
-from .utils import date_util
-from .utils import email_util
-
+from .utils import date_util, email_util, general_util
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -474,6 +472,11 @@ def translate_recipe_view(request, recipe_pk):
 @login_required
 def generate_audio_for_recipe(request, recipe_pk):
     token = request.session.get("auth_token")
+    recipe = api_request.get_recipe_by_pk(recipe_pk)
+
+    if recipe.language != "English" or not general_util.is_recipe_english("".join([x.text for x in recipe.steps])):
+        messages.error(request, "The recipe Instructions are not in English alphabet or the language of the recipe is not English.!")
+        return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
 
     is_generated, result = api_request.request_generate_recipe_audio(recipe_pk, token)
     if is_generated:
@@ -482,7 +485,7 @@ def generate_audio_for_recipe(request, recipe_pk):
         messages.error(request, result.errors[0])
         return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
 
-    return redirect("recipes:edit_recipe", recipe_pk=result.pk)
+    return redirect("recipes:recipe_detail", recipe_pk=recipe_pk)
 
 
 @login_required
