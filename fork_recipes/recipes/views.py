@@ -148,9 +148,13 @@ def recipe_detail(request, recipe_pk):
     categories = api_request.get_categories()
     matching_categories = [x for x in categories if recipe.category == x.pk]
     recipes_variations = None
+    is_english = True
 
     if recipe.is_translated:
         recipes_variations = api_request.request_get_recipe_variations(recipe_pk=recipe_pk)
+
+    if recipe.language != "English":
+       is_english = general_util.is_recipe_english("".join([x.text for x in recipe.steps]))
 
     if len(matching_categories) > 0:
         category = matching_categories[0]
@@ -161,7 +165,8 @@ def recipe_detail(request, recipe_pk):
         'recipe': recipe,
         'category': category,
         "recipe_variations": recipes_variations,
-        "shopping_lists": shopping_lists
+        "shopping_lists": shopping_lists,
+        "is_english": is_english
     })
 
 

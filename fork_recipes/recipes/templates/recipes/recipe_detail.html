@@ -91,7 +91,7 @@
                             </svg>
                         </a>
                     </li>
-                    {% if not recipe.audio_instructions %}
+                    {% if not recipe.audio_instructions and is_english %}
                     <li>
                         <a href="/recipe/{{ recipe.pk }}/audio/" onclick="toggleAudio()"
                            class="flex justify-between items-center text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-md whitespace-nowrap"
