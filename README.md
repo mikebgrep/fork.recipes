@@ -21,7 +21,7 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Scrape recipe from any webpage and save it locally (openai token needed) 🤖
 - Generate recipes by ingredients and save them locally (openai token needed) 🤖
 - Translate recipes to any language 🈹️(openai token needed) 🤖
-- Generate recipe audio 🈹️(openai token needed) 🤖 (English only!)
+- Generate recipe audio 🎧(openai token needed) 🤖 (English only!)
 
 
 more comming...
