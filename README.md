@@ -30,7 +30,7 @@ more comming...
 ### Installation 
 I include the installation instructions in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
 
-### Application preview
+### Application preview (from 1st realese)
 ![preview](assets/preview.gif)
 
 
