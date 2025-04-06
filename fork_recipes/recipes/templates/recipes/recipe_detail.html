@@ -3,7 +3,7 @@
 {% block header %}{{ recipe.name }}{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-xl overflow-hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="bg-white w-full  rounded-xl overflow-hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="relative h-96">
         {% if recipe.video %}
         <video class="absolute inset-0 w-full h-full object-cover" controls>
@@ -181,12 +181,19 @@
         {% if recipe.reference %}
         <div class="flex items-center gap-6 mb-6">
             <a href="{{ recipe.reference }}" target="_blank" class="inline-flex items-center text-current">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                     stroke="currentColor" class="w-6 h-6 text-gray-500">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/>
-                </svg>
-                &nbsp;{{ recipe.reference }}
+                <span class="flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-5 h-5 text-gray-500"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622
+                              1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/>
+                    </svg>
+                </span>
+                <span class="ml-2 break-all">{{ recipe.reference }}</span>
             </a>
         </div>
         {% endif %}
