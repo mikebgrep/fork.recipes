@@ -8,8 +8,6 @@
 Simple, elegant frontend Python web application that work seamlessly with the [ForkApi](https://www.github.com/mikebgrep/forkapi) to provide management for food recipies collections.
 
 ## Features  
-A modern simplified , AI-powered recipe app — ready to deploy!
-
 #### Core Stack
 - **Django 5.x** · Python-based backend 🐍  
 - **Dockerized** for effortless deployment ⚓  
@@ -31,12 +29,7 @@ A modern simplified , AI-powered recipe app — ready to deploy!
 - **Recipe Scraper** from almost any URL *(OpenAI token)* 🤖  
 - **Generate Recipes by Ingredients** *(OpenAI token)* 💡  
 - **Translate Recipes** to various language *(OpenAI token)* 🈹️ 
-- **Audio Narration** of recipes *(English only, OpenAI token)* 🎧
-
----
-
-#### Coming Soon
-- The project is in constant development so more features will be introduced stay tuned 
+- **Audio Narration** of recipes *(English only, OpenAI token)* 🎧 
 
 ## Installation 
 Installation instructions are included in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
