@@ -31,7 +31,12 @@ A modern simplified , AI-powered recipe app — ready to deploy!
 - **Recipe Scraper** from almost any URL *(OpenAI token)* 🤖  
 - **Generate Recipes by Ingredients** *(OpenAI token)* 💡  
 - **Translate Recipes** to various language *(OpenAI token)* 🈹️ 
-- **Audio Narration** of recipes *(English only, OpenAI token)* 🎧  
+- **Audio Narration** of recipes *(English only, OpenAI token)* 🎧
+
+---
+
+#### Coming Soon
+- The project is in constant development so more features will be introduced stay tuned 
 
 ## Installation 
 Installation instructions are included in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
