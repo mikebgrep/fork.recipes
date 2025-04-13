@@ -99,7 +99,7 @@
                             </svg>
                             Profile
                         </a>
-                        <a href="{% url 'recipes:settings' %}"
+                        <a href="{% url 'settings:settings_page' %}"
                            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.path == '/settings/' %}bg-mint-100 text-mint-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                             <svg class="mr-3 h-6 w-6 {% if request.path == '/settings/' %}text-mint-500{% else %}text-gray-400 group-hover:text-gray-500{% endif %}"
                                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -163,7 +163,7 @@
                                     <a href="{% url 'recipes:profile' %}"
                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your
                                         Profile</a>
-                                    <a href="{% url 'recipes:settings' %}"
+                                    <a href="{% url 'settings:settings_page' %}"
                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                        role="menuitem">Settings</a>
                                     <a href="{% url 'recipes:logout' %}"

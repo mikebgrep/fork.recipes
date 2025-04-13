@@ -1,72 +1,37 @@
 {% extends 'recipes/base.html' %}
 
 {% block title %}Profile - Fork Recipes{% endblock %}
-
 {% block header %}Profile Settings{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto">
-    <div class="bg-white shadow rounded-lg">
-        <!-- Profile Header -->
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <div class="flex items-center space-x-5">
-                <div class="relative">
-                    <img class="h-16 w-16 rounded-full" src="/static/images/avatar.png">
-                </div>
-                <div>
-                    <h3 class="text-lg font-medium text-gray-900">{{ user.username }}</h3>
-                    <p class="text-sm text-gray-500">Member since {{user.date_joined}}</p>
-                </div>
+<div class="max-w-3xl mx-auto space-y-8">  <!-- Adds spacing between sections -->
+
+    <!-- Profile Section -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <div class="flex items-center space-x-5 border-b border-gray-200 pb-5">
+            <div class="relative">
+                <img class="h-16 w-16 rounded-full" src="/static/images/avatar.png">
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">{{ user.username }}</h3>
+                <p class="text-sm text-gray-500">Member since {{ user.date_joined }}</p>
             </div>
         </div>
 
-        <!-- Profile Form -->
-        <form class="px-4 py-5 sm:p-6 space-y-6" method="POST" action="{% url 'recipes:profile' %}">
+        <form class="pt-6 space-y-6" method="POST" action="{% url 'recipes:profile' %}">
             {% csrf_token %}
-            <div class="grid grid-cols-1 gap-6">
-                <!-- Username -->
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" name="username" id="username" value="{{ user.username }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
-                </div>
-                <!-- Email -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" name="email" id="email" value="{{ user.email }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
-                </div>
+            <!-- Username -->
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" name="username" id="username" value="{{ user.username }}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
+            </div>
 
-                <!-- TODO: Uncomment if notifications will be available -->
-                <!-- Notification Preferences -->
-                <!--                <div>-->
-                <!--                    <h4 class="text-sm font-medium text-gray-900 mb-4">Notification Preferences</h4>-->
-                <!--                    <div class="space-y-4">-->
-                <!--                        <div class="flex items-start">-->
-                <!--                            <div class="flex items-center h-5">-->
-                <!--                                <input id="email-notifications" name="email-notifications" type="checkbox" checked-->
-                <!--                                       class="h-4 w-4 text-mint-600 focus:ring-mint-500 border-gray-300 rounded">-->
-                <!--                            </div>-->
-                <!--                            <div class="ml-3 text-sm">-->
-                <!--                                <label for="email-notifications" class="font-medium text-gray-700">Email-->
-                <!--                                    Notifications</label>-->
-                <!--                                <p class="text-gray-500">Receive email updates about your favorite recipes and-->
-                <!--                                    chefs.</p>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-
-                <!--                        <div class="flex items-start">-->
-                <!--                            <div class="flex items-center h-5">-->
-                <!--                                <input id="newsletter" name="newsletter" type="checkbox" checked-->
-                <!--                                       class="h-4 w-4 text-mint-600 focus:ring-mint-500 border-gray-300 rounded">-->
-                <!--                            </div>-->
-                <!--                            <div class="ml-3 text-sm">-->
-                <!--                                <label for="newsletter" class="font-medium text-gray-700">Weekly Newsletter</label>-->
-                <!--                                <p class="text-gray-500">Get weekly recipe inspiration and cooking tips.</p>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" id="email" value="{{ user.email }}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mint-500 focus:ring-mint-500 sm:text-sm">
             </div>
 
             <!-- Save Button -->
@@ -78,7 +43,72 @@
             </div>
         </form>
     </div>
+
+    <!-- Change Password Section -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Change Password</h3>
+        <form method="POST" action="{% url 'recipes:change_password' %}" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                <input type="password" name="current_password" id="current_password" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                <input type="password" name="new_password" id="new_password" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm New
+                    Password</label>
+                <input type="password" name="confirm_password" id="confirm_password" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            {% if error %}
+            <p class="text-[#DC3545]">{{ error }}</p>
+            {% endif %}
+            <div class="flex justify-end">
+                <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                    Update Password
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Delete Account Section -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-lg font-medium text-red-600 mb-2">Delete Account</h3>
+        <p class="text-sm text-gray-500 mb-4">Once you delete your account, there is no going back. Please be
+            certain.</p>
+        <button type="button" onclick="document.getElementById('delete-modal').classList.remove('hidden')"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            Delete Account
+        </button>
+    </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg max-w-sm mx-auto">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Confirm Account Deletion</h3>
+        <p class="text-sm text-gray-500 mb-4">Are you sure you want to delete your account? This action cannot be
+            undone.</p>
+        <form method="POST" action="{% url 'recipes:delete_account' %}" class="space-x-4">
+            {% csrf_token %}
+            <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Yes, Delete Account
+            </button>
+            <button type="button" onclick="document.getElementById('delete-modal').classList.add('hidden')"
+                    class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Cancel
+            </button>
+        </form>
+    </div>
+</div>
+
 {% if messages %}
 <div class="fixed bottom-4 right-4">
     {% for message in messages %}

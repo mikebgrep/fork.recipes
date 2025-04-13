@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'recipes.apps.RecipesConfig',
     'schedule.apps.ScheduleConfig',
-    'shopping.apps.ShoppingConfig'
+    'shopping.apps.ShoppingConfig',
+    'settings.apps.SettingsConfig',
 ]
 
 MIDDLEWARE = [

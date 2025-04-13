@@ -421,3 +421,39 @@ def request_complete_single_ingredient(item_pk: int, token: str):
         return True
 
     return None
+
+
+def request_get_backups(token: str):
+    response = api_request_write(method=HTTPMethod.GET, url="api/backupper/all/", token=token)
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None
+
+
+def request_create_backup(token: str):
+    response = api_request_write(method=HTTPMethod.GET, url="api/backupper/", token=token)
+    if response.status_code == 201:
+        return True
+
+    return False
+
+
+def reqeust_delete_backup(backup_pk: int, token: str):
+    response = api_request_write(method=HTTPMethod.DELETE, url=f"api/backupper/{backup_pk}/", token=token)
+    if response.status_code == 204:
+        return True
+
+    return False
+
+
+def request_apply_backup(backup_pk:int, token:str):
+    data = {
+        "backup_pk": backup_pk
+    }
+    response = api_request_write(method=HTTPMethod.POST, url="api/backupper/", data=json.dumps(data), token=token)
+    if response.status_code == 204:
+        return True
+    return False
+

@@ -9,6 +9,14 @@
 
     <div class="flow-root max-w-3xl mx-auto mt-8 sm:mt-12 lg:mt-16">
         <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700">
+            {% if shopping_lists|length == 0 %}
+            <div class="max-w-3xl mx-auto text-center">
+                <p class="text-base font-semibold text-mint-700">404</p>
+                <h1 class="mt-4 text-3xl font-semibold tracking-tight text-balance text-gray-600 sm:text-4xl">
+                    No shopping lists are found
+                </h1>
+            </div>
+            {% endif %}
             {% for shopping in shopping_lists %}
             <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
 
@@ -79,7 +87,8 @@
         </form>
     </div>
 </div>
-<div id="add-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4 sm:p-0">
+<div id="add-modal"
+     class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4 sm:p-0">
     <div class="relative w-full max-w-md sm:max-w-lg transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8">
         <form id="add-form" method="POST" action="{% url 'shopping:create_list' %}" class="space-y-6">
             {% csrf_token %}
@@ -93,7 +102,8 @@
                         </svg>
                     </div>
                     <div class="mt-3 sm:mt-0 sm:ml-4 sm:text-left text-center">
-                        <h3 class="block text-lg font-medium text-gray-800" id="modal-title">Create New Shopping List</h3>
+                        <h3 class="block text-lg font-medium text-gray-800" id="modal-title">Create New Shopping
+                            List</h3>
                         <p class="mt-2 text-sm text-gray-600">Enter a name for your new shopping list.</p>
                     </div>
                 </div>

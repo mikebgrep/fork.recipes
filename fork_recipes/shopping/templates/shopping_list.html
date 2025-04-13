@@ -93,10 +93,12 @@
                     class=" sm:w-auto px-6 py-3 bg-mint-600 text-white rounded-md hover:bg-mint-700"
                     onclick="addIngredient()">Add New Ingredient
             </button>
+            {% if shopping_list.items|length > 0 %}
             <a class="sm:w-auto px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-500 flex items-center justify-center"
                href="{% url 'shopping:complete_list' list_pk=shopping_list.pk %}">{% if shopping_list.is_completed  %}
                 Mark as Incomplete {% else %} Mark as Complete {% endif %}
             </a>
+            {% endif %}
         </div>
 
 

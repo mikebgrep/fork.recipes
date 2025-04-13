@@ -21,7 +21,6 @@ urlpatterns = [
     path('recipe/<int:recipe_pk>/translate/', views.translate_recipe_view, name="translate_recipe"),
     path('recipe/<int:recipe_pk>/audio/', views.generate_audio_for_recipe, name="audio_recipe"),
     path('recipe/<int:recipe_pk>/delete', views.delete_recipe, name="delete_recipe"),
-    path('settings/', views.settings_view, name='settings'),
     path('settings/change-password/', views.change_password, name='change_password'),
     path('settings/delete-account/', views.delete_account, name='delete_account'),
     path('settings/change-translation-language/', views.change_translation_language, name="change_translation_language"),

@@ -9,6 +9,7 @@ if settings.DEBUG:
         path('', include('recipes.urls', namespace="recipes")),
         path('schedule/', include('schedule.urls', namespace="schedule")),
         path('shopping/', include('shopping.urls', namespace="shopping")),
+        path('settings/', include('settings.urls', namespace="settings")),
 
                   ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
 else:
@@ -16,7 +17,7 @@ else:
         path('', include('recipes.urls', namespace="recipes")),
         path('schedule/', include('schedule.urls', namespace="schedule")),
         path('shopping/', include('shopping.urls', namespace="shopping")),
-
+        path('settings/', include('settings.urls', namespace="settings")),
     ]
 
 

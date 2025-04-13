@@ -493,18 +493,7 @@ def generate_audio_for_recipe(request, recipe_pk):
     return redirect("recipes:recipe_detail", recipe_pk=recipe_pk)
 
 
-@login_required
-def settings_view(request):
-    token = request.session.get("auth_token")
-    user_settings = api_request.request_get_user_settings(token=token)
-    languages = [choice[0] for choice in models.LANGUAGES_CHOICES if
-                 choice[0] != user_settings.preferred_translate_language]
-    context = {
-        'languages': languages,
-        'selected_language': user_settings.preferred_translate_language,
-    }
 
-    return render(request, 'recipes/settings.html', context=context)
 
 
 @login_required
