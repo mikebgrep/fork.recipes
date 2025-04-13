@@ -146,7 +146,7 @@ def recipe_detail(request, recipe_pk):
         return HttpResponseNotFound("Recipe not found")
 
     categories = api_request.get_categories()
-    matching_categories = [x for x in categories if recipe.category == x.pk]
+    matching_categories = [x for x in categories if recipe.category and recipe.category.pk == x.pk]
     recipes_variations = None
     is_english = True
 
@@ -211,7 +211,6 @@ def edit_recipe(request, recipe_pk):
 
         recipe_main_info_data = {
             "name": name,
-            "category": category.pk if category else int(category_pk),
             "difficulty": difficulty,
             "prep_time": int(prep_time),
             "cook_time": int(cook_time),
@@ -254,6 +253,7 @@ def edit_recipe(request, recipe_pk):
         if response_recipe is not None:
             api_request.post_ingredients_for_recipe(response_recipe.pk, token=token, data=ingredients_data)
             api_request.post_instructions_for_recipe(response_recipe.pk, token=token, data=instructions_data)
+            api_request.patch_recipe_category(response_recipe.pk, category.pk if category else category_pk, token)
 
             return redirect('recipes:recipe_detail', recipe_pk=response_recipe.pk)
 
@@ -410,7 +410,6 @@ def new_recipe(request):
 
         recipe_main_info_data = {
             "name": name,
-            "category": category.pk if category else (int(category_pk) if category_pk else None),
             "difficulty": difficulty,
             "prep_time": int(prep_time),
             "cook_time": int(cook_time),
@@ -441,6 +440,7 @@ def new_recipe(request):
         if recipe is not None:
             api_request.post_ingredients_for_recipe(recipe.pk, token=token, data=ingredients_data)
             api_request.post_instructions_for_recipe(recipe.pk, token=token, data=instructions_data)
+            api_request.patch_recipe_category(recipe.pk, category.pk if category else category_pk, token)
 
             return redirect('recipes:recipe_detail', recipe_pk=recipe.pk)
         context['message'] = "Something went wrong.Try again later"

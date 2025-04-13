@@ -128,6 +128,18 @@ def post_new_recipe_main_info(multipart_form_data: dict, files: list, token: str
     return None
 
 
+def patch_recipe_category(recipe_pk: int, category_pk: int, token: str):
+    data = {
+        "category_pk": category_pk
+    }
+    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/recipe/{recipe_pk}/category", token=token,
+                                 data=json.dumps(data))
+    print(response)
+    if response.status_code == 204:
+        return True
+    return False
+
+
 def post_ingredients_for_recipe(recipe_pk: int, token: str, data: list):
     response = api_request_write(method=HTTPMethod.POST, url=f"api/recipe/{recipe_pk}/ingredients", token=token,
                                  data=json.dumps(data))
@@ -350,11 +362,13 @@ def request_add_recipe_to_shopping_list(list_pk: int, recipe_pk: int, token: str
     data = {
         "recipe": recipe_pk
     }
-    response = api_request_write(method=HTTPMethod.PUT, url=f"api/shopping/{list_pk}/", data=json.dumps(data), token=token)
+    response = api_request_write(method=HTTPMethod.PUT, url=f"api/shopping/{list_pk}/", data=json.dumps(data),
+                                 token=token)
     if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
     return None
+
 
 def request_get_shopping_list(list_pk: int, token: str):
     response = api_request_write(method=HTTPMethod.GET, url=f"api/shopping/single/{list_pk}/", token=token)
@@ -375,22 +389,25 @@ def request_update_shopping_list_item(item_pk: int, data: dict, token: str):
     return None
 
 
-def request_add_ingredient_to_shopping_list(list_pk:int, data: dict, token:str):
-    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/single/{list_pk}/", data=json.dumps(data), token=token)
+def request_add_ingredient_to_shopping_list(list_pk: int, data: dict, token: str):
+    response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/single/{list_pk}/", data=json.dumps(data),
+                                 token=token)
     if response.status_code == 201:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
 
     return None
 
-def request_delete_ingredient_from_shopping_list(item_pk:int, token:str):
+
+def request_delete_ingredient_from_shopping_list(item_pk: int, token: str):
     response = api_request_write(method=HTTPMethod.DELETE, url=f"api/shopping/item/{item_pk}/", token=token)
     if response.status_code == 204:
         return True
 
     return None
 
-def request_complete_shopping_list(list_pk:int, token:str):
+
+def request_complete_shopping_list(list_pk: int, token: str):
     response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/complete-list/{list_pk}/", token=token)
     if response.status_code == 201:
         return True
@@ -398,11 +415,9 @@ def request_complete_shopping_list(list_pk:int, token:str):
     return None
 
 
-def request_complete_single_ingredient(item_pk:int, token:str):
+def request_complete_single_ingredient(item_pk: int, token: str):
     response = api_request_write(method=HTTPMethod.PATCH, url=f"api/shopping/item/{item_pk}/complete/", token=token)
     if response.status_code == 201:
         return True
 
     return None
-
-
