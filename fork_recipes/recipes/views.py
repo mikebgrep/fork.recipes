@@ -11,6 +11,7 @@ from fork_recipes.ws import api_request
 from . import models
 from .utils import date_util, email_util, general_util
 
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("/")
@@ -154,7 +155,7 @@ def recipe_detail(request, recipe_pk):
         recipes_variations = api_request.request_get_recipe_variations(recipe_pk=recipe_pk)
 
     if recipe.language != "English":
-       is_english = general_util.is_recipe_english("".join([x.text for x in recipe.steps]))
+        is_english = general_util.is_recipe_english("".join([x.text for x in recipe.steps]))
 
     if len(matching_categories) > 0:
         category = matching_categories[0]
@@ -491,20 +492,6 @@ def generate_audio_for_recipe(request, recipe_pk):
         return redirect('recipes:recipe_detail', recipe_pk=recipe_pk)
 
     return redirect("recipes:recipe_detail", recipe_pk=recipe_pk)
-
-
-
-
-
-@login_required
-def change_translation_language(request):
-    if request.method == 'POST':
-        language_choice = request.POST.get("language_choice")
-        token = request.session.get("auth_token")
-        response = api_request.request_change_user_settings_language(language_choice, token)
-        if response:
-            messages.success(request, 'Your translation language was successfully updated!')
-            return redirect('recipes:settings')
 
 
 @login_required

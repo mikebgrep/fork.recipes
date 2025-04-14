@@ -424,7 +424,7 @@ def request_complete_single_ingredient(item_pk: int, token: str):
 
 
 def request_get_backups(token: str):
-    response = api_request_write(method=HTTPMethod.GET, url="api/backupper/all/", token=token)
+    response = api_request_write(method=HTTPMethod.GET, url="api/backupper/", token=token)
     if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
@@ -433,7 +433,7 @@ def request_get_backups(token: str):
 
 
 def request_create_backup(token: str):
-    response = api_request_write(method=HTTPMethod.GET, url="api/backupper/", token=token)
+    response = api_request_write(method=HTTPMethod.POST, url="api/backupper/", token=token)
     if response.status_code == 201:
         return True
 
@@ -448,12 +448,28 @@ def reqeust_delete_backup(backup_pk: int, token: str):
     return False
 
 
-def request_apply_backup(backup_pk:int, token:str):
+def request_apply_backup(backup_pk: int, token: str):
     data = {
         "backup_pk": backup_pk
     }
-    response = api_request_write(method=HTTPMethod.POST, url="api/backupper/", data=json.dumps(data), token=token)
+    response = api_request_write(method=HTTPMethod.PATCH, url="api/backupper/", data=json.dumps(data), token=token)
     if response.status_code == 204:
         return True
     return False
 
+
+def reqeust_import_backup(files, token: str):
+    response = api_request_write(method=HTTPMethod.POST, url="api/backupper/import/", token=token,
+                                 files=files)
+    if response.status_code == 201:
+        return True
+    return False
+
+
+def request_get_backup(backup_pk: int, token: str):
+    response = api_request_write(method=HTTPMethod.GET, url=f"api/backupper/{backup_pk}/", token=token)
+    if response.status_code ==200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+
+    return None

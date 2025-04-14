@@ -1,4 +1,7 @@
+import os
+
 from django.contrib.auth.decorators import login_required
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
@@ -13,7 +16,7 @@ def settings_view(request):
     languages = [choice[0] for choice in LANGUAGES_CHOICES if
                  choice[0] != user_settings.preferred_translate_language]
     backups = api_request.request_get_backups(token)
-    processed_backups = [{"file": backup.file.split('/')[-1], "pk": backup.pk}  for backup in backups]
+    processed_backups = [{"file": backup.file.split('/')[-1], "pk": backup.pk} for backup in backups]
 
     context = {
         'languages': languages,
@@ -22,6 +25,17 @@ def settings_view(request):
     }
 
     return render(request, 'settings.html', context=context)
+
+
+@login_required
+def change_translation_language(request):
+    if request.method == 'POST':
+        language_choice = request.POST.get("language_choice")
+        token = request.session.get("auth_token")
+        response = api_request.request_change_user_settings_language(language_choice, token)
+        if response:
+            messages.success(request, 'Your translation language was successfully updated!')
+            return redirect('settings:settings_page')
 
 
 @login_required
@@ -49,6 +63,7 @@ def delete_backup_view(request, backup_pk):
     return redirect("settings:settings_page")
 
 
+@login_required
 def apply_backup_view(request, backup_pk):
     token = request.session.get("auth_token")
 
@@ -58,4 +73,39 @@ def apply_backup_view(request, backup_pk):
     else:
         messages.error(request, f'There was an error processing the backup request.Please try again.')
 
+    return redirect("settings:settings_page")
+
+
+@login_required
+def import_backup_file_view(request):
+    token = request.session.get("auth_token")
+
+    if request.method == "POST":
+        backup_file = request.FILES.get('backup_file')
+        backup_file = [("file", backup_file)]
+        is_uploaded = api_request.reqeust_import_backup(backup_file, token)
+
+        if is_uploaded:
+            messages.success(request, f'Backup was successfully imported.')
+        else:
+            messages.error(request, f'There was an error processing the backup request.Please try again.')
+
+        return redirect("settings:settings_page")
+
+
+@login_required
+def export_backup_file_view(request, backup_pk):
+    token = request.session.get("auth_token")
+    backup = api_request.request_get_backup(backup_pk, token)
+
+    if backup.file:
+        file_path = f"settings/data/{backup.file.split('/')[-1]}"
+        import urllib.request
+        urllib.request.urlretrieve(backup.file, file_path)
+        try:
+            return FileResponse(open(file_path, 'rb'), as_attachment=True)
+        finally:
+            os.remove(file_path)
+
+    messages.error(request, f'There was an error processing the backup download request.Please try again.')
     return redirect("settings:settings_page")
