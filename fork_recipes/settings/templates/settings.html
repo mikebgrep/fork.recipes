@@ -48,7 +48,7 @@
                     <p class="text-sl font-semibold text-gray-900 mb-1">Emoji</p>
                     <p class="text-sm text-gray-500 mb-3">Enable emoji in ingredients on scraped recipes.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium" id="emoji-status">Disabled</span>
+                        <span class="text-sm font-medium" id="emoji-status">{% if user_settings.emoji_recipes %} Enabled {% else %} Disabled {% endif %}</span>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer" onchange="toggleStatusEmoji(this, 'emoji-status')" {% if user_settings.emoji_recipes %} checked {% endif %}>
                             <div class="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-green-500 transition-colors duration-300"></div>
@@ -62,7 +62,7 @@
                     <p class="text-sl font-semibold text-gray-900 mb-1">PDF</p>
                     <p class="text-sm text-gray-500 mb-3">Enable compact PDF mode for recipe exports.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium" id="pdf-status">Disabled</span>
+                        <span class="text-sm font-medium" id="pdf-status"> {% if user_settings.compact_pdf %} Enabled {% else %} Disabled {% endif %}</span>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer" onchange="toggleStatusPdf(this, 'pdf-status')" {% if user_settings.compact_pdf %} checked {% endif %}>
                             <div class="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-green-500 transition-colors duration-300"></div>
@@ -269,7 +269,7 @@
             }
     }
 
-    async function toggleStatusPdf(checkbox, statusId) {
+    async function toggleStatusEmoji(checkbox, statusId) {
         const label = document.getElementById(statusId);
         const enabled = checkbox.checked;
 
@@ -288,6 +288,7 @@
                 throw new Error('Failed to update favorite status.');
             }
     }
+
 
     function getCookie(name) {
         let cookieValue = null;

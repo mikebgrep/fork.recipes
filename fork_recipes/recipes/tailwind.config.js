@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-content: ['./templates/**/*.html', '../schedule/templates/**/*.html', "../shopping/templates/**/*.html"],
+content: ['./templates/**/*.html', '../schedule/templates/**/*.html', "../shopping/templates/**/*.html", "../settings/templates/**/*.html"],
   darkMode: 'class',
   theme: {
     extend: {
@@ -93,6 +93,35 @@ content: ['./templates/**/*.html', '../schedule/templates/**/*.html', "../shoppi
       }
     },
   },
+  safelist: [
+    {
+      pattern: /^peer(-.*)?$/,
+    },
+    'peer-checked:after:translate-x-full',
+    'peer-checked:bg-mint-600',
+    'after:absolute',
+    'after:top-[2px]',
+    'after:start-[2px]',
+    'after:h-5',
+    'after:w-5',
+    'after:rounded-full',
+    'after:border',
+    'after:border-gray-300',
+    'after:bg-white',
+    'after:transition-all',
+    'after:content-[\'\']',
+    'h-6',
+    'w-11',
+    'rounded-full',
+    'border',
+    'border-gray-300',
+    'bg-gray-200',
+    'transition-colors',
+    'focus:outline-none',
+    'focus:ring-2',
+    'focus:ring-mint-600',
+    'focus:ring-offset-2',
+  ],
   plugins: [
     require('@tailwindcss/container-queries'),
     function({ addComponents }) {

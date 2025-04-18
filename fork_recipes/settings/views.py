@@ -128,10 +128,10 @@ def enable_compact_pdf(request):
         token = request.session.get("auth_token")
         data = json.loads(request.body)
         enabled = data.get('enabled')
-        print(enabled)
         is_success = api_request.request_change_user_settings(token=token, compact_pdf=enabled)
 
         return JsonResponse({'status': 'success' if is_success else "failure"})
+
 
 @login_required
 def enable_emoji_recipes(request):
@@ -139,6 +139,6 @@ def enable_emoji_recipes(request):
         token = request.session.get("auth_token")
         data = json.loads(request.body)
         enabled = data.get('enabled')
-        is_success = api_request.request_change_user_settings(token=token, emoji_recipes=enabled)
 
+        is_success = api_request.request_change_user_settings(token=token, emoji_recipes=enabled)
         return JsonResponse({'status': 'success' if is_success else "failure"})

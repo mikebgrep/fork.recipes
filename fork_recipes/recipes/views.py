@@ -299,8 +299,13 @@ def delete_recipe(request, recipe_pk):
 @login_required
 def print_recipe(request, recipe_pk: int):
     recipe = api_request.get_recipe_by_pk(pk=recipe_pk)
-    return render(request, 'print/recipe_print.html', context={"recipe": recipe})
+    token = request.session.get("auth_token")
+    user_settings = api_request.request_get_user_settings(token=token)
 
+    if user_settings.compact_pdf:
+        return render(request, 'print/compact_recipe_print.html', context={"recipe": recipe})
+
+    return render(request, 'print/recipe_print.html', context={"recipe": recipe})
 
 @login_required
 def saved_recipes(request):
@@ -556,7 +561,6 @@ def delete_account(request):
     if request.method == 'POST':
         token = request.session.get('auth_token')
         email = request.session.get('email')
-        print(email)
         result = api_request.delete_user_account(token)
         if result:
             messages.success(request, 'Your account has been successfully deleted.')

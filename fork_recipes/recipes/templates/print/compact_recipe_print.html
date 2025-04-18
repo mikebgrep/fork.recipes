@@ -1,10 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ recipe.name }}</title>
+    <link rel="stylesheet" href="/static/src/output.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Young+Serif&display=swap" rel="stylesheet" />
 </head>
-<body>
+<body class="bg-eggshell text-wenge-brown font-outfit print:bg-white print:text-black">
+    <main class="max-w-screen-lg mx-auto bg-white p-6 md:p-10 rounded-xl shadow-md print:p-6">
+        <!-- Header Section with Image and Info -->
+        <div class="flex gap-6 mb-8">
+            <!-- Image on Left -->
+            <div class="w-48 h-48 flex-shrink-0">
+                <img src="{{ recipe.image }}"
+                     alt="Recipe image"
+                     class="w-full h-full object-cover rounded-lg shadow print-img" />
+            </div>
 
+            <!-- Recipe Info -->
+            <div class="flex-grow">
+                <h1 class="font-fancy text-3xl text-dark-charcoal">{{ recipe.name }}</h1>
+                
+                <div class="mt-4 space-y-1 text-sm">
+                    <p><strong>Total Time:</strong> {{ recipe.total_time }} hrs</p>
+                    <p><strong>Prep Time:</strong> {{ recipe.prep_time }} min</p>
+                    <p><strong>Cook Time:</strong> {{ recipe.cook_time }} min</p>
+                    <p><strong>Servings:</strong> {{ recipe.servings }}</p>
+                    {% if recipe.chef %}
+                        <p><strong>Chef:</strong> {{ recipe.chef }}</p>
+                    {% endif %}
+                    {% if recipe.reference %}
+                        <p class="text-gray-600"><strong>Reference:</strong> {{ recipe.reference }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="flex gap-8 print:gap-2">
+            <!-- Ingredients Column -->
+            <div class="w-2/5">
+                <h2 class="font-fancy text-xl text-nutmeg mb-3">Ingredients</h2>
+                <ul class="space-y-2 text-sm border-t border-b border-light-gray divide-y divide-light-gray">
+                    {% for ingredient in recipe.ingredients %}
+                        <li class="py-2">
+                            {{ ingredient.quantity }} {{ ingredient.metric }} {{ ingredient.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Visual separator -->
+            <div class="w-px bg-light-gray print:bg-gray-200 mx-2"></div>
+            <!-- Instructions Column -->
+            <div class="w-3/5 pl-2">
+                <h2 class="font-fancy text-xl text-nutmeg mb-3">Instructions</h2>
+                <ol class="list-decimal list-inside space-y-3 text-sm marker:text-nutmeg marker:font-semibold">
+                    {% for step in recipe.steps %}
+                        <li>{{ step.text }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
