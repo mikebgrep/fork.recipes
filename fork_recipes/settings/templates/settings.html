@@ -36,6 +36,43 @@
                 </div>
             </form>
         </div>
+        <!-- Toggle Settings -->
+        <!-- Toggle Settings -->
+        <div class="bg-white shadow-sm rounded-lg">
+            <div class="px-6 py-5 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Additional Options</h3>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Emoji Toggle Box -->
+                <div class="p-4 border rounded-lg bg-white shadow">
+                    <p class="text-sl font-semibold text-gray-900 mb-1">Emoji</p>
+                    <p class="text-sm text-gray-500 mb-3">Enable emoji in ingredients on scraped recipes.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium" id="emoji-status">Disabled</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" onchange="toggleStatusEmoji(this, 'emoji-status')" {% if user_settings.emoji_recipes %} checked {% endif %}>
+                            <div class="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-green-500 transition-colors duration-300"></div>
+                            <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-7"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- PDF Toggle Box -->
+                <div class="p-4 border rounded-lg bg-white shadow">
+                    <p class="text-sl font-semibold text-gray-900 mb-1">PDF</p>
+                    <p class="text-sm text-gray-500 mb-3">Enable compact PDF mode for recipe exports.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium" id="pdf-status">Disabled</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" onchange="toggleStatusPdf(this, 'pdf-status')" {% if user_settings.compact_pdf %} checked {% endif %}>
+                            <div class="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-green-500 transition-colors duration-300"></div>
+                            <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-7"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Manage Backups -->
         <div class="bg-white shadow-sm rounded-lg">
@@ -80,12 +117,12 @@
                         </form>
 
                         <!-- Download Backup Button -->
-                    <a  href="javascript:void(0)"
-                        id="downloadBackupButton"
-                        onclick="downloadBackup()"
-                        class="w-full sm:w-auto inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
-                        Download Backup
-                    </a>
+                        <a href="javascript:void(0)"
+                           id="downloadBackupButton"
+                           onclick="downloadBackup()"
+                           class="w-full sm:w-auto inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                            Download Backup
+                        </a>
                     </div>
 
                 </div>
@@ -127,11 +164,11 @@
         <p class="text-sm text-gray-500 mb-4">Are you sure you want to delete this backup file? This action cannot be
             undone.</p>
         <a href="javascript:void(0)" id="deleteBackupButton"
-           class="w-full sm:w-auto inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+           class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
             Delete Backup
         </a>
         <button type="button" onclick="document.getElementById('delete-modal').classList.add('hidden')"
-                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             Cancel
         </button>
     </div>
@@ -143,7 +180,7 @@
         <p class="text-sm text-gray-500 mb-4">Are you sure you want to delete this backup file? This action cannot be
             undone.</p>
         <a href="javascript:void(0)" id="applyBackupButton"
-           class="w-full sm:w-auto inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
+           class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-mint-600 hover:bg-mint-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mint-500">
             Apply Backup
         </a>
         <button type="button" onclick="document.getElementById('apply-modal').classList.add('hidden')"
@@ -209,6 +246,62 @@
 
         const downloadAnchor = document.getElementById('downloadBackupButton');
         downloadAnchor.href = downloadUrl
+    }
+</script>
+<script>
+    async function toggleStatusPdf(checkbox, statusId) {
+        const label = document.getElementById(statusId);
+        const enabled = checkbox.checked;
+
+        label.textContent = enabled ? 'Enabled' : 'Disabled';
+
+         const response = await fetch(`{% url 'settings:compact_pdf' %}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            body: JSON.stringify({ enabled: enabled })
+            });
+
+        if (!response.ok) {
+                throw new Error('Failed to update favorite status.');
+            }
+    }
+
+    async function toggleStatusPdf(checkbox, statusId) {
+        const label = document.getElementById(statusId);
+        const enabled = checkbox.checked;
+
+        label.textContent = enabled ? 'Enabled' : 'Disabled';
+
+         const response = await fetch(`{% url 'settings:emoji_recipes' %}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            body: JSON.stringify({ enabled: enabled })
+            });
+
+        if (!response.ok) {
+                throw new Error('Failed to update favorite status.');
+            }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 </script>
 

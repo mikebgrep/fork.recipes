@@ -96,6 +96,14 @@ def get_recipe_by_pk(pk: int):
     return result
 
 
+def get_random_recipe():
+    response = api_request_read_only(method=HTTPMethod.GET, url="api/recipe/random")
+    if response.status_code == 200:
+        result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
+        return result
+    return None
+
+
 def patch_favorite_recipe(pk: int, token: str):
     response = api_request_read_only(method=HTTPMethod.PATCH, url=f"api/recipe/{pk}/favorite")
     return response.status_code
@@ -241,9 +249,10 @@ def request_delete_recipe(recipe_pk: int, token: str):
     return False
 
 
-def reqeust_generate_recipes(ingredients: List[str], token: str):
+def reqeust_generate_recipes(ingredients: List[str], meal_type: str, token: str):
     data = {
-        "ingredients": ingredients
+        "ingredients": ingredients,
+        "meal_type": meal_type,
     }
     response = api_request_write(method=HTTPMethod.POST, url="api/recipe/generate", token=token, data=json.dumps(data))
     if response.status_code == 200:
@@ -281,11 +290,12 @@ def request_get_user_settings(token: str):
     return None
 
 
-def request_change_user_settings_language(language_choice: str, token: str):
+def request_change_user_settings(token: str, language_choice: str = None, compact_pdf: bool = None, emoji_recipes: bool = None):
     data = {
-        "language": language_choice
+        "language": language_choice,
+        "compact_pdf": compact_pdf,
+        "emoji_recipes": emoji_recipes,
     }
-
     response = api_request_write(method=HTTPMethod.PATCH, url="api/auth/settings", token=token, data=json.dumps(data))
     if response.status_code == 201:
         return True
@@ -468,7 +478,7 @@ def reqeust_import_backup(files, token: str):
 
 def request_get_backup(backup_pk: int, token: str):
     response = api_request_write(method=HTTPMethod.GET, url=f"api/backupper/{backup_pk}/", token=token)
-    if response.status_code ==200:
+    if response.status_code == 200:
         result = json.loads(response.content, object_hook=lambda d: SimpleNamespace(**d))
         return result
 

@@ -27,8 +27,12 @@
 <!-- Categories Section (Responsive) -->
 <div class="flex flex-wrap gap-2 overflow-hidden mb-6 scrollbar-hide">
     <a href="{% url 'recipes:recipe_list' %}"
-       class="px-4 py-2 rounded-full whitespace-nowrap transition-colors {% if not selected_category %}bg-mint-500 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+       class="px-4 py-2 rounded-full whitespace-nowrap transition-colors {% if not selected_category and not  random_recipe %}bg-mint-500 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
         All Recipes
+    </a>
+    <a href="{% url 'recipes:random_recipe' %}"
+       class="px-4 py-2 rounded-full whitespace-nowrap transition-colors {% if random_recipe %}bg-mint-500 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+         🎲 Random Recipe
     </a>
     {% for category in categories %}
     <a href="{% url 'recipes:recipe_list' %}?category={{ category.pk }}"

@@ -134,9 +134,29 @@ def recipe_list(request):
         'page_obj': page_obj,
         'categories': categories,
         'selected_category': category_pk,
+        'random_recipe': False,
         'search_query': search,
     })
 
+
+@login_required
+def random_recipe(request):
+    recipe = api_request.get_random_recipe()
+    if recipe:
+        categories = api_request.get_categories()
+        search = request.GET.get('search', '')
+
+        paginator = Paginator([recipe], 1)
+        page_obj = paginator.get_page(1)
+        return render(request, 'recipes/recipe_list.html', {
+            'page_obj': page_obj,
+            'categories': categories,
+            'selected_category': None,
+            'random_recipe': True,
+            'search_query': search,
+        })
+    messages.error(request, 'Something when wrong please try again later.')
+    return redirect("recipes:recipe_list")
 
 @login_required
 def recipe_detail(request, recipe_pk):
@@ -318,8 +338,9 @@ def scrape_recipe(request):
 def generate_recipe(request):
     if request.method == 'POST':
         ingredients = request.POST.getlist('ingredients[]')
+        meal_type = request.POST.get('meal_type')
         token = request.session.get("auth_token")
-        is_results_available, response_generated_recipes = api_request.reqeust_generate_recipes(ingredients, token)
+        is_results_available, response_generated_recipes = api_request.reqeust_generate_recipes(ingredients, meal_type, token)
 
         if is_results_available:
             if len(response_generated_recipes) > 0:
@@ -512,7 +533,7 @@ def change_password(request):
             result = api_request.change_logged_user_password(data=data, token=token)
             if result is True:
                 messages.success(request, 'Your password was successfully updated!')
-                return redirect('recipes:settings')
+                return redirect('recipes:profile')
             else:
                 context = {
                     "error": "There problem with your new password. Please choice minimum 8 char long password and not to common."}
@@ -527,7 +548,7 @@ def change_password(request):
         context['selected_language'] = user_settings.preferred_translate_language
 
         messages.error(request, 'Please correct the error below.')
-    return render(request, 'recipes/settings.html', context=context)
+    return render(request, 'recipes/profile.html', context=context)
 
 
 @login_required
@@ -545,7 +566,7 @@ def delete_account(request):
 
         messages.error(request, "Something went wrong.Please try again later!")
 
-    return redirect('recipes:settings')
+    return redirect('recipes:profile')
 
 
 def handler404(request, exception=None):

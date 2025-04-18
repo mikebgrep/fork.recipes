@@ -346,22 +346,28 @@
             </div>
 
             <div>
-                <div class="flex items-center gap-2 mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-mint-500" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="4" y1="9" x2="20" y2="9"></line>
-                        <line x1="4" y1="15" x2="20" y2="15"></line>
-                        <line x1="10" y1="3" x2="8" y2="21"></line>
-                        <line x1="16" y1="3" x2="14" y2="21"></line>
-                    </svg>
-                    <h3 class="text-lg font-semibold">Instructions</h3>
-                </div>
-                <ol class="list-decimal list-inside space-y-2 text-gray-600">
-                    {% for step in recipe.steps %}
-                    <li>{{ step.text }}</li>
-                    {% endfor %}
-                </ol>
-            </div>
+    <div class="flex items-center gap-2 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-mint-500" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="9" x2="20" y2="9"></line>
+            <line x1="4" y1="15" x2="20" y2="15"></line>
+            <line x1="10" y1="3" x2="8" y2="21"></line>
+            <line x1="16" y1="3" x2="14" y2="21"></line>
+        </svg>
+        <h3 class="text-xl font-semibold">Instructions</h3>
+    </div>
+    <ol class="text-gray-700">
+        {% for step in recipe.steps %}
+        <li class="flex items-start gap-4 mb-4">
+            <span class="bg-mint-100 text-mint-700 w-8 h-8 min-w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-semibold text-base">
+                {{ forloop.counter }}
+            </span>
+            <span class="text-lg leading-relaxed flex-1">{{ step.text }}</span>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+
         </div>
     </div>
 </div>

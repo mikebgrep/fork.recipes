@@ -1,3 +1,4 @@
+import json
 import os
 
 from django.contrib.auth.decorators import login_required
@@ -15,13 +16,18 @@ def settings_view(request):
     user_settings = api_request.request_get_user_settings(token=token)
     languages = [choice[0] for choice in LANGUAGES_CHOICES if
                  choice[0] != user_settings.preferred_translate_language]
+
     backups = api_request.request_get_backups(token)
-    processed_backups = [{"file": backup.file.split('/')[-1], "pk": backup.pk} for backup in backups]
+
+    processed_backups = []
+    if backups:
+        processed_backups = [{"file": backup.file.split('/')[-1], "pk": backup.pk} for backup in backups]
 
     context = {
         'languages': languages,
         'selected_language': user_settings.preferred_translate_language,
         'backups': processed_backups,
+        'user_settings': user_settings,
     }
 
     return render(request, 'settings.html', context=context)
@@ -32,7 +38,7 @@ def change_translation_language(request):
     if request.method == 'POST':
         language_choice = request.POST.get("language_choice")
         token = request.session.get("auth_token")
-        response = api_request.request_change_user_settings_language(language_choice, token)
+        response = api_request.request_change_user_settings(token, language_choice)
         if response:
             messages.success(request, 'Your translation language was successfully updated!')
             return redirect('settings:settings_page')
@@ -109,3 +115,30 @@ def export_backup_file_view(request, backup_pk):
 
     messages.error(request, f'There was an error processing the backup download request.Please try again.')
     return redirect("settings:settings_page")
+
+
+@login_required
+def enable_emojy_in_ingredients_on_scrape(request):
+    pass
+
+
+@login_required
+def enable_compact_pdf(request):
+    if request.method == "POST":
+        token = request.session.get("auth_token")
+        data = json.loads(request.body)
+        enabled = data.get('enabled')
+        print(enabled)
+        is_success = api_request.request_change_user_settings(token=token, compact_pdf=enabled)
+
+        return JsonResponse({'status': 'success' if is_success else "failure"})
+
+@login_required
+def enable_emoji_recipes(request):
+    if request.method == "POST":
+        token = request.session.get("auth_token")
+        data = json.loads(request.body)
+        enabled = data.get('enabled')
+        is_success = api_request.request_change_user_settings(token=token, emoji_recipes=enabled)
+
+        return JsonResponse({'status': 'success' if is_success else "failure"})

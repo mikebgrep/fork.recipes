@@ -5,6 +5,7 @@ app_name = 'recipes'
 
 urlpatterns = [
     path('', views.recipe_list, name='recipe_list'),
+    path('random/', views.random_recipe, name='random_recipe'),
     path('recipe/<int:recipe_pk>/', views.recipe_detail, name='recipe_detail'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.log_out_view, name='logout'),
