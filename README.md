@@ -1,36 +1,40 @@
 # Fork recipes 
 
-![version](https://img.shields.io/badge/version-3.0.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
+![version](https://img.shields.io/badge/version-3.0.2-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
 
 
 <img align="right" src="assets/avatar.png" height="170px" alt="Logo">
 
 Simple, elegant frontend Python web application that work seamlessly with the [ForkApi](https://www.github.com/mikebgrep/forkapi) to provide management for food recipies collections.
 
+## Features  
+#### Core Stack
+- **Django 5.x** · Python-based backend 🐍  
+- **Dockerized** for effortless deployment ⚓  
+- SSL/NoSSL configurations by default 🔒
+  
+---
 
-### Futures
-- Django v5.x 🐍based
-- Dockerized for easy deployment. Together with the API 🛳
-- SSL or NoSSL setup by default 🔒
-- Video or image recipes 👨‍🍳
-- Save your favorite recipes 😍
-- Categorize 📑 your recipes for easy management
-- Plan meals with in app Scheduler 📋
-- Add recipe ingredients to Shopping List 🛒
-- Print recipe with cool template 🖨
-- Scrape recipe from any webpage and save it locally (openai token needed) 🤖
-- Generate recipes by ingredients and save them locally (openai token needed) 🤖
-- Translate recipes to any language 🈹️(openai token needed) 🤖
-- Generate recipe audio 🈹️(openai token needed) 🤖 (English only!)
+#### Recipe Management  
+- Create **Video or Image** based recipes 👨‍🍳  
+- Save your **Favorite Recipes** 🌟  
+- Organize with **Categories** 📂  
+- **Print** recipes in a clean layout 🖨  
+- **Meal Planning Scheduler** built-in 🗓  
 
+---
 
-more comming...
-- Automatic unit conversion (openai token needed) 🤖
+#### Smart Kitchen Tools  
+- Add ingredients to a **Shopping List** 🛒  
+- **Recipe Scraper** from almost any URL *(OpenAI token)* 🤖  
+- **Generate Recipes by Ingredients** *(OpenAI token)* 💡  
+- **Translate Recipes** to various language *(OpenAI token)* 🈹️ 
+- **Audio Narration** of recipes *(English only, OpenAI token)* 🎧 
 
-### Installation 
-I include the installation instructions in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
+## Installation 
+Installation instructions are included in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
 
-### Application preview (from 1st realese)
+## Application preview (from 1st realese)
 ![preview](assets/preview.gif)
 
 
@@ -40,5 +44,5 @@ This project relies only on donations if you feel generous you can support it.
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/mikebgrep)
 
 
-### License 
+## License 
 The application code is with [BSD-3-Clause license](https://opensource.org/license/bsd-3-clause)
