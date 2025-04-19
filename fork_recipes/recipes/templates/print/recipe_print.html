@@ -51,7 +51,7 @@
     <!-- Separator -->
     <div class="w-full h-px bg-light-gray mx-auto my-6"></div>
     <!-- Instructions -->
-    <div style="{% if recipe.ingredients|length >= 8 and recipe.ingredients|length < 11 %} page-break-before: always; {% endif %}">
+    <div style="{% if recipe.ingredients|length >= 7 and recipe.ingredients|length < 11 %} page-break-before: always; {% endif %}">
         <h3 class="font-fancy text-2xl text-nutmeg">Instructions</h3>
         <ol class="list-decimal list-inside mt-3 marker:text-nutmeg marker:font-semibold">
             {% for step in recipe.steps %}
