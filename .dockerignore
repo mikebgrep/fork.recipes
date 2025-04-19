@@ -1,4 +1,6 @@
 .env
+.venv
+.github
 fork_recipes/static
 fork_recipes/backend/sql/db.sqlite3
 fork_recipes/recipes/migrations/*
