@@ -89,6 +89,9 @@ def mock_get_recipe_by_pk():
 
     return json_response, recipe_pk, categories_response
 
+def mock_patch_recipe_category():
+    responses_register_mock(method=responses.PATCH, path=f"api/recipe/1/category",
+                            status_code=204)
 
 def mock_post_recipe_ingredients(recipe_pk: int):
     response_data = json_data_responses['responses']['ingredients']
@@ -255,7 +258,7 @@ def mock_favorite_action_recipe(recipe_pk, status_code: int):
     responses_register_mock(method=responses.PATCH, path=f"api/recipe/{recipe_pk}/favorite", status_code=status_code)
 
 
-def mock_change_password_from_settings(status_code: int):
+def mock_change_password_from_profile(status_code: int):
     json_request = json_data_responses['requests']['authentication']['change_password_logged_user_success']
     data = json_data_responses['requests']['authentication']['change_password_success']
 

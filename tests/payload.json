@@ -88,7 +88,10 @@
         "chef": "Thomas Keller",
         "video": "http://localhost:8000/media/videos/58457d14-3f2f-413a-82d4-4a67fbb6a6b8_7451c646-5600-4ab3-801d-c861a2585d00_4935156_Jj5bDqV.mp4",
         "description": "A savory and hearty chicken stew packed with tender vegetables, slow-cooked in a rich tomato-based broth, perfect for a cozy dinner.",
-        "category": 4,
+        "category": {
+          "pk": 1,
+          "name": "test1"
+        },
         "tag": null,
         "prep_time": 38,
         "cook_time": 13,

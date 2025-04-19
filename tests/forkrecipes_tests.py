@@ -214,7 +214,7 @@ def test_recipe_details_view(login_with_user, client):
     assert response.context['recipe'].chef == json_response['chef']
     assert response.context['recipe'].video == json_response['video']
     assert response.context['recipe'].description == json_response['description']
-    assert response.context['category'].pk == json_response['category']
+    assert response.context['category'].pk == json_response['category']['pk']
 
 
 @responses.activate
@@ -233,6 +233,7 @@ def test_edit_recipe_view_get_request(login_with_user, client):
 @pytest.mark.django_db
 def test_edit_recipe_post_request(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk()
+    mock_patch_recipe_category()
     api_request.get_recipe_by_pk(recipe_pk)
 
     post_data = mock_data_recipe_on_update_or_create(HTTPMethod.PUT, recipe_pk, categories_response, 200)
@@ -258,6 +259,7 @@ def test_edit_recipe_post_request_bad_request_on_update(login_with_user, client)
 @pytest.mark.django_db
 def test_new_recipe_view_happy_path(login_with_user, client):
     json_response, recipe_pk, categories_response = mock_get_recipe_by_pk()
+    mock_patch_recipe_category()
     api_request.get_recipe_by_pk(recipe_pk)
 
     post_data = mock_data_recipe_on_update_or_create(HTTPMethod.POST, recipe_pk, categories_response, 201)
@@ -359,22 +361,13 @@ def test_toggle_favorite_bad_request(login_with_user, client):
     assert response.status_code == 200
     assert "failure" == response.json()['status']
 
-@responses.activate
-@pytest.mark.django_db
-def test_settings_view_render(login_with_user, client):
-    mock_get_user_settings()
-    api_request.request_get_user_settings(token=str(uuid.uuid4()))
-
-    response = client.get(reverse("recipes:settings"))
-
-    assert response.status_code == 200
-    assert 'recipes/settings.html' in [t.name for t in response.templates]
 
 
 @responses.activate
 @pytest.mark.django_db
 def test_change_password_settings_happy_path(login_with_user, client):
-    data, json_request = mock_change_password_from_settings(status_code=204)
+    data, json_request = mock_change_password_from_profile(status_code=204)
+    mock_get_user_profile_request()
     api_request.change_logged_user_password(data=data, token=str(uuid.uuid4()))
 
     mock_get_user_settings()
@@ -382,7 +375,7 @@ def test_change_password_settings_happy_path(login_with_user, client):
 
     response = client.post(reverse("recipes:change_password"), data=json_request, follow=True)
     assert response.status_code == 200
-    assert 'recipes/settings.html' in [t.name for t in response.templates]
+    assert 'recipes/profile.html' in [t.name for t in response.templates]
     assert 'Your password was successfully updated!' in [x.message for x in get_messages(response.wsgi_request)]
 
 
@@ -398,7 +391,7 @@ def test_change_password_settings_passwords_does_not_match(login_with_user, clie
     response = client.post(reverse("recipes:change_password"), data=json_request)
 
     assert response.status_code == 200
-    assert 'recipes/settings.html' in [t.name for t in response.templates]
+    assert 'recipes/profile.html' in [t.name for t in response.templates]
     assert 'Please correct the error below.' in [x.message for x in get_messages(response.wsgi_request)]
     assert 'Your new password does not match confirm password!' == response.context['error']
 
@@ -406,7 +399,7 @@ def test_change_password_settings_passwords_does_not_match(login_with_user, clie
 @responses.activate
 @pytest.mark.django_db
 def test_change_password_api_bad_request(login_with_user, client):
-    data, json_request = mock_change_password_from_settings(status_code=400)
+    data, json_request = mock_change_password_from_profile(status_code=400)
     api_request.change_logged_user_password(data=data, token=str(uuid.uuid4()))
 
     mock_get_user_settings()
@@ -445,6 +438,7 @@ def test_settings_delete_account_happy_path(login_with_user, client):
 @pytest.mark.django_db
 def test_settings_delete_account_api_no_creds_provided(login_with_user, client):
     mock_delete_account(status_code=403)
+    mock_get_user_profile_request()
     api_request.delete_user_account(None)
 
     mock_get_user_settings()
@@ -453,7 +447,7 @@ def test_settings_delete_account_api_no_creds_provided(login_with_user, client):
     response = client.post(reverse("recipes:delete_account"), follow=True)
 
     assert response.status_code == 200
-    assert 'recipes/settings.html' in [t.name for t in response.templates]
+    assert 'recipes/profile.html' in [t.name for t in response.templates]
     assert 'Something went wrong.Please try again later!' in [x.message for x in get_messages(response.wsgi_request)]
 
 
@@ -461,6 +455,7 @@ def test_settings_delete_account_api_no_creds_provided(login_with_user, client):
 @pytest.mark.django_db
 def test_settings_delete_account_api_bad_request(login_with_user, client):
     mock_delete_account(status_code=500)
+    mock_get_user_profile_request()
     api_request.delete_user_account(None)
 
     mock_get_user_settings()
@@ -469,5 +464,5 @@ def test_settings_delete_account_api_bad_request(login_with_user, client):
     response = client.post(reverse("recipes:delete_account"), follow=True)
 
     assert response.status_code == 200
-    assert 'recipes/settings.html' in [t.name for t in response.templates]
+    assert 'recipes/profile.html' in [t.name for t in response.templates]
     assert 'Something went wrong.Please try again later!' in [x.message for x in get_messages(response.wsgi_request)]
