@@ -1,6 +1,6 @@
 # Fork recipes 
 
-![version](https://img.shields.io/badge/version-3.0.2-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
+![version](https://img.shields.io/badge/version-4.0.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
 
 
 <img align="right" src="assets/avatar.png" height="170px" alt="Logo">
@@ -19,17 +19,18 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - Create **Video or Image** based recipes 👨‍🍳  
 - Save your **Favorite Recipes** 🌟  
 - Organize with **Categories** 📂  
-- **Print** recipes in a clean layout 🖨  
+- **Print** recipes in a clean layouts (compact and extended) 🖨  
 - **Meal Planning Scheduler** built-in 🗓  
-
+- **Backup Snapshot** import/export/apply database backup snapshots
 ---
 
 #### Smart Kitchen Tools  
 - Add ingredients to a **Shopping List** 🛒  
 - **Recipe Scraper** from almost any URL *(OpenAI token)* 🤖  
-- **Generate Recipes by Ingredients** *(OpenAI token)* 💡  
-- **Translate Recipes** to various language *(OpenAI token)* 🈹️ 
-- **Audio Narration** of recipes *(English only, OpenAI token)* 🎧 
+- **Generate Recipes by Ingredients** *(OpenAI token)* 🤖  
+- **Translate Recipes** to various language *(OpenAI token)* 🤖 
+- **Audio Narration** of recipes *(English only, OpenAI token)* 🤖 
+- **Emojis** in the recipe description/name/ingredients when scraping them *(OpenAI token)* 🤖 
 
 ## Installation 
 Installation instructions are included in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
