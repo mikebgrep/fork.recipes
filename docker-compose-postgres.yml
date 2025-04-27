@@ -31,6 +31,7 @@ services:
     command: >
       sh -c "chmod +x /scripts/migration.sh && /scripts/migration.sh & uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
     volumes:
+      - ./scripts:/scripts
       - uwsgi_data:/tmp/uwsgi/
       - web_media:/forkapi/media/
       - web_static:/forkapi/static/
