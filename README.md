@@ -34,7 +34,7 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 - **Emojis** in the recipe description/name/ingredients when scraping them *(OpenAI token)* 🤖 
 
 ## Installation 
-Installation instructions are included in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/clients/)
+Installation instructions are included in the ForkAPI documentation you can follow them up here ➡ [follow](https://mikebgrep.github.io/forkapi/latest/clients/)
 
 ## Application preview (from 1st realese)
 ![preview](assets/preview.gif)
