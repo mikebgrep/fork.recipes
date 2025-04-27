@@ -1,6 +1,6 @@
 # Fork recipes 
 
-![version](https://img.shields.io/badge/version-4.0.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
+![version](https://img.shields.io/badge/version-4.1.0-green) [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-red.svg)](https://opensource.org/license/bsd-3-clause) 
 
 
 <img align="right" src="assets/avatar.png" height="170px" alt="Logo">
@@ -10,7 +10,8 @@ Simple, elegant frontend Python web application that work seamlessly with the [F
 ## Features  
 #### Core Stack
 - **Django 5.x** · Python-based backend 🐍  
-- **Dockerized** for effortless deployment ⚓  
+- **Dockerized** for effortless deployment ⚓
+- **Postgres database** support 🐘
 - SSL/NoSSL configurations by default 🔒
   
 ---
