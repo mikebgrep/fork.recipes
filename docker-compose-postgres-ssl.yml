@@ -1,0 +1,65 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/DockerfileSSL
+    image: nginx:fork-recipes
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    command: /bin/sh -c "nginx -g 'daemon off;'"
+    volumes:
+      - uwsgi_data:/tmp/uwsgi/
+      - web_static:/forkapi/static/:ro
+      - web_media:/forkapi/media/
+      - web_static_fe:/fork_recipes/static/:ro
+    depends_on:
+      - web
+      - be
+
+
+  be:
+    image: mikebgrep/forkapi:latest # change with mikebgrep/forkapi:arm64 for RaspberryPI
+    container_name: forkapi
+    hostname: forkapi-host
+    env_file:
+      - .env
+    restart: always
+    network_mode: "host"
+    command: >
+      sh -c "chmod +x /scripts/migration.sh && /scripts/migration.sh & uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
+    volumes:
+      - uwsgi_data:/tmp/uwsgi/
+      - web_media:/forkapi/media/
+      - web_static:/forkapi/static/
+
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recipes
+    image: forkrecipes:latest
+    env_file:
+      - .env
+    restart: always
+    network_mode: "host"
+    command: >
+      sh -c "uwsgi --ini uwsgi.ini --chown-socket=www-data:www-data"
+    volumes:
+      - data:/fork_recipes/sql/
+      - uwsgi_data:/tmp/uwsgi/
+      - web_static_fe:/fork_recipes/static/
+    depends_on:
+      - be
+
+
+volumes:
+  data:
+  uwsgi_data:
+  web_static:
+  web_media:
+  web_static_fe:
