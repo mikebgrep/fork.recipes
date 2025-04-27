@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
+from django.contrib.auth import logou
 from fork_recipes.ws import api_request
 from recipes.models import LANGUAGES_CHOICES
 
@@ -92,11 +92,13 @@ def import_backup_file_view(request):
         is_uploaded = api_request.reqeust_import_backup(backup_file, token)
 
         if is_uploaded:
-            messages.success(request, f'Backup was successfully imported.')
+            messages.success(request, f'Backup was successfully imported.You will be logged out.')
         else:
             messages.error(request, f'There was an error processing the backup request.Please try again.')
-
-        return redirect("settings:settings_page")
+        user = request.user
+        logout(user)
+        user.delete()
+        return redirect("recipes:login")
 
 
 @login_required
