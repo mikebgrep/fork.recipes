@@ -560,12 +560,12 @@ def change_password(request):
 def delete_account(request):
     if request.method == 'POST':
         token = request.session.get('auth_token')
-        email = request.session.get('email')
         result = api_request.delete_user_account(token)
         if result:
             messages.success(request, 'Your account has been successfully deleted.')
-            models.User.objects.get(email=email).delete()
-            request.session['auth_token'] = None
+            user = request.user
+            logout(request)
+            user.delete()
             return redirect('recipes:login')
 
         messages.error(request, "Something went wrong.Please try again later!")

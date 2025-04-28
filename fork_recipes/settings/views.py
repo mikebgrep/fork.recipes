@@ -76,10 +76,13 @@ def apply_backup_view(request, backup_pk):
     is_applied = api_request.request_apply_backup(backup_pk, token)
     if is_applied:
         messages.success(request, f'Backup was successfully applied.')
+        user = request.user
+        logout(request)
+        user.delete()
     else:
         messages.error(request, f'There was an error processing the backup request.Please try again.')
-
-    return redirect("settings:settings_page")
+    logout(request)
+    return redirect("recipes:login")
 
 
 @login_required
@@ -92,14 +95,12 @@ def import_backup_file_view(request):
         is_uploaded = api_request.reqeust_import_backup(backup_file, token)
 
         if is_uploaded:
-            messages.success(request, f'Backup was successfully imported.You will be logged out.')
+            messages.success(request, f'Backup was successfully imported.')
         else:
             messages.error(request, f'There was an error processing the backup request.Please try again.')
-        user = request.user
-        logout(user)
-        user.delete()
-        return redirect("recipes:login")
 
+
+    return redirect("settings:settings_page")
 
 @login_required
 def export_backup_file_view(request, backup_pk):
