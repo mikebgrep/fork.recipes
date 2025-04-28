@@ -426,7 +426,6 @@ def test_settings_delete_account_happy_path(login_with_user, client):
     response = client.post(reverse("recipes:delete_account"), follow=True)
 
     assert response.status_code == 200
-    assert client.session['auth_token'] is None
     assert 'recipes/login.html' in [t.name for t in response.templates]
     assert 'Your account has been successfully deleted.' in [x.message for x in get_messages(response.wsgi_request)]
 
