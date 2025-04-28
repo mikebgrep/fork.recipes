@@ -7,5 +7,9 @@ python manage.py makemigrations shopping
 python manage.py makemigrations backupper
 python manage.py migrate
 python manage.py collectstatic --noinput
-python manage.py seed_admin_user
-python manage.py seed_categories
+
+
+if [ "$1" == 'true' ]; then
+    python manage.py seed_admin_user
+    python manage.py seed_categories
+fi
