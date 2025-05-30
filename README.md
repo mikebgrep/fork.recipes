@@ -40,11 +40,5 @@ Installation instructions are included in the ForkAPI documentation you can foll
 ![preview](assets/preview.gif)
 
 
-### Support
-This project relies only on donations if you feel generous you can support it.
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/mikebgrep)
-
-
 ## License 
 The application code is with [BSD-3-Clause license](https://opensource.org/license/bsd-3-clause)
