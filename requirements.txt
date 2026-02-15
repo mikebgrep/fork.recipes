@@ -14,6 +14,6 @@ python-dotenv==1.0.1
 PyYAML==6.0.2
 requests==2.32.4
 responses==0.25.3
-sqlparse==0.5.1
+sqlparse==0.5.4
 urllib3==2.6.3
 uWSGI==2.0.28
